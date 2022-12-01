@@ -1,3 +1,6 @@
+'==================
+'2018_02_14
+'==================
 Sub Yes_to_No_sig()
 '===========================
 ' Writen by Michael Ryckin
@@ -484,3 +487,29 @@ Sub True_False_colors_cond_formating()
     
 End Sub
 
+Sub CheckXMLSheetToDelete()
+'=============================================================================================
+' Writen by Michael Rykin
+' Use to check which XML sheets possible to delete based on searching for rows which use them.
+'=============================================================================================
+Dim IP20NCounter As Integer
+Dim IP20GCounter As Integer
+Dim IP20GXCounter As Integer
+Dim IP20CCounter As Integer
+Dim IP20Eounter As Integer
+Dim IP20Founter As Integer
+
+IP20NCounter = Application.CountIf(Range("N:N"), "*@Genesis_*")
+IP20CCounter = Application.CountIf(Range("N:N"), "*@Nexus_*")
+IP20GCounter = Application.CountIf(Range("N:N"), "*@IP20G_*")
+IP20GXCounter = Application.CountIf(Range("N:N"), "*@IP20GX_*")
+IP20Eounter = Application.CountIf(Range("N:N"), "*@E-Band_*")
+IP20Founter = Application.CountIf(Range("N:N"), "*@IP20F_*")
+
+MsgBox ("IP20N used " & IP20NCounter & " times" & vbCrLf & _
+        "IP20G used " & IP20GCounter & " times" & vbCrLf & _
+        "IP20GX used " & IP20GXCounter & " times" & vbCrLf & _
+        "IP20C used " & IP20CCounter & " times" & vbCrLf & _
+        "IP20E used " & IP20Eounter & " times" & vbCrLf & _
+        "IP20F used " & IP20Founter & " times" & vbCrLf)
+End Sub

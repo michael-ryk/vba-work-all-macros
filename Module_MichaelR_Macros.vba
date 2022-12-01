@@ -1,5 +1,5 @@
 '==================
-Public Const moduleVersion As String = "V11.2"
+Public Const moduleVersion As String = "V12"
 '==================
 
 Sub Yes_to_No_sig()
@@ -42,6 +42,17 @@ Sub Select_row()
     row = ActiveCell.row
     Range(Cells(row, "B"), Cells(row, "P")).Select
     
+End Sub
+
+Sub Transpose_Table()
+'===========================
+' Writen by Michael Ryckin
+' Function transpose current excel area
+'===========================
+Range("A1").CurrentRegion.Copy
+Sheets.Add.Name = "Transpose"
+Sheets("Transpose").Range("A1").PasteSpecial Transpose:=True
+
 End Sub
 
 

@@ -664,3 +664,28 @@ Sheets.Add.Name = "TransposetArray"
 Sheets("TransposetArray").Range("A2").PasteSpecial Transpose:=True
 
 End Sub
+
+Sub cellColorYellowLight()
+    Selection.Interior.Color = RGB(255, 242, 204)
+End Sub
+Sub cellColorYellowDark()
+    Selection.Interior.Color = RGB(255, 230, 153)
+End Sub
+Sub cellColorGreenLight()
+    Selection.Interior.Color = RGB(226, 239, 218)
+End Sub
+Sub cellColorGreenDark()
+    Selection.Interior.Color = RGB(198, 224, 180)
+End Sub
+Sub cellColorBlueLight()
+    Selection.Interior.Color = RGB(221, 235, 247)
+End Sub
+Sub cellColorBlueDark()
+    Selection.Interior.Color = RGB(189, 215, 238)
+End Sub
+Sub cellColorRedLight()
+    Selection.Interior.Color = RGB(255, 204, 204)
+End Sub
+Sub cellColorRedDark()
+    Selection.Interior.Color = RGB(255, 153, 153)
+End Sub

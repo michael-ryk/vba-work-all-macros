@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion As String = "V12.9"
-Public Const whatIsNew As String = "Edit color styles for ctrl+e"
+Public Const moduleVersion As String = "V13"
+Public Const whatIsNew As String = "Change columns width for report"
 '==================
 
 Sub Yes_to_No_sig()
@@ -70,17 +70,17 @@ Range("A:A").RowHeight = 12
 'Columns Width
 '===========================
 Columns("A").ColumnWidth = 3    'Execute
-Columns("B").ColumnWidth = 2    'Loop 2
-Columns("C").ColumnWidth = 2    'Loop 1
+Columns("B").ColumnWidth = 1    'Loop 2
+Columns("C").ColumnWidth = 1    'Loop 1
 Columns("D").ColumnWidth = 2    'Device
 Columns("E").ColumnWidth = 6    'Sub Device
 Columns("F").ColumnWidth = 12   'Address 1
 Columns("G").ColumnWidth = 1    'Address 2 for IP10 Use
-Columns("H").ColumnWidth = 6    'Slot
-Columns("I").ColumnWidth = 3    'State
+Columns("H").ColumnWidth = 1    'Slot
+Columns("I").ColumnWidth = 1    'State
 Columns("J").ColumnWidth = 4    'Command Set,Get,Walk...
 Columns("K").ColumnWidth = 40   'Topic
-Columns("L").ColumnWidth = 40   'SubTopic
+Columns("L").ColumnWidth = 2    'SubTopic
 Columns("M").ColumnWidth = 5    'Operator
 Columns("N").ColumnWidth = 70   'Value
 Columns("O").ColumnWidth = 3    'Protocol
@@ -243,32 +243,30 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     Range("A:A").RowHeight = 12
 
     'Columns Width
-    Columns("A").ColumnWidth = 3 'Execute
-    Columns("B").ColumnWidth = 1 'Loop 2
-    Columns("C").ColumnWidth = 1 'Loop 1
-    Columns("D").ColumnWidth = 6 'Device
-    Columns("E").ColumnWidth = 8 'Sub Device
-    Columns("F").ColumnWidth = 12 'Address 1
-    Columns("G").ColumnWidth = 1 'Address 2 for IP10 Use
-    Columns("H").ColumnWidth = 1 'Slot
-    Columns("I").ColumnWidth = 1 'State
-    Columns("J").ColumnWidth = 4 'Command Set,Get,Walk...
-    Columns("K").ColumnWidth = 25 'Topic
-    Columns("L").ColumnWidth = 4 'SubTopic
-    Columns("M").ColumnWidth = 4 'Operator
-    Columns("N").ColumnWidth = 12 'Value
-    Columns("O").ColumnWidth = 75 'Measured
-    Columns("P").ColumnWidth = 8 'Protocol
-    Columns("Q").ColumnWidth = 8 'Delay
-    Columns("R").ColumnWidth = 10 'Stop on Error
-    Columns("S").ColumnWidth = 5 'Status
-    Columns("T").ColumnWidth = 4 'Error
-    Columns("U").ColumnWidth = 4 'System Log
-    Columns("V").AutoFit 'Time Stamp
-    Columns("W").ColumnWidth = 10 'Description
-    Columns("X").AutoFit 'Duration
-    'Columns("Y").ColumnWidth = 2
-    'Columns("Z").ColumnWidth = 6 'Duration
+    Columns("A").ColumnWidth = 3    'Execute
+    Columns("B").ColumnWidth = 0.5  'Loop 2
+    Columns("C").ColumnWidth = 0.5  'Loop 1
+    Columns("D").ColumnWidth = 6    'Device
+    Columns("E").ColumnWidth = 8    'Sub Device
+    Columns("F").ColumnWidth = 12   'Address 1
+    Columns("G").ColumnWidth = 0.5  'Address 2 for IP10 Use
+    Columns("H").ColumnWidth = 0.5  'Slot
+    Columns("I").ColumnWidth = 0.5  'State
+    Columns("J").ColumnWidth = 2    'Command Set,Get,Walk...
+    Columns("K").ColumnWidth = 25   'Topic
+    Columns("L").ColumnWidth = 1    'SubTopic
+    Columns("M").ColumnWidth = 1    'Operator
+    Columns("N").ColumnWidth = 12   'Value
+    Columns("O").ColumnWidth = 75   'Measured
+    Columns("P").ColumnWidth = 6    'Protocol
+    Columns("Q").ColumnWidth = 8    'Delay
+    Columns("R").ColumnWidth = 4    'Stop on Error
+    Columns("S").ColumnWidth = 5    'Status
+    Columns("T").ColumnWidth = 4    'Error
+    Columns("U").ColumnWidth = 4    'System Log
+    Columns("V").AutoFit            'Time Stamp
+    Columns("W").ColumnWidth = 35   'Description
+    Columns("X").AutoFit            'Duration
 
     'Columns Alignment Properties
     Columns("D").HorizontalAlignment = xlLeft
@@ -371,7 +369,7 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
 
     printDebug StartTime, Timer, "For loop end, start color set for fonts", 10
     'Apply Format for Delay column
-    'Columns("Q").Font.Bold = True 'Bold 'Starting 23-5-22 this row make macro stuck for 60 sec
+    Columns("Q").Font.Bold = True 'Bold 'Starting 23-5-22 this row make macro stuck for 60 sec
     Columns("Q").Font.ColorIndex = 9 'Color = Red
     Columns("N").Font.ColorIndex = 16 'Color = Gray
     Columns("P").Font.ColorIndex = 16 'Color = Gray
@@ -379,6 +377,8 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     Columns("D").Font.ColorIndex = 16 'Color = Gray
     Columns("E").Font.ColorIndex = 16 'Color = Gray
     Columns("V").Font.ColorIndex = 16 'Color = Gray
+    Columns("W").Font.Color = RGB(79, 129, 189)        'Color = Gray
+    Columns("W").Font.Bold = True       'Bold
 
     'With Columns("A:Z").Borders(xlEdgeLeft)
     '.LineStyle = xlContinuous
@@ -730,3 +730,5 @@ End Sub
 Sub cellColorRedDark()
     Selection.Interior.Color = RGB(255, 153, 153)
 End Sub
+
+

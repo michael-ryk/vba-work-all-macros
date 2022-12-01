@@ -1,5 +1,5 @@
 '==================
-'2020_10_05
+'2021_04_19
 '==================
 Sub Yes_to_No_sig()
 '===========================
@@ -177,7 +177,7 @@ Sub Report_Arrangement12()
 '===========================
 ' Writen by Michael Rykin
 ' Automation Report Arrangement Macro
-' Version 14
+' 20210419
 '===========================
 
 If ActiveWorkbook.Sheets(1).Name = "Result" Then
@@ -256,8 +256,6 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
       Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 27 'yellow
       ElseIf Cells(row, "K") = "Text to report" Then
       Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
-      Range(Cells(row, "A"), Cells(row, "R")).Font.Color = vbWhite
-      Range(Cells(row, "A"), Cells(row, "R")).Font.Bold = True
       ElseIf Cells(row, "J").value = "set" Then
       Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
       ElseIf Cells(row, "J").value = "edit" Then
@@ -303,6 +301,11 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     'Apply Format for Delay column
     Columns("Q").Font.Bold = True 'Bold
     Columns("Q").Font.ColorIndex = 9 'Color = Red
+    Columns("N").Font.ColorIndex = 16 'Color = Gray
+    Columns("P").Font.ColorIndex = 16 'Color = Gray
+    Columns("R").Font.ColorIndex = 16 'Color = Gray
+    Columns("D").Font.ColorIndex = 16 'Color = Gray
+    Columns("E").Font.ColorIndex = 16 'Color = Gray
 
     'With Columns("A:Z").Borders(xlEdgeLeft)
     '.LineStyle = xlContinuous

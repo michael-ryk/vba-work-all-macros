@@ -100,7 +100,7 @@ row = 2
 While IsEmpty(Cells(row, "A")) = False  'Continiue until end
         'Color Text to report
         If Cells(row, "K") = "Text to report" Then
-            Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(0, 128, 0) 'Green
+            Range(Cells(row, "A"), Cells(row, "R")).Interior.color = RGB(0, 128, 0) 'Green
             Cells(row, "N").Font.Bold = True
             Cells(row, "N").Font.ColorIndex = 2 'White
         'Label Start,End,Start Numeric loop,Save and Reload,Dump to file - Multi labels - Set Row color
@@ -142,7 +142,7 @@ Wend
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .Color = 5287936
+        .color = 5287936
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
@@ -176,7 +176,7 @@ Sub Report_Arrangement12()
 '===========================
 ' Writen by Michael Rykin
 ' Automation Report Arrangement Macro
-' Version 12.1
+' Version 12.2
 '===========================
 
 'Start Timer to measure run time
@@ -186,7 +186,7 @@ StartTime = Timer
 
 'Variables
 Dim hyperlinkSheetName As String
-Dim row As Integer
+Dim row As Long
 Dim maxRows As Integer
 Dim ws As Worksheet
 Dim btn As Button
@@ -444,7 +444,7 @@ Sub pass_fail_colors_cond_formating()
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .Color = 5287936
+        .color = 5287936
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
@@ -453,7 +453,7 @@ Sub pass_fail_colors_cond_formating()
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .Color = 255
+        .color = 255
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
@@ -471,7 +471,7 @@ Sub True_False_colors_cond_formating()
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .Color = 5287936
+        .color = 5287936
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
@@ -480,7 +480,7 @@ Sub True_False_colors_cond_formating()
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .Color = 255
+        .color = 255
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False

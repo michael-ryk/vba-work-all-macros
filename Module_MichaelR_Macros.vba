@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion As String = "V13"
-Public Const whatIsNew As String = "Change columns width for report"
+Public Const moduleVersion As String = "V13.1"
+Public Const whatIsNew As String = "Freeze top row"
 '==================
 
 Sub Yes_to_No_sig()
@@ -418,6 +418,14 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     Next
     ActiveWindow.ScrollColumn = 1   'Scroll to the left
     
+    'Freeze top row
+    With ActiveWindow
+        If .FreezePanes Then .FreezePanes = False
+        .SplitColumn = 0
+        .SplitRow = 1
+        .FreezePanes = True
+    End With
+    
     printDebug StartTime, Timer, "Save workbook", 12
     ActiveWorkbook.Save
     Application.ScreenUpdating = True
@@ -730,5 +738,3 @@ End Sub
 Sub cellColorRedDark()
     Selection.Interior.Color = RGB(255, 153, 153)
 End Sub
-
-

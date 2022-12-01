@@ -1,5 +1,5 @@
 '==================
-Public Const moduleVersion As String = "V12.1"
+Public Const moduleVersion As String = "V12.4"
 '==================
 
 Sub Yes_to_No_sig()
@@ -111,36 +111,39 @@ Columns("R").HorizontalAlignment = xlLeft
 '===========================
 row = 2
 While IsEmpty(Cells(row, "A")) = False  'Continiue until end
-        'Color Text to report
-        If Cells(row, "K") = "Text to report" Then
-            Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(0, 128, 0) 'Green
-            Cells(row, "N").Font.Bold = True
-            Cells(row, "N").Font.ColorIndex = 2 'White
-        'Label Start,End,Start Numeric loop,Save and Reload,Dump to file - Multi labels - Set Row color
-        ElseIf Cells(row, "D") = "File_Loop" Then
-            Range(Cells(row, "B"), Cells(row, "P")).Interior.ColorIndex = 19
-        'Comparison - Set Row color
-        ElseIf Cells(row, "K") = "Comparison" Then
-            Range(Cells(row, "B"), Cells(row, "P")).Interior.ColorIndex = 44
-        'Reference Row, Jump to row - Set Row color
-        ElseIf Cells(row, "K") = "Reference line" Then
-            Range(Cells(row, "B"), Cells(row, "P")).Interior.ColorIndex = 40
-        'N2X or testers - Set Row color
-        ElseIf Cells(row, "D") = "TnM" Then
-            Range(Cells(row, "B"), Cells(row, "P")).Interior.ColorIndex = 37
-        'Run test format Path
-        'ElseIf Cells(row, "K") = "Run Test" Then    'Relevant only for Runt Test Rows
-        '    Range(Cells(row, "B"), Cells(row, "P")).Interior.Color = RGB(255, 204, 255) 'Range(Cells(row, "N").Address).HorizontalAlignment = xlLeft 'Align test name to Left - but actually it done for whole column so no need this
-        'Set - Set Row color
-        'ElseIf (Cells(row, "J") = "set" Or Cells(row, "K") = "Set Values" Or Cells(row, "K") = "NG_Set_Values" Or Cells(row, "J") = "add" Or Cells(row, "J") = "edit" Or Cells(row, "J") = "delete") Then
-        '    Range(Cells(row, "J"), Cells(row, "K")).Interior.Color = RGB(255, 128, 128) 'Light Red
-        'Get - Set Row color
-        'ElseIf (Cells(row, "J") = "get" Or Cells(row, "K") = "Get Values") Then
-        '    Range(Cells(row, "J"), Cells(row, "K")).Interior.Color = RGB(190, 215, 240) 'Light Blue
-        Else
-        End If
+    
+    'Color Text to report
+    If Cells(row, "K") = "Text to report" Then
+        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(0, 128, 0) 'Green
+        Cells(row, "N").Font.Bold = True
+        Cells(row, "N").Font.ColorIndex = 2 'White
+    'Label Start,End,Start Numeric loop,Save and Reload,Dump to file - Multi labels - Set Row color
+    ElseIf Cells(row, "D") = "File_Loop" Then
+        Range(Cells(row, "B"), Cells(row, "P")).Interior.ColorIndex = 19
+    'Comparison - Set Row color
+    ElseIf Cells(row, "K") = "Comparison" Then
+        Range(Cells(row, "B"), Cells(row, "P")).Interior.ColorIndex = 44
+    'Reference Row, Jump to row - Set Row color
+    ElseIf Cells(row, "K") = "Reference line" Then
+        Range(Cells(row, "B"), Cells(row, "P")).Interior.ColorIndex = 40
+    'N2X or testers - Set Row color
+    ElseIf Cells(row, "D") = "TnM" Then
+        Range(Cells(row, "B"), Cells(row, "P")).Interior.ColorIndex = 37
+    'Run test format Path
+    'ElseIf Cells(row, "K") = "Run Test" Then    'Relevant only for Runt Test Rows
+    '    Range(Cells(row, "B"), Cells(row, "P")).Interior.Color = RGB(255, 204, 255) 'Range(Cells(row, "N").Address).HorizontalAlignment = xlLeft 'Align test name to Left - but actually it done for whole column so no need this
+    'Set - Set Row color
+    'ElseIf (Cells(row, "J") = "set" Or Cells(row, "K") = "Set Values" Or Cells(row, "K") = "NG_Set_Values" Or Cells(row, "J") = "add" Or Cells(row, "J") = "edit" Or Cells(row, "J") = "delete") Then
+    '    Range(Cells(row, "J"), Cells(row, "K")).Interior.Color = RGB(255, 128, 128) 'Light Red
+    'Get - Set Row color
+    'ElseIf (Cells(row, "J") = "get" Or Cells(row, "K") = "Get Values") Then
+    '    Range(Cells(row, "J"), Cells(row, "K")).Interior.Color = RGB(190, 215, 240) 'Light Blue
+    Else
+    End If
+    
     'Increment Row counter and check again
     row = row + 1
+
 Wend
 '===========================
 'Conditional formating
@@ -326,18 +329,12 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
                 Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(250, 250, 170) 'yellow
         End Select
 
-      'Whole Row color Red if Fail
-      'If LCase(Cells(row, "S").value) = "fail" Then
-        'Fail
-        'Debug.Print ("row failed")
-        'If InStr(1, Cells(row, "R").value, "no + fail") > 0 Then
-          'Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
-        'ElseIf InStr(1, Cells(row, "R").value, "yes") > 0 Then
-          'Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
-        'ElseIf InStr(1, Cells(row, "R").value, "if not") > 0 Then
-          'Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
-        'End If
-      'End If
+        Select Case Cells(row, "S").value
+            Case "FAIL"
+                Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
+            Case "ERROR"
+                Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
+        End Select
 
         'Create links to sheets for all "See walk results in sheet x" Cells
         'Testshell

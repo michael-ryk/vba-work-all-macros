@@ -1,5 +1,5 @@
 '==================
-'2020_05_18
+'2020_10_05
 '==================
 Sub Yes_to_No_sig()
 '===========================
@@ -256,6 +256,8 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
       Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 27 'yellow
       ElseIf Cells(row, "K") = "Text to report" Then
       Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
+      Range(Cells(row, "A"), Cells(row, "R")).Font.Color = vbWhite
+      Range(Cells(row, "A"), Cells(row, "R")).Font.Bold = True
       ElseIf Cells(row, "J").value = "set" Then
       Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
       ElseIf Cells(row, "J").value = "edit" Then

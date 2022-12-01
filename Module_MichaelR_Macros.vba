@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion As String = "V13.1"
-Public Const whatIsNew As String = "Freeze top row"
+Public Const moduleVersion As String = "V13.2"
+Public Const whatIsNew As String = "Add filter button and flter macro"
 '==================
 
 Sub Yes_to_No_sig()
@@ -241,6 +241,7 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     printDebug StartTime, Timer, "Format rows and columns", 8
     'Rows Heigh
     Range("A:A").RowHeight = 12
+    Range("1:1").RowHeight = 20
 
     'Columns Width
     Columns("A").ColumnWidth = 3    'Execute
@@ -418,6 +419,17 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     Next
     ActiveWindow.ScrollColumn = 1   'Scroll to the left
     
+    'Add button to filter
+    Set filterBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1, 1, 45, Range("O1").Height - 1)
+    With filterBtn
+      .OnAction = "ReportAutofilterFilterItems"
+      .Caption = "Filter"
+      .Name = "Filter"
+      .Font.Size = 14
+      .Font.Bold = True
+    End With
+    
+    
     'Freeze top row
     With ActiveWindow
         If .FreezePanes Then .FreezePanes = False
@@ -450,7 +462,27 @@ Function printDebug(start, current, inputText, index)
     Worksheets("Macro Logs").Cells(index, "A") = Round(current - start, 2)
     Worksheets("Macro Logs").Cells(index, "B") = inputText
 End Function
+Sub ReportAutofilterFilterItems()
+'===========================
+' Writen by Michael Rykin
+' Used in CeraRun Result file to filter only relevant rows
+'===========================
 
+    If ActiveSheet.AutoFilterMode = True Then
+        With Range("$A:$X")
+            .AutoFilter Field:=4, Criteria1:=Array("IDU", "Test", "="), Operator:=xlFilterValues
+            .AutoFilter Field:=11, Criteria1:=Array("Text to report", "Run Suite Project", "="), Operator:=xlFilterValues
+        End With
+    ' ActiveSheet.Range("$A$2:$Q$200").AutoFilter Field:=11, Criteria1:="<>#DIV/0!"
+    ' ActiveSheet.Range("$A:$X").AutoFilter Field:=4, Criteria1:=Array( _
+        ' "IDU", "Test", "="), Operator:=xlFilterValues
+    ' ActiveSheet.Range("$A$1:$X$490").AutoFilter Field:=11, Criteria1:=Array( _
+        ' "Run Suite Project", "Text to report", "="), Operator:=xlFilterValues
+    Else
+        MsgBox "Auto Filter is turned off - TBD: implement autofilter set if it missing"
+    End If
+
+End Sub
 
 Sub FileExist()
 '===========================

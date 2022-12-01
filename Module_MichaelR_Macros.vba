@@ -1,5 +1,5 @@
 '==================
-Public Const moduleVersion As String = "V9.4"
+Public Const moduleVersion As String = "V10.0"
 '==================
 
 Sub Yes_to_No_sig()
@@ -249,75 +249,74 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
 
     'Cycle through all Rows which hava data in A column and apply colors
     For row = 2 To maxRow
+    
+        Select Case Cells(row, "K").value
+            Case "Run Suite Project"
+                Rows(row).RowHeight = 26
+                Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
+            Case "Run Test"
+                Rows(row).RowHeight = 26
+                Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
+            Case "Set Variables"
+                Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(250, 250, 170) 'yellow
+            Case "Text to report"
+                Cells(row, "O").Font.Color = vbWhite
+                If Left(Cells(row, "O"), 1) = "#" Then
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(83, 141, 213) 'Light blue Internal loop color
+                ElseIf Left(Cells(row, "O"), 3) = ":::" Then
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
+                Else
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
+                    Cells(row, "O").Font.Bold = True
+                End If
+            Case "SET"
+                Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+            Case "ADD"
+                Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+            Case "EDIT"
+                Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+            Case "GET"
+                Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 37 'Light Blue
+            Case "Comparison"
+                Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 45 'Orange
+            Case "Reference line"
+                Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 12 'Brown
+            Case "NG_DynamicDelay"
+                Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(204, 192, 218) 'light purple
+            Case "Ping"
+                Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(204, 192, 218) 'light purple
+        End Select
+        
+        Select Case Cells(row, "J").value
+            Case "set"
+                Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+            Case "add"
+                Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+            Case "edit"
+                Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+            Case "get"
+                Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 37 'Light Blue
+        End Select
 
-      'TnM
-      If Cells(row, "D").value = "TnM" Then
-        Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 37 'Blue
-      'Run Test
-      ElseIf InStr(1, Cells(row, "K").value, "Run Test") > 0 Then
-        Rows(row).RowHeight = 26
-        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
-      ElseIf Cells(row, "K").value = "Run Suite Project" Then
-        Rows(row).RowHeight = 26
-        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
-      'File Loop, labels, variables
-      ElseIf Cells(row, "D").value = "File_Loop" Then
-        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(250, 250, 170) 'yellow
-      ElseIf Cells(row, "K").value = "Set Variables" Then
-        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(250, 250, 170) 'yellow
-      'Test to report color
-      ElseIf Cells(row, "K") = "Text to report" Then
-        Cells(row, "O").Font.Color = vbWhite
-        If Left(Cells(row, "O"), 1) = "#" Then
-            Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(83, 141, 213) 'Light blue Internal loop color
-        ElseIf Left(Cells(row, "O"), 3) = ":::" Then
-            Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
-        Else
-            Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
-            Cells(row, "O").Font.Bold = True
-        End If
-      'NG_REST_SNMP Colors
-      ElseIf Cells(row, "J").value = "set" Then
-        Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
-      ElseIf Cells(row, "J").value = "add" Then
-        Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
-      ElseIf Cells(row, "J").value = "edit" Then
-        Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
-      ElseIf Cells(row, "J").value = "get" Then
-        Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 37 'Light Blue
-      ElseIf Cells(row, "K").value = "SET" Then
-        Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
-      ElseIf Cells(row, "K").value = "ADD" Then
-        Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
-      ElseIf Cells(row, "K").value = "EDIT" Then
-        Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
-      ElseIf Cells(row, "K").value = "GET" Then
-        Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 37 'Light Blue
-      'Comparison
-      ElseIf Cells(row, "K") = "Comparison" Then
-        Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 45 'Orange
-      'Reference row
-      ElseIf Cells(row, "K") = "Reference line" Then
-        Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 12 'Brown
-      'Dynamic delay and pings
-      ElseIf Cells(row, "K") = "NG_DynamicDelay" Then
-        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(204, 192, 218) 'light purple
-      ElseIf Cells(row, "K") = "Ping" Then
-        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(204, 192, 218) 'light purple
-      End If
-      
+        Select Case Cells(row, "D").value
+            Case "TnM"
+                Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 37 'Blue
+            Case "File_Loop"
+                Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(250, 250, 170) 'yellow
+        End Select
+
       'Whole Row color Red if Fail
-      If LCase(Cells(row, "S").value) = "fail" Then
+      'If LCase(Cells(row, "S").value) = "fail" Then
         'Fail
         'Debug.Print ("row failed")
-        If InStr(1, Cells(row, "R").value, "no + fail") > 0 Then
-          Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
-        ElseIf InStr(1, Cells(row, "R").value, "yes") > 0 Then
-          Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
-        ElseIf InStr(1, Cells(row, "R").value, "if not") > 0 Then
-          Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
-        End If
-      End If
+        'If InStr(1, Cells(row, "R").value, "no + fail") > 0 Then
+          'Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
+        'ElseIf InStr(1, Cells(row, "R").value, "yes") > 0 Then
+          'Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
+        'ElseIf InStr(1, Cells(row, "R").value, "if not") > 0 Then
+          'Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
+        'End If
+      'End If
 
         'Create links to sheets for all "See walk results in sheet x" Cells
         'Testshell

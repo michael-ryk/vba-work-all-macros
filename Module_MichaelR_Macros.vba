@@ -1,5 +1,5 @@
 '==================
-Public Const moduleVersion As String = "V12.5"
+Public Const moduleVersion As String = "V12.6"
 '==================
 
 Sub Yes_to_No_sig()
@@ -199,28 +199,44 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     Dim StartTime As Double
     Dim SecondsElapsed As Double
     StartTime = Timer
-
+    
+    'Create Sheet for macro logs
+    Sheets.Add(After:=Sheets("Result")).Name = "Macro Logs"
+    
+    ActiveWorkbook.Sheets("Result").Activate 'Go back to First sheet
+    
+    printDebug StartTime, Timer, "Start Macro", 2
+    printDebug StartTime, Timer, "Set Variables", 3
+    
     'Indicate Macro version
     Cells(2, "Z") = "Macro Version: " & moduleVersion
-
+    
     'Variables
     Dim hyperlinkSheetName As String
     Dim row As Long
     Dim maxRow As Integer
     Dim ws As Worksheet
     Dim btn As Button
-
+    
+    printDebug StartTime, Timer, "Disable Scree update", 4
     Application.ScreenUpdating = False
-
+    
+    
     maxRow = Cells(Rows.Count, "A").End(xlUp).row   'Determine Max row
-
+    printDebug StartTime, Timer, "Define max row : " & maxRow, 5
+    
     'Remove unessasary rows from original sheet to reduce final file size (based on automation open case)
+    printDebug StartTime, Timer, "Remove unnessasary rows", 6
     Worksheets("Result").Rows(maxRow + 5 & ":" & Worksheets("Result").Rows.Count).Delete
     
+    
     'Copy Current report sheet for backup
+    printDebug StartTime, Timer, "Copy sheet for backup", 7
     Worksheets(1).Copy After:=Worksheets(1) 'Backup original Report from Testshell
-    ActiveWorkbook.Sheets(1).Activate 'Go back to First sheet
+    ActiveWorkbook.Sheets("Result").Activate 'Go back to First sheet
 
+    
+    printDebug StartTime, Timer, "Format rows and columns", 8
     'Rows Heigh
     Range("A:A").RowHeight = 12
 
@@ -260,6 +276,7 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     Columns("Q").HorizontalAlignment = xlCenter
     Columns("R").HorizontalAlignment = xlLeft
 
+    printDebug StartTime, Timer, "Start For Loop and cycle through rows", 9
     'Cycle through all Rows which hava data in A column and apply colors
     For row = 2 To maxRow
     
@@ -350,6 +367,7 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
 
     Next row
 
+    printDebug StartTime, Timer, "For loop end, start color set for fonts", 10
     'Apply Format for Delay column
     Columns("Q").Font.Bold = True 'Bold
     Columns("Q").Font.ColorIndex = 9 'Color = Red
@@ -386,8 +404,9 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     End With
 
     'Create links from all sheets to Results sheet
+    printDebug StartTime, Timer, "Create Links for results sheets", 11
     For Each ws In ActiveWorkbook.Worksheets
-        If ws.Index > 2 Then
+        If ws.index > 2 Then
             'Debug.Print (ws.Name)
             With ws.Buttons.Add(1, 1, 45, 15)
             .OnAction = "ReturnToFirstSheet"
@@ -396,10 +415,14 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
         End If
     Next
     ActiveWindow.ScrollColumn = 1   'Scroll to the left
+    
+    printDebug StartTime, Timer, "Save workbook", 12
     ActiveWorkbook.Save
     Application.ScreenUpdating = True
 
+    
     'Stop Timer
+    printDebug StartTime, Timer, "Stop Timer", 13
     SecondsElapsed = Round(Timer - StartTime, 2)
     Debug.Print ("Time took to run: " & SecondsElapsed)
     'Indicate Runtime in result
@@ -412,6 +435,11 @@ End Sub
 Sub ReturnToFirstSheet()
  Sheets("Result").Select
 End Sub
+Function printDebug(start, current, inputText, index)
+    Debug.Print (Round(current - start, 2) & " : " & inputText)
+    Worksheets("Macro Logs").Cells(index, "A") = Round(current - start, 2)
+    Worksheets("Macro Logs").Cells(index, "B") = inputText
+End Function
 
 
 Sub FileExist()

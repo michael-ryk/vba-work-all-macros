@@ -1,5 +1,5 @@
 '==================
-Public Const moduleVersion As String = "V9.1"
+Public Const moduleVersion As String = "V9.2"
 '==================
 
 Sub Yes_to_No_sig()
@@ -255,6 +255,7 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
         Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 37 'Blue
       'Run Test
       ElseIf InStr(1, Cells(row, "K").value, "Run Test") > 0 Then
+        Rows(row).RowHeight = 26
         Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
       ElseIf Cells(row, "K").value = "Run Suite Project" Then
         Rows(row).RowHeight = 26

@@ -1,5 +1,5 @@
 '==================
-Public Const moduleVersion As String = "V9"
+Public Const moduleVersion As String = "V9.1"
 '==================
 
 Sub Yes_to_No_sig()
@@ -247,17 +247,22 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     Columns("Q").HorizontalAlignment = xlCenter
     Columns("R").HorizontalAlignment = xlLeft
 
-    'Go through Rows and apply colors
+    'Cycle through all Rows which hava data in A column and apply colors
     For row = 2 To maxRow
 
-      'TnM color
+      'TnM
       If Cells(row, "D").value = "TnM" Then
         Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 37 'Blue
-      'Run Test color
+      'Run Test
       ElseIf InStr(1, Cells(row, "K").value, "Run Test") > 0 Then
-        Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 4 'Green bright
-      'File Loop color
+        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
+      ElseIf Cells(row, "K").value = "Run Suite Project" Then
+        Rows(row).RowHeight = 26
+        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
+      'File Loop, labels, variables
       ElseIf Cells(row, "D").value = "File_Loop" Then
+        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(250, 250, 170) 'yellow
+      ElseIf Cells(row, "K").value = "Set Variables" Then
         Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(250, 250, 170) 'yellow
       'Test to report color
       ElseIf Cells(row, "K") = "Text to report" Then
@@ -265,7 +270,7 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
         If Left(Cells(row, "O"), 1) = "#" Then
             Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(83, 141, 213) 'Light blue Internal loop color
         ElseIf Left(Cells(row, "O"), 3) = ":::" Then
-            Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(22, 54, 92) 'Function Color
+            Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
         Else
             Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
             Cells(row, "O").Font.Bold = True
@@ -287,28 +292,30 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
         Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
       ElseIf Cells(row, "K").value = "GET" Then
         Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 37 'Light Blue
-      'Comparison colors
+      'Comparison
       ElseIf Cells(row, "K") = "Comparison" Then
         Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 45 'Orange
-      'Reference row color
+      'Reference row
       ElseIf Cells(row, "K") = "Reference line" Then
         Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 12 'Brown
-      'Dynamic delay counter
+      'Dynamic delay
       ElseIf Cells(row, "K") = "NG_DynamicDelay" Then
-        Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 39 'Purple
+        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(228, 223, 236) 'light purple
+      ElseIf Cells(row, "K") = "Ping" Then
+        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(228, 223, 236) 'light purple
       End If
       
-      'Set row color Red if Fail
+      'Whole Row color Red if Fail
       If LCase(Cells(row, "S").value) = "fail" Then
-      'Fail
-      'Debug.Print ("row failed")
-      If InStr(1, Cells(row, "R").value, "no + fail") > 0 Then
-      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
-      ElseIf InStr(1, Cells(row, "R").value, "yes") > 0 Then
-      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
-      ElseIf InStr(1, Cells(row, "R").value, "if not") > 0 Then
-      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
-      End If
+        'Fail
+        'Debug.Print ("row failed")
+        If InStr(1, Cells(row, "R").value, "no + fail") > 0 Then
+          Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
+        ElseIf InStr(1, Cells(row, "R").value, "yes") > 0 Then
+          Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
+        ElseIf InStr(1, Cells(row, "R").value, "if not") > 0 Then
+          Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
+        End If
       End If
 
         'Create links to sheets for all "See walk results in sheet x" Cells

@@ -1,12 +1,11 @@
 '==================
-Public Const moduleVersion As String = "V12.4"
+Public Const moduleVersion As String = "V12.5"
 '==================
 
 Sub Yes_to_No_sig()
 '===========================
 ' Writen by Michael Ryckin
 ' Replace all Yes to no+fails signature
-' Keyboard Shortcut: Ctrl+t
 '===========================
     Columns("Q:Q").Select
     Selection.Replace What:="yes", Replacement:="no + fail signature", LookAt _
@@ -19,7 +18,6 @@ Sub No_sig_to_Yes()
 '===========================
 ' Writen by Michael Ryckin
 ' Replace all no+fails signature to Yes for debug
-' Keyboard Shortcut: Ctrl+y
 '===========================
     Columns("Q:Q").Select
     Selection.Replace What:="no + fail signature", Replacement:="yes", LookAt _
@@ -192,6 +190,7 @@ Sub Report_Arrangement12()
 '===========================
 ' Writen by Michael Rykin
 ' Automation Report Arrangement Macro
+' Shortcut: ctrl+r
 '===========================
 
 If ActiveWorkbook.Sheets(1).Name = "Result" Then
@@ -510,6 +509,7 @@ Sub pass_fail_colors_cond_formating()
 '===========================
 ' Writen by Michael Rykin
 ' Put colors on Selection: Pass = Green, Fail = Red
+' Shortcut ctrl+e
 '===========================
     Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlEqual, _
         Formula1:="=""Pass"""

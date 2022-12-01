@@ -1,5 +1,5 @@
 '==================
-'2018_12_30
+'2020_05_18
 '==================
 Sub Yes_to_No_sig()
 '===========================
@@ -177,167 +177,176 @@ Sub Report_Arrangement12()
 '===========================
 ' Writen by Michael Rykin
 ' Automation Report Arrangement Macro
-' Version 13
+' Version 14
 '===========================
 
-'Start Timer to measure run time
-Dim StartTime As Double
-Dim SecondsElapsed As Double
-StartTime = Timer
+If ActiveWorkbook.Sheets(1).Name = "Result" Then
+    'Excel file is appropriate for this macro - Run
+    'Start Timer to measure run time
+    Dim StartTime As Double
+    Dim SecondsElapsed As Double
+    StartTime = Timer
 
-'Variables
-Dim hyperlinkSheetName As String
-Dim row As Long
-Dim maxRows As Integer
-Dim ws As Worksheet
-Dim btn As Button
+    'Variables
+    Dim hyperlinkSheetName As String
+    Dim row As Long
+    Dim maxRow As Integer
+    Dim ws As Worksheet
+    Dim btn As Button
 
-Application.ScreenUpdating = False
+    Application.ScreenUpdating = False
 
-'Copy Current report sheet for backup
-Worksheets(1).Copy After:=Worksheets(1) 'Backup original Report from Testshell
-ActiveWorkbook.Sheets(1).Activate 'Go back to First sheet
+    maxRow = Cells(Rows.Count, "A").End(xlUp).row   'Determine Max row
 
-'Rows Heigh
-Range("A:A").RowHeight = 12
+    'Remove unessasary rows from original sheet to reduce final file size (based on automation open case)
+    Worksheets("Result").Rows(maxRow + 5 & ":" & Worksheets("Result").Rows.Count).Delete
+    
+    'Copy Current report sheet for backup
+    Worksheets(1).Copy After:=Worksheets(1) 'Backup original Report from Testshell
+    ActiveWorkbook.Sheets(1).Activate 'Go back to First sheet
 
-'Columns Width
-Columns("A").ColumnWidth = 3 'Execute
-Columns("B").ColumnWidth = 3 'Loop 2
-Columns("C").ColumnWidth = 3 'Loop 1
-Columns("D").ColumnWidth = 6 'Device
-Columns("E").ColumnWidth = 8 'Sub Device
-Columns("F").ColumnWidth = 12 'Address 1
-Columns("G").ColumnWidth = 1 'Address 2 for IP10 Use
-Columns("H").ColumnWidth = 6 'Slot
-Columns("I").ColumnWidth = 4 'State
-Columns("J").ColumnWidth = 4 'Command Set,Get,Walk...
-Columns("K").ColumnWidth = 30 'Topic
-Columns("L").ColumnWidth = 30 'SubTopic
-Columns("M").ColumnWidth = 5 'Operator
-Columns("N").ColumnWidth = 35 'Value
-Columns("O").ColumnWidth = 3 'Measured
-Columns("P").ColumnWidth = 8 'Protocol
-Columns("Q").ColumnWidth = 5 'Delay
-Columns("R").ColumnWidth = 23 'Stop on Error
-Columns("S").ColumnWidth = 5 'Status
-Columns("T").ColumnWidth = 4 'Error
-Columns("U").ColumnWidth = 4 'System Log
-Columns("V").AutoFit 'Time Stamp
-Columns("W").ColumnWidth = 10 'Description
-Columns("X").AutoFit 'Duration
-'Columns("Y").ColumnWidth = 2
-'Columns("Z").ColumnWidth = 6 'Duration
+    'Rows Heigh
+    Range("A:A").RowHeight = 12
 
-'Columns Alignment Properties
-Columns("D").HorizontalAlignment = xlLeft
-Columns("E").HorizontalAlignment = xlLeft
-Columns("H").HorizontalAlignment = xlLeft
-Columns("K").HorizontalAlignment = xlLeft
-Columns("Q").HorizontalAlignment = xlCenter
-Columns("R").HorizontalAlignment = xlLeft
+    'Columns Width
+    Columns("A").ColumnWidth = 3 'Execute
+    Columns("B").ColumnWidth = 3 'Loop 2
+    Columns("C").ColumnWidth = 3 'Loop 1
+    Columns("D").ColumnWidth = 6 'Device
+    Columns("E").ColumnWidth = 8 'Sub Device
+    Columns("F").ColumnWidth = 12 'Address 1
+    Columns("G").ColumnWidth = 1 'Address 2 for IP10 Use
+    Columns("H").ColumnWidth = 6 'Slot
+    Columns("I").ColumnWidth = 4 'State
+    Columns("J").ColumnWidth = 4 'Command Set,Get,Walk...
+    Columns("K").ColumnWidth = 30 'Topic
+    Columns("L").ColumnWidth = 30 'SubTopic
+    Columns("M").ColumnWidth = 5 'Operator
+    Columns("N").ColumnWidth = 35 'Value
+    Columns("O").ColumnWidth = 3 'Measured
+    Columns("P").ColumnWidth = 8 'Protocol
+    Columns("Q").ColumnWidth = 5 'Delay
+    Columns("R").ColumnWidth = 23 'Stop on Error
+    Columns("S").ColumnWidth = 5 'Status
+    Columns("T").ColumnWidth = 4 'Error
+    Columns("U").ColumnWidth = 4 'System Log
+    Columns("V").AutoFit 'Time Stamp
+    Columns("W").ColumnWidth = 10 'Description
+    Columns("X").AutoFit 'Duration
+    'Columns("Y").ColumnWidth = 2
+    'Columns("Z").ColumnWidth = 6 'Duration
 
-'Go through Rows and apply colors
-maxRow = Cells(Rows.Count, "A").End(xlUp).row
-For row = 2 To maxRow
+    'Columns Alignment Properties
+    Columns("D").HorizontalAlignment = xlLeft
+    Columns("E").HorizontalAlignment = xlLeft
+    Columns("H").HorizontalAlignment = xlLeft
+    Columns("K").HorizontalAlignment = xlLeft
+    Columns("Q").HorizontalAlignment = xlCenter
+    Columns("R").HorizontalAlignment = xlLeft
 
-  'Set another colors
-  If Cells(row, "D").value = "TnM" Then
-  Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 37 'Blue
-  ElseIf InStr(1, Cells(row, "K").value, "Run Test") > 0 Then
-  Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 4 'Green bright
-  ElseIf Cells(row, "D").value = "File_Loop" Then
-  Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 27 'yellow
-  ElseIf Cells(row, "K") = "Text to report" Then
-  Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
-  ElseIf Cells(row, "J").value = "set" Then
-  Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
-  ElseIf Cells(row, "J").value = "edit" Then
-  Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
-  ElseIf Cells(row, "J").value = "get" Then
-  Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 37 'Light Blue
-  ElseIf Cells(row, "K") = "Comparison" Then
-  Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 45 'Orange
-  ElseIf Cells(row, "K") = "Reference line" Then
-  Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 12 'Brown
-  ElseIf Cells(row, "K") = "NG_DynamicDelay" Then
-  Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 39 'Purple
-  End If
+    'Go through Rows and apply colors
+    For row = 2 To maxRow
 
-  'Set row color Red if Fail
-  If LCase(Cells(row, "S").value) = "fail" Then
-  'Fail
-  'Debug.Print ("row failed")
-  If InStr(1, Cells(row, "R").value, "no + fail") > 0 Then
-  Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
-  ElseIf InStr(1, Cells(row, "R").value, "yes") > 0 Then
-  Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
-  ElseIf InStr(1, Cells(row, "R").value, "if not") > 0 Then
-  Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
-  End If
-  End If
+      'Set another colors
+      If Cells(row, "D").value = "TnM" Then
+      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 37 'Blue
+      ElseIf InStr(1, Cells(row, "K").value, "Run Test") > 0 Then
+      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 4 'Green bright
+      ElseIf Cells(row, "D").value = "File_Loop" Then
+      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 27 'yellow
+      ElseIf Cells(row, "K") = "Text to report" Then
+      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
+      ElseIf Cells(row, "J").value = "set" Then
+      Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+      ElseIf Cells(row, "J").value = "edit" Then
+      Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+      ElseIf Cells(row, "J").value = "get" Then
+      Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 37 'Light Blue
+      ElseIf Cells(row, "K") = "Comparison" Then
+      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 45 'Orange
+      ElseIf Cells(row, "K") = "Reference line" Then
+      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 12 'Brown
+      ElseIf Cells(row, "K") = "NG_DynamicDelay" Then
+      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 39 'Purple
+      End If
 
-    'Create links to sheets for all "See walk results in sheet x" Cells
-    'Testshell
-    If InStr(1, Cells(row, "O").value, "See Walk results") > 0 Then
-        hyperlinkSheetName = Mid(Cells(row, "O"), InStr(1, Cells(row, "O"), "WalkResult", 1), 10) & "s" & Right(Cells(row, "O"), (Len(Cells(row, "O")) - (InStr(1, Cells(row, "O"), "WalkResult", 1) + 9)))
-        'Debug.Print ("<" & hyperlinkSheetName & ">")
-        ActiveCell.Hyperlinks.Add Anchor:=Cells(row, "O"), Address:="", SubAddress:="'" & hyperlinkSheetName & "'" & "!A1"
-    'CeraRun
-    ElseIf InStr(1, Cells(row, "O").value, "See the measured results") > 0 Then
-        hyperlinkSheetName = Mid(Cells(row, "O"), InStr(1, Cells(row, "O"), "'", 1) + 1, InStrRev(Cells(row, "O"), "'") - InStr(1, Cells(row, "O"), "'", 1) - 1)
-        'Debug.Print ("<" & hyperlinkSheetName & ">")
-        ActiveCell.Hyperlinks.Add Anchor:=Cells(row, "O"), Address:="", SubAddress:="'" & hyperlinkSheetName & "'" & "!A1"
-    End If
+      'Set row color Red if Fail
+      If LCase(Cells(row, "S").value) = "fail" Then
+      'Fail
+      'Debug.Print ("row failed")
+      If InStr(1, Cells(row, "R").value, "no + fail") > 0 Then
+      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
+      ElseIf InStr(1, Cells(row, "R").value, "yes") > 0 Then
+      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
+      ElseIf InStr(1, Cells(row, "R").value, "if not") > 0 Then
+      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
+      End If
+      End If
 
-Next row
+        'Create links to sheets for all "See walk results in sheet x" Cells
+        'Testshell
+        If InStr(1, Cells(row, "O").value, "See Walk results") > 0 Then
+            hyperlinkSheetName = Mid(Cells(row, "O"), InStr(1, Cells(row, "O"), "WalkResult", 1), 10) & "s" & Right(Cells(row, "O"), (Len(Cells(row, "O")) - (InStr(1, Cells(row, "O"), "WalkResult", 1) + 9)))
+            'Debug.Print ("<" & hyperlinkSheetName & ">")
+            ActiveCell.Hyperlinks.Add Anchor:=Cells(row, "O"), Address:="", SubAddress:="'" & hyperlinkSheetName & "'" & "!A1"
+        'CeraRun
+        ElseIf InStr(1, Cells(row, "O").value, "See the measured results") > 0 Then
+            hyperlinkSheetName = Mid(Cells(row, "O"), InStr(1, Cells(row, "O"), "'", 1) + 1, InStrRev(Cells(row, "O"), "'") - InStr(1, Cells(row, "O"), "'", 1) - 1)
+            'Debug.Print ("<" & hyperlinkSheetName & ">")
+            ActiveCell.Hyperlinks.Add Anchor:=Cells(row, "O"), Address:="", SubAddress:="'" & hyperlinkSheetName & "'" & "!A1"
+        End If
 
-'Apply Format for Delay column
-Columns("Q").Font.Bold = True 'Bold
-Columns("Q").Font.ColorIndex = 9 'Color = Red
+    Next row
 
-'With Columns("A:Z").Borders(xlEdgeLeft)
-'.LineStyle = xlContinuous
-'.ColorIndex = 15
-'End With
-'With Columns("A:Z").Borders(xlEdgeTop)
-'.LineStyle = xlContinuous
-'.ColorIndex = 15
-'End With
-'With Columns("A:Z").Borders(xlEdgeBottom)
-'.LineStyle = xlContinuous
-'.ColorIndex = 15
-'End With
-'With Columns("A:Z").Borders(xlEdgeRight)
-'.LineStyle = xlContinuous
-'.ColorIndex = 15
-'End With
-'With Columns("A:Z").Borders(xlInsideVertical)
-'.LineStyle = xlContinuous
-'.ColorIndex = 15
-'End With
-With Columns("A:Z").Borders(xlInsideHorizontal)
-.LineStyle = xlContinuous
-.ColorIndex = 48
-End With
+    'Apply Format for Delay column
+    Columns("Q").Font.Bold = True 'Bold
+    Columns("Q").Font.ColorIndex = 9 'Color = Red
 
-'Create links from all sheets to Results sheet
-For Each ws In ActiveWorkbook.Worksheets
-    If ws.Index > 2 Then
-        'Debug.Print (ws.Name)
-        With ws.Buttons.Add(1, 1, 45, 15)
-        .OnAction = "ReturnToFirstSheet"
-        .Text = "Results"
-        End With
-    End If
-Next
-ActiveWindow.ScrollColumn = 1   'Scroll to the left
-ActiveWorkbook.Save
-Application.ScreenUpdating = True
+    'With Columns("A:Z").Borders(xlEdgeLeft)
+    '.LineStyle = xlContinuous
+    '.ColorIndex = 15
+    'End With
+    'With Columns("A:Z").Borders(xlEdgeTop)
+    '.LineStyle = xlContinuous
+    '.ColorIndex = 15
+    'End With
+    'With Columns("A:Z").Borders(xlEdgeBottom)
+    '.LineStyle = xlContinuous
+    '.ColorIndex = 15
+    'End With
+    'With Columns("A:Z").Borders(xlEdgeRight)
+    '.LineStyle = xlContinuous
+    '.ColorIndex = 15
+    'End With
+    'With Columns("A:Z").Borders(xlInsideVertical)
+    '.LineStyle = xlContinuous
+    '.ColorIndex = 15
+    'End With
+    With Columns("A:Z").Borders(xlInsideHorizontal)
+    .LineStyle = xlContinuous
+    .ColorIndex = 48
+    End With
 
-'Stop Timer
-SecondsElapsed = Round(Timer - StartTime, 2)
-Debug.Print ("Time took to run: " & SecondsElapsed)
+    'Create links from all sheets to Results sheet
+    For Each ws In ActiveWorkbook.Worksheets
+        If ws.Index > 2 Then
+            'Debug.Print (ws.Name)
+            With ws.Buttons.Add(1, 1, 45, 15)
+            .OnAction = "ReturnToFirstSheet"
+            .Text = "Results"
+            End With
+        End If
+    Next
+    ActiveWindow.ScrollColumn = 1   'Scroll to the left
+    ActiveWorkbook.Save
+    Application.ScreenUpdating = True
+
+    'Stop Timer
+    SecondsElapsed = Round(Timer - StartTime, 2)
+    Debug.Print ("Time took to run: " & SecondsElapsed)
+Else
+    MsgBox "This file is not appropriate for Report arrangement macro - Abort run", vbCritical
+End If
 End Sub
 Sub ReturnToFirstSheet()
  Sheets("Result").Select

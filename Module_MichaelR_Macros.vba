@@ -1,5 +1,5 @@
 '==================
-Public Const moduleVersion As String = "V10.0"
+Public Const moduleVersion As String = "V10.1"
 '==================
 
 Sub Yes_to_No_sig()
@@ -498,7 +498,7 @@ Sub pass_fail_colors_cond_formating()
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .Color = 5287936
+        .Color = RGB(198, 239, 206)
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
@@ -507,7 +507,7 @@ Sub pass_fail_colors_cond_formating()
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .Color = 255
+        .Color = RGB(255, 199, 206)
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False

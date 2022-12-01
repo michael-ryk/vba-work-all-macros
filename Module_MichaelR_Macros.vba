@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion As String = "V13.5"
-Public Const whatIsNew As String = "Add notification about new macro version, improve logging, optimize access to network"
+Public Const moduleVersion As String = "V13.6"
+Public Const whatIsNew As String = "Add notification about new macro version, improve logging, optimize access to network, clear filter only if active"
 '==================
 
 Sub Yes_to_No_sig()
@@ -498,6 +498,7 @@ Sub ReportAutofilterClear()
 ' Writen by Michael Rykin
 ' Used in CeraRun Result file to clear autofilter criterias
 '===========================
+    On Error Resume Next
     ActiveSheet.ShowAllData
 End Sub
 

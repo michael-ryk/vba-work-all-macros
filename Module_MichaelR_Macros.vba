@@ -1,5 +1,5 @@
 '==================
-Public Const moduleVersion As String = "V12"
+Public Const moduleVersion As String = "V12.1"
 '==================
 
 Sub Yes_to_No_sig()
@@ -523,12 +523,23 @@ Sub pass_fail_colors_cond_formating()
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
+    
     Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlEqual, _
         Formula1:="=""Fail"""
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
         .Color = RGB(255, 199, 206)
+        .TintAndShade = 0
+    End With
+    Selection.FormatConditions(1).StopIfTrue = False
+    
+    Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlEqual, _
+        Formula1:="=""Error"""
+    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    With Selection.FormatConditions(1).Interior
+        .PatternColorIndex = xlAutomatic
+        .Color = RGB(217, 217, 217)
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False

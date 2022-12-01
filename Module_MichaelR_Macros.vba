@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion As String = "V12.9"
-Public Const whatIsNew As String = "Edit color styles for ctrl+e"
+Public Const moduleVersion As String = "V13.6"
+Public Const whatIsNew As String = "Add notification about new macro version, improve logging, optimize access to network, clear filter only if active"
 '==================
 
 Sub Yes_to_No_sig()
@@ -70,17 +70,17 @@ Range("A:A").RowHeight = 12
 'Columns Width
 '===========================
 Columns("A").ColumnWidth = 3    'Execute
-Columns("B").ColumnWidth = 2    'Loop 2
-Columns("C").ColumnWidth = 2    'Loop 1
+Columns("B").ColumnWidth = 1    'Loop 2
+Columns("C").ColumnWidth = 1    'Loop 1
 Columns("D").ColumnWidth = 2    'Device
 Columns("E").ColumnWidth = 6    'Sub Device
 Columns("F").ColumnWidth = 12   'Address 1
 Columns("G").ColumnWidth = 1    'Address 2 for IP10 Use
-Columns("H").ColumnWidth = 6    'Slot
-Columns("I").ColumnWidth = 3    'State
+Columns("H").ColumnWidth = 1    'Slot
+Columns("I").ColumnWidth = 1    'State
 Columns("J").ColumnWidth = 4    'Command Set,Get,Walk...
 Columns("K").ColumnWidth = 40   'Topic
-Columns("L").ColumnWidth = 40   'SubTopic
+Columns("L").ColumnWidth = 2    'SubTopic
 Columns("M").ColumnWidth = 5    'Operator
 Columns("N").ColumnWidth = 70   'Value
 Columns("O").ColumnWidth = 3    'Protocol
@@ -200,18 +200,21 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     Dim StartTime As Double
     Dim SecondsElapsed As Double
     StartTime = Timer
-    
-    'Create Sheet for macro logs
+
+    'Create Sheet for macro logs - Must happen before timer print
     Sheets.Add(After:=Sheets("Result")).Name = "Macro Logs"
-    
     ActiveWorkbook.Sheets("Result").Activate 'Go back to First sheet
     
-    printDebug StartTime, Timer, "Start Macro", 2
-    printDebug StartTime, Timer, "Set Variables", 3
+    printDebug StartTime, Timer, "Timer started and added Macro logs sheet"
+    
+    'Inform user for update
+    CheckForLatestMacroVersion
+    printDebug StartTime, Timer, "Verified if macro upgrade available"
     
     'Indicate Macro version and what is new
     Cells(2, "Z") = "Macro Version: " & moduleVersion
     Cells(3, "Z") = "What is new? " & whatIsNew
+    printDebug StartTime, Timer, "Added current runing version, whats new"
     
     'Variables
     Dim hyperlinkSheetName As String
@@ -219,56 +222,51 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     Dim maxRow As Long
     Dim ws As Worksheet
     Dim btn As Button
+    printDebug StartTime, Timer, "Defined variables"
     
-    printDebug StartTime, Timer, "Disable Scree update", 4
     Application.ScreenUpdating = False
-    
-    
+
     maxRow = Cells(Rows.Count, "A").End(xlUp).row   'Determine Max row
-    printDebug StartTime, Timer, "Define max row : " & maxRow, 5
+    printDebug StartTime, Timer, "Calculated max row with content"
     
     'Remove unessasary rows from original sheet to reduce final file size (based on automation open case)
-    printDebug StartTime, Timer, "Remove unnessasary rows", 6
     Worksheets("Result").Rows(maxRow + 5 & ":" & Worksheets("Result").Rows.Count).Delete
-    
+    printDebug StartTime, Timer, "Removed unnessasary rows"
     
     'Copy Current report sheet for backup
-    printDebug StartTime, Timer, "Copy sheet for backup", 7
     Worksheets(1).Copy After:=Worksheets(1) 'Backup original Report from Testshell
     ActiveWorkbook.Sheets("Result").Activate 'Go back to First sheet
-
+    printDebug StartTime, Timer, "Original sheet copied for backup purpose"
     
-    printDebug StartTime, Timer, "Format rows and columns", 8
     'Rows Heigh
     Range("A:A").RowHeight = 12
+    Range("1:1").RowHeight = 20
 
     'Columns Width
-    Columns("A").ColumnWidth = 3 'Execute
-    Columns("B").ColumnWidth = 1 'Loop 2
-    Columns("C").ColumnWidth = 1 'Loop 1
-    Columns("D").ColumnWidth = 6 'Device
-    Columns("E").ColumnWidth = 8 'Sub Device
-    Columns("F").ColumnWidth = 12 'Address 1
-    Columns("G").ColumnWidth = 1 'Address 2 for IP10 Use
-    Columns("H").ColumnWidth = 1 'Slot
-    Columns("I").ColumnWidth = 1 'State
-    Columns("J").ColumnWidth = 4 'Command Set,Get,Walk...
-    Columns("K").ColumnWidth = 25 'Topic
-    Columns("L").ColumnWidth = 4 'SubTopic
-    Columns("M").ColumnWidth = 4 'Operator
-    Columns("N").ColumnWidth = 12 'Value
-    Columns("O").ColumnWidth = 75 'Measured
-    Columns("P").ColumnWidth = 8 'Protocol
-    Columns("Q").ColumnWidth = 8 'Delay
-    Columns("R").ColumnWidth = 10 'Stop on Error
-    Columns("S").ColumnWidth = 5 'Status
-    Columns("T").ColumnWidth = 4 'Error
-    Columns("U").ColumnWidth = 4 'System Log
-    Columns("V").AutoFit 'Time Stamp
-    Columns("W").ColumnWidth = 10 'Description
-    Columns("X").AutoFit 'Duration
-    'Columns("Y").ColumnWidth = 2
-    'Columns("Z").ColumnWidth = 6 'Duration
+    Columns("A").ColumnWidth = 3    'Execute
+    Columns("B").ColumnWidth = 0.5  'Loop 2
+    Columns("C").ColumnWidth = 0.5  'Loop 1
+    Columns("D").ColumnWidth = 6    'Device
+    Columns("E").ColumnWidth = 8    'Sub Device
+    Columns("F").ColumnWidth = 12   'Address 1
+    Columns("G").ColumnWidth = 0.5  'Address 2 for IP10 Use
+    Columns("H").ColumnWidth = 0.5  'Slot
+    Columns("I").ColumnWidth = 0.5  'State
+    Columns("J").ColumnWidth = 2    'Command Set,Get,Walk...
+    Columns("K").ColumnWidth = 25   'Topic
+    Columns("L").ColumnWidth = 1    'SubTopic
+    Columns("M").ColumnWidth = 1    'Operator
+    Columns("N").ColumnWidth = 12   'Value
+    Columns("O").ColumnWidth = 75   'Measured
+    Columns("P").ColumnWidth = 6    'Protocol
+    Columns("Q").ColumnWidth = 8    'Delay
+    Columns("R").ColumnWidth = 4    'Stop on Error
+    Columns("S").ColumnWidth = 5    'Status
+    Columns("T").ColumnWidth = 4    'Error
+    Columns("U").ColumnWidth = 4    'System Log
+    Columns("V").AutoFit            'Time Stamp
+    Columns("W").ColumnWidth = 35   'Description
+    Columns("X").AutoFit            'Duration
 
     'Columns Alignment Properties
     Columns("D").HorizontalAlignment = xlLeft
@@ -277,8 +275,10 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     Columns("K").HorizontalAlignment = xlLeft
     Columns("Q").HorizontalAlignment = xlCenter
     Columns("R").HorizontalAlignment = xlLeft
-
-    printDebug StartTime, Timer, "Start For Loop and cycle through rows", 9
+    
+    printDebug StartTime, Timer, "Formatted rows and columns"
+    
+    printDebug StartTime, Timer, "Start For Loop and cycle through rows"
     'Cycle through all Rows which hava data in A column and apply colors
     For row = 2 To maxRow
     
@@ -369,9 +369,9 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
 
     Next row
 
-    printDebug StartTime, Timer, "For loop end, start color set for fonts", 10
+    printDebug StartTime, Timer, "For loop end, start color set for fonts"
     'Apply Format for Delay column
-    'Columns("Q").Font.Bold = True 'Bold 'Starting 23-5-22 this row make macro stuck for 60 sec
+    Columns("Q").Font.Bold = True 'Bold 'Starting 23-5-22 this row make macro stuck for 60 sec
     Columns("Q").Font.ColorIndex = 9 'Color = Red
     Columns("N").Font.ColorIndex = 16 'Color = Gray
     Columns("P").Font.ColorIndex = 16 'Color = Gray
@@ -379,6 +379,8 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     Columns("D").Font.ColorIndex = 16 'Color = Gray
     Columns("E").Font.ColorIndex = 16 'Color = Gray
     Columns("V").Font.ColorIndex = 16 'Color = Gray
+    Columns("W").Font.Color = RGB(79, 129, 189)        'Color = Gray
+    Columns("W").Font.Bold = True       'Bold
 
     'With Columns("A:Z").Borders(xlEdgeLeft)
     '.LineStyle = xlContinuous
@@ -404,27 +406,59 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     .LineStyle = xlContinuous
     .ColorIndex = 48
     End With
+    
+    printDebug StartTime, Timer, "Colors and fonts applied"
 
     'Create links from all sheets to Results sheet
-    printDebug StartTime, Timer, "Create Links for results sheets", 11
     For Each ws In ActiveWorkbook.Worksheets
         If ws.index > 2 Then
             'Debug.Print (ws.Name)
             With ws.Buttons.Add(1, 1, 45, 15)
             .OnAction = "ReturnToFirstSheet"
-            .Text = "Results"
+            .text = "Results"
             End With
         End If
     Next
     ActiveWindow.ScrollColumn = 1   'Scroll to the left
+    printDebug StartTime, Timer, "Created Links to results sheets"
     
-    printDebug StartTime, Timer, "Save workbook", 12
+    'Add button to filter
+    Set filterBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1, 1, 45, Range("O1").Height - 1)
+    With filterBtn
+      .OnAction = "ReportAutofilterFilterItems"
+      .Caption = "Filter"
+      .Name = "Filter"
+      .Font.Size = 14
+      .Font.Bold = True
+    End With
+    printDebug StartTime, Timer, "Created Filter button"
+    
+    'Add button to clear filter
+    Set clearBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1 + 45, 1, 45, Range("O1").Height - 1)
+    With clearBtn
+      .OnAction = "ReportAutofilterClear"
+      .Caption = "Clear"
+      .Name = "Clear"
+      .Font.Size = 14
+      .Font.Bold = True
+    End With
+    printDebug StartTime, Timer, "Created Clear filter button"
+    
+    'Freeze top row
+    With ActiveWindow
+        If .FreezePanes Then .FreezePanes = False
+        .SplitColumn = 0
+        .SplitRow = 1
+        .FreezePanes = True
+    End With
+    printDebug StartTime, Timer, "Top row freezed"
+    
     ActiveWorkbook.Save
     Application.ScreenUpdating = True
-
+    printDebug StartTime, Timer, "Workbook saved"
     
     'Stop Timer
-    printDebug StartTime, Timer, "Stop Timer", 13
+    printDebug StartTime, Timer, "Macro finished !!!"
     SecondsElapsed = Round(Timer - StartTime, 2)
     Debug.Print ("Time took to run: " & SecondsElapsed)
     'Indicate Runtime in result
@@ -437,12 +471,137 @@ End Sub
 Sub ReturnToFirstSheet()
  Sheets("Result").Select
 End Sub
-Function printDebug(start, current, inputText, index)
+Function printDebug(start, current, inputText)
+    lastEmptyMacroSheetRow = Worksheets("Macro Logs").Cells(Rows.Count, "A").End(xlUp).row + 1
     Debug.Print (Round(current - start, 2) & " : " & inputText)
-    Worksheets("Macro Logs").Cells(index, "A") = Round(current - start, 2)
-    Worksheets("Macro Logs").Cells(index, "B") = inputText
+    Worksheets("Macro Logs").Cells(lastEmptyMacroSheetRow, "A") = Round(current - start, 2)
+    Worksheets("Macro Logs").Cells(lastEmptyMacroSheetRow, "B") = inputText
+End Function
+Sub ReportAutofilterFilterItems()
+'===========================
+' Writen by Michael Rykin
+' Used in CeraRun Result file to filter only relevant rows
+'===========================
+
+    If ActiveSheet.AutoFilterMode = True Then
+        With Range("$A:$X")
+            .AutoFilter Field:=4, Criteria1:=Array("IDU", "Test", "TnM", "System", "Communication", "="), Operator:=xlFilterValues
+            .AutoFilter Field:=11, Criteria1:=Array("Text to report", "Run Suite Project", "NG_DynamicDelay", "Free text command", "="), Operator:=xlFilterValues
+        End With
+    Else
+        MsgBox "Auto Filter is turned off - TBD: implement autofilter set if it missing"
+    End If
+
+End Sub
+Sub ReportAutofilterClear()
+'===========================
+' Writen by Michael Rykin
+' Used in CeraRun Result file to clear autofilter criterias
+'===========================
+    On Error Resume Next
+    ActiveSheet.ShowAllData
+End Sub
+
+Sub CheckForLatestMacroVersion()
+
+    Dim notifyUserToUpdate As Boolean
+    Dim updateRequired As Boolean
+    
+    notifyUserToUpdate = CheckIfShowUpdateNotification()
+    Debug.Print ("notifyUserToUpdate: " & notifyUserToUpdate)
+    
+    'First verify if need notify user at all and only then access network to check which version relevant -
+    If notifyUserToUpdate Then
+        updateRequired = CheckIfRequiredUpdate()    'Access network folder - be aware of connections issues here
+        Debug.Print ("Update Required: " & updateRequired)
+        
+        If updateRequired Then
+            Debug.Print ("Update package")
+            MsgBox "Your macro version is outdated - consider to update by running updater macro", vbExclamation
+        End If
+        
+    End If
+        
+End Sub
+
+Function CheckIfRequiredUpdate() As Boolean
+
+    Dim statusFilePath As String
+    statusFilePath = "\\emcsrv\R&D\r&d_work_space\Teams\Validation & Verification\Hadar&Meira\Alex_H_team\VBA-Script-Report-Analyzing\CurrentMacroVersion.txt"
+    Dim textString As String
+    
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+
+    Dim textLine As String
+    Dim text As String
+
+    Open statusFilePath For Input As #1
+    Do Until EOF(1)
+        Line Input #1, textLine
+        text = text & textLine
+    Loop
+    Close #1
+    Set fso = Nothing
+    
+    Debug.Print ("Installed macro: " & moduleVersion)
+    Debug.Print ("New macro version ready to install: " & text)
+    
+    'Check Installed version = last saved version from file
+    If text <> moduleVersion Then
+        Debug.Print ("Running macro version != Released macro version")
+        CheckIfRequiredUpdate = True
+    Else
+        Debug.Print ("Running macro version= Released macro version")
+        CheckIfRequiredUpdate = False
+    End If
+    
 End Function
 
+Function CheckIfShowUpdateNotification() As Boolean
+    Dim checkTimeFilePath As String
+    checkTimeFilePath = "C:\tmp\reportArrangementMacroLastNotification.txt"
+    Dim todayDate As Date
+    todayDate = Date
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Dim oFile As Object
+    
+    If Dir(checkTimeFilePath) = "" Then
+        'Debug.Print ("Last notification file didn't found - Create it, put curent date - Notify user to update")
+        CheckIfShowUpdateNotification = True
+        Set oFile = fso.CreateTextFile(checkTimeFilePath)
+        oFile.WriteLine todayDate
+        oFile.Close
+        Set oFile = Nothing
+    Else
+        'Debug.Print ("Last notification file found - Check if today = value from file")
+        Dim textLine As String
+        Dim text As String
+        Open checkTimeFilePath For Input As #1
+        Do Until EOF(1)
+            Line Input #1, textLine
+            text = text & textLine
+        Loop
+        Close #1
+        
+        'Check today = saved value
+        If text = todayDate Then
+            Debug.Print ("Text = Today - User already informed today - Don't bother user to update again today")
+            CheckIfShowUpdateNotification = False
+        Else
+            Debug.Print ("Text != Today - Notify user to update")
+            CheckIfShowUpdateNotification = True
+            Set oFile = fso.CreateTextFile(checkTimeFilePath)
+            oFile.WriteLine todayDate
+            oFile.Close
+            Set oFile = Nothing
+        End If
+    End If
+
+    Set fso = Nothing
+    
+End Function
 
 Sub FileExist()
 '===========================

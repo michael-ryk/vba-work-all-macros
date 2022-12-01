@@ -1,5 +1,5 @@
 '==================
-Public Const moduleVersion As String = "V10.2"
+Public Const moduleVersion As String = "V11"
 '==================
 
 Sub Yes_to_No_sig()
@@ -613,5 +613,22 @@ Range("A1").HorizontalAlignment = xlCenter
 Range("A1").Font.Size = 18
 Range("A1").Font.Bold = True
 
+
+End Sub
+
+Sub TransposeArray()
+'=============================================================================================
+' Writen by Michael Rykin
+' Transpose Selected array
+'=============================================================================================
+    
+Range("A1").Select
+Range(Selection, Selection.End(xlToRight)).Select
+Range(Selection, Selection.End(xlDown)).Select
+Selection.Copy
+
+Sheets.Add.Name = "TransposetArray"
+
+Sheets("TransposetArray").Range("A2").PasteSpecial Transpose:=True
 
 End Sub

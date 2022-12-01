@@ -1,5 +1,5 @@
 '==================
-Public Const moduleVersion As String = "V11.1"
+Public Const moduleVersion As String = "V11.2"
 '==================
 
 Sub Yes_to_No_sig()
@@ -222,11 +222,11 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     Columns("H").ColumnWidth = 1 'Slot
     Columns("I").ColumnWidth = 1 'State
     Columns("J").ColumnWidth = 4 'Command Set,Get,Walk...
-    Columns("K").ColumnWidth = 30 'Topic
+    Columns("K").ColumnWidth = 25 'Topic
     Columns("L").ColumnWidth = 4 'SubTopic
     Columns("M").ColumnWidth = 4 'Operator
-    Columns("N").ColumnWidth = 35 'Value
-    Columns("O").ColumnWidth = 30 'Measured
+    Columns("N").ColumnWidth = 12 'Value
+    Columns("O").ColumnWidth = 75 'Measured
     Columns("P").ColumnWidth = 8 'Protocol
     Columns("Q").ColumnWidth = 8 'Delay
     Columns("R").ColumnWidth = 10 'Stop on Error
@@ -261,18 +261,20 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
                 Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(250, 250, 170) 'yellow
             Case "Text to report"
                 Cells(row, "O").Font.Color = vbWhite
+                Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
                 If Left(Cells(row, "O"), 1) = "#" Then
                     Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(83, 141, 213) 'Light blue Internal loop color
                 ElseIf Left(Cells(row, "O"), 3) = ":::" Then
                     Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
                 ElseIf Left(Cells(row, "O"), 3) = "===" Then
-                    Range(Cells(row, "A"), Cells(row, "R")).wrapText = True
-                    Cells(row, "R").EntireRow.AutoFit
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
+                    Cells(row, "O").wrapText = True
+                    Cells(row, "O").EntireRow.AutoFit
                 ElseIf Left(Cells(row, "O"), 3) = "---" Then
-                    Range(Cells(row, "A"), Cells(row, "R")).wrapText = True
-                    Cells(row, "R").EntireRow.AutoFit
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
+                    Cells(row, "O").wrapText = True
+                    Cells(row, "O").EntireRow.AutoFit
+                ElseIf Left(Cells(row, "O"), 3) = "***" Then
+                    Cells(row, "O").wrapText = True
+                    Cells(row, "O").EntireRow.AutoFit
                 Else
                     Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
                     Cells(row, "O").Font.Bold = True

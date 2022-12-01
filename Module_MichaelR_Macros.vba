@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion As String = "V12.8"
-Public Const whatIsNew As String = "maxRow change to long to handle very big result files"
+Public Const moduleVersion As String = "V12.9"
+Public Const whatIsNew As String = "Edit color styles for ctrl+e"
 '==================
 
 Sub Yes_to_No_sig()
@@ -549,6 +549,7 @@ Sub pass_fail_colors_cond_formating()
         .Color = RGB(198, 239, 206)
         .TintAndShade = 0
     End With
+    Selection.FormatConditions(1).Font.Color = RGB(0, 97, 0)
     Selection.FormatConditions(1).StopIfTrue = False
     
     Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlEqual, _
@@ -559,6 +560,7 @@ Sub pass_fail_colors_cond_formating()
         .Color = RGB(255, 199, 206)
         .TintAndShade = 0
     End With
+    Selection.FormatConditions(1).Font.Color = RGB(156, 0, 6)
     Selection.FormatConditions(1).StopIfTrue = False
     
     Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlEqual, _
@@ -569,6 +571,18 @@ Sub pass_fail_colors_cond_formating()
         .Color = RGB(217, 217, 217)
         .TintAndShade = 0
     End With
+    Selection.FormatConditions(1).Font.Color = RGB(166, 166, 166)
+    Selection.FormatConditions(1).StopIfTrue = False
+    
+    Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlEqual, _
+        Formula1:="=""Warning"""
+    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    With Selection.FormatConditions(1).Interior
+        .PatternColorIndex = xlAutomatic
+        .Color = RGB(255, 235, 156)
+        .TintAndShade = 0
+    End With
+    Selection.FormatConditions(1).Font.Color = RGB(156, 101, 0)
     Selection.FormatConditions(1).StopIfTrue = False
     
 End Sub

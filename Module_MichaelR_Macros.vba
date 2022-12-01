@@ -1,5 +1,5 @@
 '==================
-Public Const moduleVersion As String = "V9.2"
+Public Const moduleVersion As String = "V9.3"
 '==================
 
 Sub Yes_to_No_sig()
@@ -299,11 +299,11 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
       'Reference row
       ElseIf Cells(row, "K") = "Reference line" Then
         Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 12 'Brown
-      'Dynamic delay
+      'Dynamic delay and pings
       ElseIf Cells(row, "K") = "NG_DynamicDelay" Then
-        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(228, 223, 236) 'light purple
+        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(204, 192, 218) 'light purple
       ElseIf Cells(row, "K") = "Ping" Then
-        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(228, 223, 236) 'light purple
+        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(204, 192, 218) 'light purple
       End If
       
       'Whole Row color Red if Fail

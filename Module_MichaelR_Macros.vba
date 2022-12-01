@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion As String = "V13.2"
-Public Const whatIsNew As String = "Add filter button and flter macro"
+Public Const moduleVersion As String = "V13.3"
+Public Const whatIsNew As String = "Add Clear filter button"
 '==================
 
 Sub Yes_to_No_sig()
@@ -430,6 +430,17 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     End With
     
     
+    'Add button to clear filter
+    Set clearBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1 + 45, 1, 45, Range("O1").Height - 1)
+    With clearBtn
+      .OnAction = "ReportAutofilterClear"
+      .Caption = "Clear"
+      .Name = "Clear"
+      .Font.Size = 14
+      .Font.Bold = True
+    End With
+    
+    
     'Freeze top row
     With ActiveWindow
         If .FreezePanes Then .FreezePanes = False
@@ -470,18 +481,20 @@ Sub ReportAutofilterFilterItems()
 
     If ActiveSheet.AutoFilterMode = True Then
         With Range("$A:$X")
-            .AutoFilter Field:=4, Criteria1:=Array("IDU", "Test", "="), Operator:=xlFilterValues
-            .AutoFilter Field:=11, Criteria1:=Array("Text to report", "Run Suite Project", "="), Operator:=xlFilterValues
+            .AutoFilter Field:=4, Criteria1:=Array("IDU", "Test", "TnM", "System", "Communication", "="), Operator:=xlFilterValues
+            .AutoFilter Field:=11, Criteria1:=Array("Text to report", "Run Suite Project", "NG_DynamicDelay", "Free text command", "="), Operator:=xlFilterValues
         End With
-    ' ActiveSheet.Range("$A$2:$Q$200").AutoFilter Field:=11, Criteria1:="<>#DIV/0!"
-    ' ActiveSheet.Range("$A:$X").AutoFilter Field:=4, Criteria1:=Array( _
-        ' "IDU", "Test", "="), Operator:=xlFilterValues
-    ' ActiveSheet.Range("$A$1:$X$490").AutoFilter Field:=11, Criteria1:=Array( _
-        ' "Run Suite Project", "Text to report", "="), Operator:=xlFilterValues
     Else
         MsgBox "Auto Filter is turned off - TBD: implement autofilter set if it missing"
     End If
 
+End Sub
+Sub ReportAutofilterClear()
+'===========================
+' Writen by Michael Rykin
+' Used in CeraRun Result file to clear autofilter criterias
+'===========================
+    ActiveSheet.ShowAllData
 End Sub
 
 Sub FileExist()

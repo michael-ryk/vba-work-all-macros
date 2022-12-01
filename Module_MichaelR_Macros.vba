@@ -1,5 +1,5 @@
 '==================
-'Modified: 20210504
+'Modified: 20210530
 '==================
 
 Sub Yes_to_No_sig()
@@ -248,31 +248,48 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     'Go through Rows and apply colors
     For row = 2 To maxRow
 
-      'Set another colors
+      'TnM color
       If Cells(row, "D").value = "TnM" Then
       Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 37 'Blue
+      'Run Test color
       ElseIf InStr(1, Cells(row, "K").value, "Run Test") > 0 Then
       Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 4 'Green bright
+      'File Loop color
       ElseIf Cells(row, "D").value = "File_Loop" Then
       Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 27 'yellow
+      'Test to report color
       ElseIf Cells(row, "K") = "Text to report" Then
       Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
       Cells(row, "O").Font.Color = vbWhite
       Cells(row, "O").Font.Bold = True
+      'NG_REST_SNMP Colors
       ElseIf Cells(row, "J").value = "set" Then
+      Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+      ElseIf Cells(row, "J").value = "add" Then
       Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
       ElseIf Cells(row, "J").value = "edit" Then
       Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
       ElseIf Cells(row, "J").value = "get" Then
       Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 37 'Light Blue
+      ElseIf Cells(row, "K").value = "SET" Then
+      Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+      ElseIf Cells(row, "K").value = "ADD" Then
+      Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+      ElseIf Cells(row, "K").value = "EDIT" Then
+      Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+      ElseIf Cells(row, "K").value = "GET" Then
+      Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 37 'Light Blue
+      'Comparison colors
       ElseIf Cells(row, "K") = "Comparison" Then
       Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 45 'Orange
+      'Reference row color
       ElseIf Cells(row, "K") = "Reference line" Then
       Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 12 'Brown
+      'Dynamic delay counter
       ElseIf Cells(row, "K") = "NG_DynamicDelay" Then
       Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 39 'Purple
       End If
-
+      
       'Set row color Red if Fail
       If LCase(Cells(row, "S").value) = "fail" Then
       'Fail

@@ -1,5 +1,5 @@
 '==================
-Public Const moduleVersion As String = "V12.6"
+Public Const moduleVersion As String = "V12.7"
 '==================
 
 Sub Yes_to_No_sig()
@@ -307,7 +307,7 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
                     Cells(row, "O").EntireRow.AutoFit
                 Else
                     Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
-                    Cells(row, "O").Font.Bold = True
+                    'Cells(row, "O").Font.Bold = True   'Starting 23-5-22 this row make macro stuck for 60 sec
                 End If
             Case "SET"
                 Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
@@ -369,7 +369,7 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
 
     printDebug StartTime, Timer, "For loop end, start color set for fonts", 10
     'Apply Format for Delay column
-    Columns("Q").Font.Bold = True 'Bold
+    'Columns("Q").Font.Bold = True 'Bold 'Starting 23-5-22 this row make macro stuck for 60 sec
     Columns("Q").Font.ColorIndex = 9 'Color = Red
     Columns("N").Font.ColorIndex = 16 'Color = Gray
     Columns("P").Font.ColorIndex = 16 'Color = Gray

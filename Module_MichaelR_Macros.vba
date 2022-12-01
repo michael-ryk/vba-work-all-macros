@@ -1,5 +1,5 @@
 '==================
-'Modified: 20210530
+Public Const moduleVersion As String = "V9"
 '==================
 
 Sub Yes_to_No_sig()
@@ -178,7 +178,6 @@ Sub Report_Arrangement12()
 '===========================
 ' Writen by Michael Rykin
 ' Automation Report Arrangement Macro
-' 20210504
 '===========================
 
 If ActiveWorkbook.Sheets(1).Name = "Result" Then
@@ -187,6 +186,9 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     Dim StartTime As Double
     Dim SecondsElapsed As Double
     StartTime = Timer
+
+    'Indicate Macro version
+    Cells(1, "Z") = "Macro Version: " + moduleVersion
 
     'Variables
     Dim hyperlinkSheetName As String
@@ -250,44 +252,50 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
 
       'TnM color
       If Cells(row, "D").value = "TnM" Then
-      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 37 'Blue
+        Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 37 'Blue
       'Run Test color
       ElseIf InStr(1, Cells(row, "K").value, "Run Test") > 0 Then
-      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 4 'Green bright
+        Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 4 'Green bright
       'File Loop color
       ElseIf Cells(row, "D").value = "File_Loop" Then
-      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 27 'yellow
+        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(250, 250, 170) 'yellow
       'Test to report color
       ElseIf Cells(row, "K") = "Text to report" Then
-      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
-      Cells(row, "O").Font.Color = vbWhite
-      Cells(row, "O").Font.Bold = True
+        Cells(row, "O").Font.Color = vbWhite
+        If Left(Cells(row, "O"), 1) = "#" Then
+            Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(83, 141, 213) 'Light blue Internal loop color
+        ElseIf Left(Cells(row, "O"), 3) = ":::" Then
+            Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(22, 54, 92) 'Function Color
+        Else
+            Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
+            Cells(row, "O").Font.Bold = True
+        End If
       'NG_REST_SNMP Colors
       ElseIf Cells(row, "J").value = "set" Then
-      Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+        Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
       ElseIf Cells(row, "J").value = "add" Then
-      Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+        Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
       ElseIf Cells(row, "J").value = "edit" Then
-      Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+        Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
       ElseIf Cells(row, "J").value = "get" Then
-      Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 37 'Light Blue
+        Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 37 'Light Blue
       ElseIf Cells(row, "K").value = "SET" Then
-      Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+        Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
       ElseIf Cells(row, "K").value = "ADD" Then
-      Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+        Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
       ElseIf Cells(row, "K").value = "EDIT" Then
-      Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+        Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
       ElseIf Cells(row, "K").value = "GET" Then
-      Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 37 'Light Blue
+        Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 37 'Light Blue
       'Comparison colors
       ElseIf Cells(row, "K") = "Comparison" Then
-      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 45 'Orange
+        Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 45 'Orange
       'Reference row color
       ElseIf Cells(row, "K") = "Reference line" Then
-      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 12 'Brown
+        Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 12 'Brown
       'Dynamic delay counter
       ElseIf Cells(row, "K") = "NG_DynamicDelay" Then
-      Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 39 'Purple
+        Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 39 'Purple
       End If
       
       'Set row color Red if Fail

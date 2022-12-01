@@ -1,5 +1,6 @@
 '==================
-Public Const moduleVersion As String = "V12.7"
+Public Const moduleVersion As String = "V12.8"
+Public Const whatIsNew As String = "maxRow change to long to handle very big result files"
 '==================
 
 Sub Yes_to_No_sig()
@@ -208,13 +209,14 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     printDebug StartTime, Timer, "Start Macro", 2
     printDebug StartTime, Timer, "Set Variables", 3
     
-    'Indicate Macro version
+    'Indicate Macro version and what is new
     Cells(2, "Z") = "Macro Version: " & moduleVersion
+    Cells(3, "Z") = "What is new? " & whatIsNew
     
     'Variables
     Dim hyperlinkSheetName As String
     Dim row As Long
-    Dim maxRow As Integer
+    Dim maxRow As Long
     Dim ws As Worksheet
     Dim btn As Button
     
@@ -426,7 +428,7 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     SecondsElapsed = Round(Timer - StartTime, 2)
     Debug.Print ("Time took to run: " & SecondsElapsed)
     'Indicate Runtime in result
-    Cells(3, "Z") = "Macro duration: " & SecondsElapsed
+    Cells(4, "Z") = "Macro duration: " & SecondsElapsed
     
 Else
     MsgBox "This file is not appropriate for Report arrangement macro - Abort run", vbCritical

@@ -1,6 +1,7 @@
 '==================
-'2021_04_19
+'Modified: 20210504
 '==================
+
 Sub Yes_to_No_sig()
 '===========================
 ' Writen by Michael Ryckin
@@ -177,7 +178,7 @@ Sub Report_Arrangement12()
 '===========================
 ' Writen by Michael Rykin
 ' Automation Report Arrangement Macro
-' 20210419
+' 20210504
 '===========================
 
 If ActiveWorkbook.Sheets(1).Name = "Result" Then
@@ -210,23 +211,23 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
 
     'Columns Width
     Columns("A").ColumnWidth = 3 'Execute
-    Columns("B").ColumnWidth = 3 'Loop 2
-    Columns("C").ColumnWidth = 3 'Loop 1
+    Columns("B").ColumnWidth = 1 'Loop 2
+    Columns("C").ColumnWidth = 1 'Loop 1
     Columns("D").ColumnWidth = 6 'Device
     Columns("E").ColumnWidth = 8 'Sub Device
     Columns("F").ColumnWidth = 12 'Address 1
     Columns("G").ColumnWidth = 1 'Address 2 for IP10 Use
-    Columns("H").ColumnWidth = 6 'Slot
-    Columns("I").ColumnWidth = 4 'State
+    Columns("H").ColumnWidth = 1 'Slot
+    Columns("I").ColumnWidth = 1 'State
     Columns("J").ColumnWidth = 4 'Command Set,Get,Walk...
     Columns("K").ColumnWidth = 30 'Topic
-    Columns("L").ColumnWidth = 30 'SubTopic
-    Columns("M").ColumnWidth = 5 'Operator
+    Columns("L").ColumnWidth = 4 'SubTopic
+    Columns("M").ColumnWidth = 4 'Operator
     Columns("N").ColumnWidth = 35 'Value
-    Columns("O").ColumnWidth = 3 'Measured
+    Columns("O").ColumnWidth = 30 'Measured
     Columns("P").ColumnWidth = 8 'Protocol
-    Columns("Q").ColumnWidth = 5 'Delay
-    Columns("R").ColumnWidth = 23 'Stop on Error
+    Columns("Q").ColumnWidth = 8 'Delay
+    Columns("R").ColumnWidth = 10 'Stop on Error
     Columns("S").ColumnWidth = 5 'Status
     Columns("T").ColumnWidth = 4 'Error
     Columns("U").ColumnWidth = 4 'System Log
@@ -256,6 +257,8 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
       Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 27 'yellow
       ElseIf Cells(row, "K") = "Text to report" Then
       Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
+      Cells(row, "O").Font.Color = vbWhite
+      Cells(row, "O").Font.Bold = True
       ElseIf Cells(row, "J").value = "set" Then
       Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
       ElseIf Cells(row, "J").value = "edit" Then
@@ -306,6 +309,7 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     Columns("R").Font.ColorIndex = 16 'Color = Gray
     Columns("D").Font.ColorIndex = 16 'Color = Gray
     Columns("E").Font.ColorIndex = 16 'Color = Gray
+    Columns("V").Font.ColorIndex = 16 'Color = Gray
 
     'With Columns("A:Z").Borders(xlEdgeLeft)
     '.LineStyle = xlContinuous

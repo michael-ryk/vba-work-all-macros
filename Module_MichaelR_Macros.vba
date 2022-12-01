@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion As String = "V13.4"
-Public Const whatIsNew As String = "Add notification about new macro version, improve logging"
+Public Const moduleVersion As String = "V13.5"
+Public Const whatIsNew As String = "Add notification about new macro version, improve logging, optimize access to network"
 '==================
 
 Sub Yes_to_No_sig()
@@ -564,10 +564,15 @@ Function CheckIfShowUpdateNotification() As Boolean
     todayDate = Date
     Dim fso As Object
     Set fso = CreateObject("Scripting.FileSystemObject")
+    Dim oFile As Object
     
     If Dir(checkTimeFilePath) = "" Then
         'Debug.Print ("Last notification file didn't found - Create it, put curent date - Notify user to update")
         CheckIfShowUpdateNotification = True
+        Set oFile = fso.CreateTextFile(checkTimeFilePath)
+        oFile.WriteLine todayDate
+        oFile.Close
+        Set oFile = Nothing
     Else
         'Debug.Print ("Last notification file found - Check if today = value from file")
         Dim textLine As String
@@ -586,15 +591,12 @@ Function CheckIfShowUpdateNotification() As Boolean
         Else
             Debug.Print ("Text != Today - Notify user to update")
             CheckIfShowUpdateNotification = True
+            Set oFile = fso.CreateTextFile(checkTimeFilePath)
+            oFile.WriteLine todayDate
+            oFile.Close
+            Set oFile = Nothing
         End If
     End If
-    
-    'Update today date to file
-    Dim oFile As Object
-    Set oFile = fso.CreateTextFile(checkTimeFilePath)
-    oFile.WriteLine todayDate
-    oFile.Close
-    Set oFile = Nothing
 
     Set fso = Nothing
     

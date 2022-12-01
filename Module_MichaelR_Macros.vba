@@ -1,5 +1,5 @@
 '==================
-'2018_02_14
+'2018_12_30
 '==================
 Sub Yes_to_No_sig()
 '===========================
@@ -44,11 +44,11 @@ Sub Select_row()
 End Sub
 
 
-Sub New_Main_Excel_Colors_Preconditions_V2()
+Sub New_Main_Excel_Colors_Preconditions()
 '===========================
 ' Writen by Michael Ryckin
-' New_Main_Excel_Colors_set
-' Ver 2
+' New Main Excel Colors Precondition
+' Ver 3
 '===========================
 Dim row As Long    'Row variable
 '===========================
@@ -72,18 +72,18 @@ Columns("K").ColumnWidth = 40   'Topic
 Columns("L").ColumnWidth = 40   'SubTopic
 Columns("M").ColumnWidth = 5    'Operator
 Columns("N").ColumnWidth = 70   'Value
-Columns("O").ColumnWidth = 3    'Measured
-Columns("P").ColumnWidth = 8    'Protocol
-Columns("Q").ColumnWidth = 5    'Delay
-Columns("R").ColumnWidth = 20    'Stop on Error
-Columns("S").ColumnWidth = 5    'Status
-Columns("T").ColumnWidth = 4    'System Log
-Columns("U").ColumnWidth = 7    'Time Stamp
-Columns("V").ColumnWidth = 5    'Description
-Columns("W").ColumnWidth = 2
-Columns("X").ColumnWidth = 2
-Columns("Y").ColumnWidth = 2
-Columns("Z").ColumnWidth = 6    'Duration
+Columns("O").ColumnWidth = 3    'Protocol
+Columns("P").ColumnWidth = 8    'Delay
+Columns("Q").ColumnWidth = 23    'Stop on Error
+Columns("R").ColumnWidth = 30   'Description
+'Columns("S").ColumnWidth = 5
+'Columns("T").ColumnWidth = 4
+'Columns("U").ColumnWidth = 4
+'Columns("V").ColumnWidth = 5
+'Columns("W").ColumnWidth = 2
+'Columns("X").ColumnWidth = 2
+'Columns("Y").ColumnWidth = 2
+'Columns("Z").ColumnWidth = 6
 '===========================
 'Columns Alignment Properties
 '===========================
@@ -91,7 +91,8 @@ Columns("D").HorizontalAlignment = xlLeft
 Columns("E").HorizontalAlignment = xlLeft
 Columns("H").HorizontalAlignment = xlLeft
 Columns("K").HorizontalAlignment = xlLeft
-Columns("Q").HorizontalAlignment = xlCenter
+Columns("Q").HorizontalAlignment = xlLeft
+Columns("R").HorizontalAlignment = xlLeft
 
 '===========================
 'Attach Colors
@@ -100,7 +101,7 @@ row = 2
 While IsEmpty(Cells(row, "A")) = False  'Continiue until end
         'Color Text to report
         If Cells(row, "K") = "Text to report" Then
-            Range(Cells(row, "A"), Cells(row, "R")).Interior.color = RGB(0, 128, 0) 'Green
+            Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(0, 128, 0) 'Green
             Cells(row, "N").Font.Bold = True
             Cells(row, "N").Font.ColorIndex = 2 'White
         'Label Start,End,Start Numeric loop,Save and Reload,Dump to file - Multi labels - Set Row color
@@ -142,7 +143,7 @@ Wend
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .color = 5287936
+        .Color = 5287936
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
@@ -176,7 +177,7 @@ Sub Report_Arrangement12()
 '===========================
 ' Writen by Michael Rykin
 ' Automation Report Arrangement Macro
-' Version 12.2
+' Version 13
 '===========================
 
 'Start Timer to measure run time
@@ -202,29 +203,29 @@ Range("A:A").RowHeight = 12
 
 'Columns Width
 Columns("A").ColumnWidth = 3 'Execute
-Columns("B").ColumnWidth = 5 'Loop 2
-Columns("C").ColumnWidth = 5 'Loop 1
-Columns("D").ColumnWidth = 8 'Device
-Columns("E").ColumnWidth = 9 'Sub Device
+Columns("B").ColumnWidth = 3 'Loop 2
+Columns("C").ColumnWidth = 3 'Loop 1
+Columns("D").ColumnWidth = 6 'Device
+Columns("E").ColumnWidth = 8 'Sub Device
 Columns("F").ColumnWidth = 12 'Address 1
 Columns("G").ColumnWidth = 1 'Address 2 for IP10 Use
 Columns("H").ColumnWidth = 6 'Slot
 Columns("I").ColumnWidth = 4 'State
 Columns("J").ColumnWidth = 4 'Command Set,Get,Walk...
 Columns("K").ColumnWidth = 30 'Topic
-Columns("L").ColumnWidth = 40 'SubTopic
+Columns("L").ColumnWidth = 30 'SubTopic
 Columns("M").ColumnWidth = 5 'Operator
-Columns("N").ColumnWidth = 40 'Value
+Columns("N").ColumnWidth = 35 'Value
 Columns("O").ColumnWidth = 3 'Measured
 Columns("P").ColumnWidth = 8 'Protocol
 Columns("Q").ColumnWidth = 5 'Delay
-Columns("R").ColumnWidth = 7 'Stop on Error
+Columns("R").ColumnWidth = 23 'Stop on Error
 Columns("S").ColumnWidth = 5 'Status
-Columns("T").ColumnWidth = 4 'System Log
-Columns("U").ColumnWidth = 7 'Time Stamp
-Columns("V").ColumnWidth = 5 'Description
-'Columns("W").ColumnWidth = 2
-'Columns("X").ColumnWidth = 2
+Columns("T").ColumnWidth = 4 'Error
+Columns("U").ColumnWidth = 4 'System Log
+Columns("V").AutoFit 'Time Stamp
+Columns("W").ColumnWidth = 10 'Description
+Columns("X").AutoFit 'Duration
 'Columns("Y").ColumnWidth = 2
 'Columns("Z").ColumnWidth = 6 'Duration
 
@@ -330,7 +331,7 @@ For Each ws In ActiveWorkbook.Worksheets
         End With
     End If
 Next
-
+ActiveWindow.ScrollColumn = 1   'Scroll to the left
 ActiveWorkbook.Save
 Application.ScreenUpdating = True
 
@@ -444,7 +445,7 @@ Sub pass_fail_colors_cond_formating()
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .color = 5287936
+        .Color = 5287936
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
@@ -453,7 +454,7 @@ Sub pass_fail_colors_cond_formating()
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .color = 255
+        .Color = 255
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
@@ -471,7 +472,7 @@ Sub True_False_colors_cond_formating()
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .color = 5287936
+        .Color = 5287936
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
@@ -480,7 +481,7 @@ Sub True_False_colors_cond_formating()
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .color = 255
+        .Color = 255
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
@@ -512,4 +513,52 @@ MsgBox ("IP20N used " & IP20NCounter & " times" & vbCrLf & _
         "IP20C used " & IP20CCounter & " times" & vbCrLf & _
         "IP20E used " & IP20Eounter & " times" & vbCrLf & _
         "IP20F used " & IP20Founter & " times" & vbCrLf)
+End Sub
+
+Sub AddAboutSheet()
+'=============================================================================================
+' Writen by Michael Rykin
+' Check if About sheet exist and Add it if not
+' Ver 1
+'=============================================================================================
+Dim SheetExists As Boolean
+Dim ws As Worksheet
+Dim rng As Range
+
+SheetExists = False
+For Each Sheet In Worksheets
+    If Sheet.Name = "About" Then
+        SheetExists = True
+        MsgBox ("Sheet already exists")
+        Exit Sub
+    End If
+Next Sheet
+Worksheets.Add(After:=Worksheets(Sheets.Count)).Name = "About"
+'Design About Worksheet
+Range("A1").value = "Version History"
+Range("A2").value = "Version Number"
+Range("B2").value = "What changed compared to old version"
+Range("A1:B1").Merge
+Set rng = Range("A1:B10")
+With rng.Borders
+    .LineStyle = xlContinuous
+    .Weight = xlThin
+End With
+Range("A1:B2").Interior.Color = 14136213
+Set rng = Range("A2:B2")
+With rng.Font
+    .Size = 14
+    .FontStyle = "Calibri"
+    .Bold = True
+    .ColorIndex = 30
+End With
+Columns("A").HorizontalAlignment = xlCenter
+Columns("B").HorizontalAlignment = xlLeft
+Columns("A").AutoFit
+Columns("B").ColumnWidth = 120
+Range("A1").HorizontalAlignment = xlCenter
+Range("A1").Font.Size = 18
+Range("A1").Font.Bold = True
+
+
 End Sub

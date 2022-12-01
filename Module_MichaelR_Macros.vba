@@ -1,5 +1,5 @@
 '==================
-Public Const moduleVersion As String = "V9.3"
+Public Const moduleVersion As String = "V9.4"
 '==================
 
 Sub Yes_to_No_sig()
@@ -188,7 +188,7 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     StartTime = Timer
 
     'Indicate Macro version
-    Cells(1, "Z") = "Macro Version: " + moduleVersion
+    Cells(2, "Z") = "Macro Version: " & moduleVersion
 
     'Variables
     Dim hyperlinkSheetName As String
@@ -386,6 +386,9 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     'Stop Timer
     SecondsElapsed = Round(Timer - StartTime, 2)
     Debug.Print ("Time took to run: " & SecondsElapsed)
+    'Indicate Runtime in result
+    Cells(3, "Z") = "Macro duration: " & SecondsElapsed
+    
 Else
     MsgBox "This file is not appropriate for Report arrangement macro - Abort run", vbCritical
 End If

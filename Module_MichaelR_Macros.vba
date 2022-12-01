@@ -1,5 +1,5 @@
 '==================
-Public Const moduleVersion As String = "V11"
+Public Const moduleVersion As String = "V11.1"
 '==================
 
 Sub Yes_to_No_sig()
@@ -265,6 +265,14 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
                     Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(83, 141, 213) 'Light blue Internal loop color
                 ElseIf Left(Cells(row, "O"), 3) = ":::" Then
                     Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
+                ElseIf Left(Cells(row, "O"), 3) = "===" Then
+                    Range(Cells(row, "A"), Cells(row, "R")).wrapText = True
+                    Cells(row, "R").EntireRow.AutoFit
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
+                ElseIf Left(Cells(row, "O"), 3) = "---" Then
+                    Range(Cells(row, "A"), Cells(row, "R")).wrapText = True
+                    Cells(row, "R").EntireRow.AutoFit
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
                 Else
                     Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
                     Cells(row, "O").Font.Bold = True

@@ -508,7 +508,8 @@ Sub CheckForLatestMacroVersion()
     Dim updateRequired As Boolean
     
     notifyUserToUpdate = CheckIfShowUpdateNotification()
-    Debug.Print ("notifyUserToUpdate: " & notifyUserToUpdate)
+    
+    Debug.Print ("notifyUserToUpdate = " & notifyUserToUpdate)
     
     'First verify if need notify user at all and only then access network to check which version relevant -
     If notifyUserToUpdate Then
@@ -525,6 +526,9 @@ Sub CheckForLatestMacroVersion()
 End Sub
 
 Function CheckIfRequiredUpdate() As Boolean
+    '----------------------------------------------------------------
+    ' Return true if new version availabe for user
+    '----------------------------------------------------------------
 
     Dim statusFilePath As String
     statusFilePath = "\\emcsrv\R&D\r&d_work_space\Teams\Validation & Verification\Hadar&Meira\Alex_H_team\VBA-Script-Report-Analyzing\CurrentMacroVersion.txt"
@@ -559,6 +563,10 @@ Function CheckIfRequiredUpdate() As Boolean
 End Function
 
 Function CheckIfShowUpdateNotification() As Boolean
+    '------------------------------------------------------------------
+    ' Return true if user wasn't notified today about potential upgrade
+    '------------------------------------------------------------------
+
     Dim checkTimeFilePath As String
     Dim macroFilesFolder As String
     Dim checkTimeFileName As String

@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion As String = "V13.6"
-Public Const whatIsNew As String = "Add notification about new macro version, improve logging, optimize access to network, clear filter only if active"
+Public Const moduleVersion As String = "V13.7"
+Public Const whatIsNew As String = "Fix eror when tmp folder missing on PC"
 '==================
 
 Sub Yes_to_No_sig()
@@ -560,15 +560,26 @@ End Function
 
 Function CheckIfShowUpdateNotification() As Boolean
     Dim checkTimeFilePath As String
-    checkTimeFilePath = "C:\tmp\reportArrangementMacroLastNotification.txt"
+    Dim macroFilesFolder As String
+    Dim checkTimeFileName As String
     Dim todayDate As Date
-    todayDate = Date
     Dim fso As Object
-    Set fso = CreateObject("Scripting.FileSystemObject")
     Dim oFile As Object
+    
+    todayDate = Date
+    macroFilesFolder = "C:\tmp"
+    checkTimeFileName = "reportArrangementMacroLastNotification.txt"
+    checkTimeFilePath = macroFilesFolder & "\" & checkTimeFileName
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    
+    If Not fso.FolderExists(macroFilesFolder) Then
+        'Folder with files not exist - create it
+        fso.CreateFolder macroFilesFolder
+    End If
     
     If Dir(checkTimeFilePath) = "" Then
         'Debug.Print ("Last notification file didn't found - Create it, put curent date - Notify user to update")
+        Debug.Print (checkTimeFilePath)
         CheckIfShowUpdateNotification = True
         Set oFile = fso.CreateTextFile(checkTimeFilePath)
         oFile.WriteLine todayDate

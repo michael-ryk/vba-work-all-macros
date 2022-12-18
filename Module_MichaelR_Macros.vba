@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion As String = "V13.7"
-Public Const whatIsNew As String = "Fix eror when tmp folder missing on PC"
+Public Const moduleVersion As String = "V13.8"
+Public Const whatIsNew As String = "Add filter for IDU only"
 '==================
 
 Sub Yes_to_No_sig()
@@ -422,8 +422,19 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     ActiveWindow.ScrollColumn = 1   'Scroll to the left
     printDebug StartTime, Timer, "Created Links to results sheets"
     
-    'Add button to filter
+    'Add button IDU Filter
     Set filterBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1, 1, 45, Range("O1").Height - 1)
+    With filterBtn
+      .OnAction = "ReportAutofilterIDU"
+      .Caption = "IDU"
+      .Name = "IDU"
+      .Font.Size = 14
+      .Font.Bold = True
+    End With
+    printDebug StartTime, Timer, "Created IDU filter button"
+    
+    'Add button General filter
+    Set filterBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1 + 45, 1, 45, Range("O1").Height - 1)
     With filterBtn
       .OnAction = "ReportAutofilterFilterItems"
       .Caption = "Filter"
@@ -434,7 +445,7 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     printDebug StartTime, Timer, "Created Filter button"
     
     'Add button to clear filter
-    Set clearBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1 + 45, 1, 45, Range("O1").Height - 1)
+    Set clearBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1 + 45 + 45, 1, 45, Range("O1").Height - 1)
     With clearBtn
       .OnAction = "ReportAutofilterClear"
       .Caption = "Clear"
@@ -477,6 +488,19 @@ Function printDebug(start, current, inputText)
     Worksheets("Macro Logs").Cells(lastEmptyMacroSheetRow, "A") = Round(current - start, 2)
     Worksheets("Macro Logs").Cells(lastEmptyMacroSheetRow, "B") = inputText
 End Function
+Sub ReportAutofilterIDU()
+'===========================
+' Writen by Michael Rykin
+' Used in CeraRun Result file to filter only IDU rows
+'===========================
+
+    If ActiveSheet.AutoFilterMode = True Then
+        Range("$A:$X").AutoFilter Field:=4, Criteria1:=Array("IDU", "System", "Communication"), Operator:=xlFilterValues
+    Else
+        MsgBox "Auto Filter is turned off - TBD: implement autofilter set if it missing"
+    End If
+
+End Sub
 Sub ReportAutofilterFilterItems()
 '===========================
 ' Writen by Michael Rykin

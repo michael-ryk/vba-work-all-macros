@@ -1,5 +1,5 @@
 '==================
-Public Const moduleVersion As String = "V13.8"
+Public Const moduleVersion As String = "V13.9"
 Public Const whatIsNew As String = "Add filter for IDU only"
 '==================
 
@@ -456,6 +456,7 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     printDebug StartTime, Timer, "Created Clear filter button"
     
     'Freeze top row
+    ActiveWindow.ScrollRow = 1  'Must freeze only when first row seen in screen
     With ActiveWindow
         If .FreezePanes Then .FreezePanes = False
         .SplitColumn = 0

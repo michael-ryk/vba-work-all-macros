@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion As String = "V13.9"
-Public Const whatIsNew As String = "Add filter for IDU only"
+Public Const moduleVersion As String = "V14.0"
+Public Const whatIsNew As String = "Add Go to next failure"
 '==================
 
 Sub Yes_to_No_sig()
@@ -455,6 +455,17 @@ If ActiveWorkbook.Sheets(1).Name = "Result" Then
     End With
     printDebug StartTime, Timer, "Created Clear filter button"
     
+    'Add button Go to next failure
+    Set clearBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1 + 45 + 45 + 45, 1, 90, Range("O1").Height - 1)
+    With clearBtn
+      .OnAction = "GotoNextFail"
+      .Caption = "Next Fail"
+      .Name = "gotoFail"
+      .Font.Size = 14
+      .Font.Bold = True
+    End With
+    printDebug StartTime, Timer, "Created Clear filter button"
+    
     'Freeze top row
     ActiveWindow.ScrollRow = 1  'Must freeze only when first row seen in screen
     With ActiveWindow
@@ -525,6 +536,34 @@ Sub ReportAutofilterClear()
 '===========================
     On Error Resume Next
     ActiveSheet.ShowAllData
+End Sub
+
+Sub GotoNextFail()
+'===========================
+' Writen by Michael Rykin
+' Used in report arrangement button go to next fail
+'===========================
+    Dim FindString As String
+    Dim Rng As Range
+    Dim ActiveRow As Long
+    FindString = "FAIL"
+    ActiveRow = ActiveCell.row + 1
+    Debug.Print (ActiveRow)
+    
+    Set Rng = Range("S:S").Find(What:=FindString, _
+                    After:=Range("S" & ActiveRow), _
+                    LookIn:=xlValues, _
+                    LookAt:=xlWhole, _
+                    SearchOrder:=xlByRows, _
+                    SearchDirection:=xlNext, _
+                    MatchCase:=True)
+    If Not Rng Is Nothing Then
+        Application.Goto Sheets("Result").Range("A" & Rng.row - 1), True
+        ActiveRow = ActiveCell.row
+    Else
+        MsgBox "No Failures found in this result file"
+    End If
+
 End Sub
 
 Sub CheckForLatestMacroVersion()
@@ -852,7 +891,7 @@ Sub AddAboutSheet()
 '=============================================================================================
 Dim SheetExists As Boolean
 Dim ws As Worksheet
-Dim rng As Range
+Dim Rng As Range
 
 SheetExists = False
 For Each Sheet In Worksheets
@@ -868,14 +907,14 @@ Range("A1").value = "Version History"
 Range("A2").value = "Version Number"
 Range("B2").value = "What changed compared to old version"
 Range("A1:B1").Merge
-Set rng = Range("A1:B10")
-With rng.Borders
+Set Rng = Range("A1:B10")
+With Rng.Borders
     .LineStyle = xlContinuous
     .Weight = xlThin
 End With
 Range("A1:B2").Interior.Color = 14136213
-Set rng = Range("A2:B2")
-With rng.Font
+Set Rng = Range("A2:B2")
+With Rng.Font
     .Size = 14
     .FontStyle = "Calibri"
     .Bold = True

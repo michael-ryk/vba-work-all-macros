@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion As String = "V15.0"
-Public Const whatIsNew As String = "Refactor code - dump junk"
+Public Const moduleVersion As String = "V15.1"
+Public Const whatIsNew As String = "Refactor Buttons creation"
 '==================
 
 Sub Transpose_Table()
@@ -231,50 +231,13 @@ Sub Report_Arrangement12()
         ActiveWindow.ScrollColumn = 1   'Scroll to the left
         printDebug StartTime, Timer, "Created Links to results sheets"
         
-        'Add button IDU Filter
-        Set filterBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1, 1, 45, Range("O1").Height - 1)
-        With filterBtn
-        .OnAction = "ReportAutofilterIDU"
-        .Caption = "IDU"
-        .Name = "IDU"
-        .Font.Size = 14
-        .Font.Bold = True
-        End With
-        printDebug StartTime, Timer, "Created IDU filter button"
-        
-        'Add button General filter
-        Set filterBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1 + 45, 1, 45, Range("O1").Height - 1)
-        With filterBtn
-        .OnAction = "ReportAutofilterFilterItems"
-        .Caption = "Filter"
-        .Name = "Filter"
-        .Font.Size = 14
-        .Font.Bold = True
-        End With
-        printDebug StartTime, Timer, "Created Filter button"
-        
-        'Add button to clear filter
-        Set clearBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1 + 45 + 45, 1, 45, Range("O1").Height - 1)
-        With clearBtn
-        .OnAction = "ReportAutofilterClear"
-        .Caption = "Clear"
-        .Name = "Clear"
-        .Font.Size = 14
-        .Font.Bold = True
-        End With
-        printDebug StartTime, Timer, "Created Clear filter button"
-        
-        'Add button Go to next failure
-        Set clearBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1 + 45 + 45 + 45, 1, 90, Range("O1").Height - 1)
-        With clearBtn
-        .OnAction = "GotoNextFail"
-        .Caption = "Next Fail"
-        .Name = "gotoFail"
-        .Font.Size = 14
-        .Font.Bold = True
-        End With
-        printDebug StartTime, Timer, "Created Clear filter button"
-        
+        'Create Filter buttons
+        addFilterButton 0, "IDU", "ReportAutoFilterIDU"
+        addFilterButton 1, "Filter", "ReportAutofilterFilterItems"
+        addFilterButton 2, "Clear", "ReportAutofilterClear"
+        addFilterButton 3, "NextFail", "GotoNextFail"
+        printDebug StartTime, Timer, "Created Filter buttons"
+                
         'Freeze top row
         ActiveWindow.ScrollRow = 1  'Must freeze only when first row seen in screen
         With ActiveWindow
@@ -305,6 +268,23 @@ End Sub
 Sub ReturnToFirstSheet()
     Sheets("Result").Select
 End Sub
+
+Function addFilterButton(buttonIndex, buttonName, onClickMacroName)
+    '===========================
+    ' Writen by Michael Rykin
+    ' Create all buttons used for filtering results
+    '===========================
+    Const ButtonWidth = 70
+    Set filterBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1 + buttonIndex * ButtonWidth, 1, ButtonWidth, Range("O1").Height - 1)
+    With filterBtn
+    .OnAction = onClickMacroName
+    .Caption = buttonName
+    .Name = buttonName
+    .Font.Size = 14
+    .Font.Bold = True
+    End With
+    
+End Function
 
 Function printDebug(start, current, inputText)
     lastEmptyMacroSheetRow = Worksheets("Macro Logs").Cells(Rows.Count, "A").End(xlUp).row + 1

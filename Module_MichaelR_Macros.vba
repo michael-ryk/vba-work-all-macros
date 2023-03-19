@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion As String = "V15.1"
-Public Const whatIsNew As String = "Refactor Buttons creation"
+Public Const moduleVersion As String = "V15.2"
+Public Const whatIsNew As String = "Refactor Code"
 '==================
 
 Sub Transpose_Table()
@@ -25,10 +25,19 @@ Sub Report_Arrangement12()
     If ActiveWorkbook.Sheets(1).Name = "Result" Then
         'Excel file is appropriate for this macro - Run
         'Start Timer to measure run time
-        Dim StartTime As Double
-        Dim SecondsElapsed As Double
+        Dim StartTime           As Double
+        Dim SecondsElapsed      As Double
         StartTime = Timer
-
+        
+        'Constants
+        Const cLightRed = 22
+        Const cRed = 3
+        Const cLightBlue = 37
+        Const cBrown = 12
+        Const cOrange = 45
+        Const cGreen = 10
+        Const heightHighRow = 26
+        
         'Create Sheet for macro logs - Must happen before timer print
         Sheets.Add(After:=Sheets("Result")).Name = "Macro Logs"
         ActiveWorkbook.Sheets("Result").Activate 'Go back to First sheet
@@ -45,11 +54,12 @@ Sub Report_Arrangement12()
         printDebug StartTime, Timer, "Added current runing version, whats new"
         
         'Variables
-        Dim hyperlinkSheetName As String
-        Dim row As Long
-        Dim maxRow As Long
-        Dim ws As Worksheet
-        Dim btn As Button
+        Dim hyperlinkSheetName  As String
+        Dim row                 As Long
+        Dim maxRow              As Long
+        Dim ws                  As Worksheet
+        Dim btn                 As Button
+        
         printDebug StartTime, Timer, "Defined variables"
         
         Application.ScreenUpdating = False
@@ -59,7 +69,7 @@ Sub Report_Arrangement12()
         
         'Remove unessasary rows from original sheet to reduce final file size (based on automation open case)
         Worksheets("Result").Rows(maxRow + 5 & ":" & Worksheets("Result").Rows.Count).Delete
-        printDebug StartTime, Timer, "Removed unnessasary rows"
+        printDebug StartTime, Timer, "Removed unnecessary rows"
         
         'Copy Current report sheet for backup
         Worksheets(1).Copy After:=Worksheets(1) 'Backup original Report from Testshell
@@ -112,16 +122,16 @@ Sub Report_Arrangement12()
         
             Select Case Cells(row, "K").value
                 Case "Run Suite Project"
-                    Rows(row).RowHeight = 26
+                    Rows(row).RowHeight = heightHighRow
                     Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
                 Case "Run Test"
-                    Rows(row).RowHeight = 26
+                    Rows(row).RowHeight = heightHighRow
                     Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
                 Case "Set Variables"
                     Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(250, 250, 170) 'yellow
                 Case "Text to report"
                     Cells(row, "O").Font.Color = vbWhite
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = cGreen
                     If Left(Cells(row, "O"), 1) = "#" Then
                         Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(83, 141, 213) 'Light blue Internal loop color
                     ElseIf Left(Cells(row, "O"), 3) = ":::" Then
@@ -136,21 +146,21 @@ Sub Report_Arrangement12()
                         Cells(row, "O").wrapText = True
                         Cells(row, "O").EntireRow.AutoFit
                     Else
-                        Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 10 'Green
+                        Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = cGreen
                         'Cells(row, "O").Font.Bold = True   'Starting 23-5-22 this row make macro stuck for 60 sec
                     End If
                 Case "SET"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = cLightRed
                 Case "ADD"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = cLightRed
                 Case "EDIT"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = cLightRed
                 Case "GET"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 37 'Light Blue
+                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = cLightBlue
                 Case "Comparison"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 45 'Orange
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = cOrange
                 Case "Reference line"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 12 'Brown
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = cBrown
                 Case "NG_DynamicDelay"
                     Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(204, 192, 218) 'light purple
                 Case "Ping"
@@ -159,27 +169,27 @@ Sub Report_Arrangement12()
             
             Select Case Cells(row, "J").value
                 Case "set"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = cLightRed
                 Case "add"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = cLightRed
                 Case "edit"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 22 'Light Red
+                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = cLightRed
                 Case "get"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = 37 'Light Blue
+                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = cLightBlue
             End Select
 
             Select Case Cells(row, "D").value
                 Case "TnM"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 37 'Blue
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = cLightBlue
                 Case "File_Loop"
                     Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(250, 250, 170) 'yellow
             End Select
 
             Select Case Cells(row, "S").value
                 Case "FAIL"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = cRed
                 Case "ERROR"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = 3 'Red
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = cRed
             End Select
 
             'Create links to sheets for all "See walk results in sheet x" Cells
@@ -353,7 +363,7 @@ Sub GotoNextFail()
                     SearchDirection:=xlNext, _
                     MatchCase:=True)
     If Not Rng Is Nothing Then
-        Application.Goto Sheets("Result").Range("A" & Rng.row - 1), True
+        Application.GoTo Sheets("Result").Range("A" & Rng.row - 1), True
         ActiveRow = ActiveCell.row
     Else
         MsgBox "No Failures found in this result file"

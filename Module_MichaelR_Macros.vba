@@ -1,7 +1,8 @@
 '==================
-Public Const moduleVersion As String = "V15.2"
-Public Const whatIsNew As String = "Refactor Code"
+Public Const moduleVersion  As String = "V15.3"
+Public Const whatIsNew      As String = "Fix unable to check macro if tmp not exist"
 '==================
+
 
 Sub Transpose_Table()
     '===========================
@@ -275,9 +276,11 @@ Sub Report_Arrangement12()
     End If
 End Sub
 
+
 Sub ReturnToFirstSheet()
     Sheets("Result").Select
 End Sub
+
 
 Function addFilterButton(buttonIndex, buttonName, onClickMacroName)
     '===========================
@@ -296,12 +299,14 @@ Function addFilterButton(buttonIndex, buttonName, onClickMacroName)
     
 End Function
 
+
 Function printDebug(start, current, inputText)
     lastEmptyMacroSheetRow = Worksheets("Macro Logs").Cells(Rows.Count, "A").End(xlUp).row + 1
     Debug.Print (Round(current - start, 2) & " : " & inputText)
     Worksheets("Macro Logs").Cells(lastEmptyMacroSheetRow, "A") = Round(current - start, 2)
     Worksheets("Macro Logs").Cells(lastEmptyMacroSheetRow, "B") = inputText
 End Function
+
 
 Sub ReportAutofilterIDU()
     '===========================
@@ -316,6 +321,7 @@ Sub ReportAutofilterIDU()
     End If
 
 End Sub
+
 
 Sub ReportAutofilterFilterItems()
     '===========================
@@ -334,6 +340,7 @@ Sub ReportAutofilterFilterItems()
 
 End Sub
 
+
 Sub ReportAutofilterClear()
     '===========================
     ' Writen by Michael Rykin
@@ -342,6 +349,7 @@ Sub ReportAutofilterClear()
     On Error Resume Next
     ActiveSheet.ShowAllData
 End Sub
+
 
 Sub GotoNextFail()
     '===========================
@@ -371,6 +379,7 @@ Sub GotoNextFail()
 
 End Sub
 
+
 Sub CheckForLatestMacroVersion()
 
     Dim notifyUserToUpdate As Boolean
@@ -393,6 +402,7 @@ Sub CheckForLatestMacroVersion()
     End If
         
 End Sub
+
 
 Function CheckIfRequiredUpdate() As Boolean
     '----------------------------------------------------------------
@@ -431,6 +441,7 @@ Function CheckIfRequiredUpdate() As Boolean
     
 End Function
 
+
 Function CheckIfShowUpdateNotification() As Boolean
     '------------------------------------------------------------------
     ' Return true if user wasn't notified today about potential upgrade
@@ -445,14 +456,16 @@ Function CheckIfShowUpdateNotification() As Boolean
     
     todayDate = Date
     macroFilesFolder = "C:\tmp"
+    alternativeMacroFilesFolder = "c:\Users\testing\Documents"
     checkTimeFileName = "reportArrangementMacroLastNotification.txt"
-    checkTimeFilePath = macroFilesFolder & "\" & checkTimeFileName
     Set fso = CreateObject("Scripting.FileSystemObject")
     
     If Not fso.FolderExists(macroFilesFolder) Then
-        'Folder with files not exist - create it
-        fso.CreateFolder macroFilesFolder
+        'C:\tmp note exist - use alternative path - currently testing todo: make some common path for all users
+        macroFilesFolder = alternativeMacroFilesFolder
     End If
+    
+    checkTimeFilePath = macroFilesFolder & "\" & checkTimeFileName
     
     If Dir(checkTimeFilePath) = "" Then
         'Debug.Print ("Last notification file didn't found - Create it, put curent date - Notify user to update")
@@ -491,6 +504,7 @@ Function CheckIfShowUpdateNotification() As Boolean
     
 End Function
 
+
 Sub FileExist()
     '===========================
     ' Writen by Michael Rykin
@@ -514,6 +528,7 @@ Sub FileExist()
         End If
     Next i
 End Sub
+
 
 Function Result(testPath As String, row As Integer)
     'Check file existance and put answer in cell
@@ -571,6 +586,7 @@ skip2:
     MsgBox ("Found corrupted links in data validation in following cells : " & vbCrLf & textPrint)
 End Sub
 
+
 Sub pass_fail_colors_cond_formating()
     '===========================
     ' Writen by Michael Rykin
@@ -623,6 +639,7 @@ Sub pass_fail_colors_cond_formating()
     
 End Sub
 
+
 Sub True_False_colors_cond_formating()
 '===========================
 ' Writen by Michael Rykin
@@ -649,6 +666,7 @@ Sub True_False_colors_cond_formating()
     Selection.FormatConditions(1).StopIfTrue = False
     
 End Sub
+
 
 Sub CheckXMLSheetToDelete()
     '=============================================================================================
@@ -677,6 +695,7 @@ Sub CheckXMLSheetToDelete()
             "IP20F used " & IP20Founter & " times" & vbCrLf)
 End Sub
 
+
 Sub TransposeArray()
     '=============================================================================================
     ' Writen by Michael Rykin
@@ -694,27 +713,42 @@ Sub TransposeArray()
 
 End Sub
 
+
 Sub cellColorYellowLight()
     Selection.Interior.Color = RGB(255, 242, 204)
 End Sub
+
+
 Sub cellColorYellowDark()
     Selection.Interior.Color = RGB(255, 230, 153)
 End Sub
+
+
 Sub cellColorGreenLight()
     Selection.Interior.Color = RGB(226, 239, 218)
 End Sub
+
+
 Sub cellColorGreenDark()
     Selection.Interior.Color = RGB(198, 224, 180)
 End Sub
+
+
 Sub cellColorBlueLight()
     Selection.Interior.Color = RGB(221, 235, 247)
 End Sub
+
+
 Sub cellColorBlueDark()
     Selection.Interior.Color = RGB(189, 215, 238)
 End Sub
+
+
 Sub cellColorRedLight()
     Selection.Interior.Color = RGB(255, 204, 204)
 End Sub
+
+
 Sub cellColorRedDark()
     Selection.Interior.Color = RGB(255, 153, 153)
 End Sub

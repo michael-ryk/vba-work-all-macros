@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion  As String = "V15.3"
-Public Const whatIsNew      As String = "Fix unable to check macro if tmp not exist"
+Public Const moduleVersion  As String = "V15.4"
+Public Const whatIsNew      As String = "Finish color aligment"
 '==================
 
 
@@ -31,14 +31,21 @@ Sub Report_Arrangement12()
         StartTime = Timer
         
         'Constants
-        Const cLightRed = 22
-        Const cRed = 3
-        Const cLightBlue = 37
-        Const cBrown = 12
-        Const cOrange = 45
-        Const cGreen = 10
         Const heightHighRow = 26
-        
+        Const colorLightGrey = "&Hbfbfbf"
+        Const colorDarkGrey = "&H808080"
+        Const colorYellow = "&Haafafa"
+        Const colorLightPurple = "&Hedc9ff"
+        Const colorLightBlue = "&Hffcc99"
+        Const colorBlue = "&Hd58d53"
+        Const colorGreen = "&H008000"
+        Const colorLightRed = "&H8080ff"
+        Const colorRed = "&H0000ff"
+        Const colorDarkRed = "&H000080"
+        Const colorBrown = "&H008080"
+        Const colorOrange = "&H0099ff"
+        Const colorCommentBlue = "&Hbd814f"
+
         'Create Sheet for macro logs - Must happen before timer print
         Sheets.Add(After:=Sheets("Result")).Name = "Macro Logs"
         ActiveWorkbook.Sheets("Result").Activate 'Go back to First sheet
@@ -124,19 +131,19 @@ Sub Report_Arrangement12()
             Select Case Cells(row, "K").value
                 Case "Run Suite Project"
                     Rows(row).RowHeight = heightHighRow
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorLightGrey
                 Case "Run Test"
                     Rows(row).RowHeight = heightHighRow
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorLightGrey
                 Case "Set Variables"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(250, 250, 170) 'yellow
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorYellow
                 Case "Text to report"
-                    Cells(row, "O").Font.Color = vbWhite
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = cGreen
+                    Cells(row, "O").Font.color = vbWhite
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorGreen
                     If Left(Cells(row, "O"), 1) = "#" Then
-                        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(83, 141, 213) 'Light blue Internal loop color
+                        Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorBlue
                     ElseIf Left(Cells(row, "O"), 3) = ":::" Then
-                        Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(191, 191, 191) 'light grey
+                        Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorLightGrey
                     ElseIf Left(Cells(row, "O"), 3) = "===" Then
                         Cells(row, "O").wrapText = True
                         Cells(row, "O").EntireRow.AutoFit
@@ -147,50 +154,50 @@ Sub Report_Arrangement12()
                         Cells(row, "O").wrapText = True
                         Cells(row, "O").EntireRow.AutoFit
                     Else
-                        Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = cGreen
+                        Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorGreen
                         'Cells(row, "O").Font.Bold = True   'Starting 23-5-22 this row make macro stuck for 60 sec
                     End If
                 Case "SET"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = cLightRed
+                    Range(Cells(row, "J"), Cells(row, "K")).Interior.color = colorLightRed
                 Case "ADD"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = cLightRed
+                    Range(Cells(row, "J"), Cells(row, "K")).Interior.color = colorLightRed
                 Case "EDIT"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = cLightRed
+                    Range(Cells(row, "J"), Cells(row, "K")).Interior.color = colorLightRed
                 Case "GET"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = cLightBlue
+                    Range(Cells(row, "J"), Cells(row, "K")).Interior.color = colorLightBlue
                 Case "Comparison"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = cOrange
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorOrange
                 Case "Reference line"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = cBrown
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorBrown
                 Case "NG_DynamicDelay"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(204, 192, 218) 'light purple
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorLightPurple
                 Case "Ping"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(204, 192, 218) 'light purple
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorLightPurple
             End Select
             
             Select Case Cells(row, "J").value
                 Case "set"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = cLightRed
+                    Range(Cells(row, "J"), Cells(row, "K")).Interior.color = colorLightRed
                 Case "add"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = cLightRed
+                    Range(Cells(row, "J"), Cells(row, "K")).Interior.color = colorLightRed
                 Case "edit"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = cLightRed
+                    Range(Cells(row, "J"), Cells(row, "K")).Interior.color = colorLightRed
                 Case "get"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.ColorIndex = cLightBlue
+                    Range(Cells(row, "J"), Cells(row, "K")).Interior.color = colorLightBlue
             End Select
 
             Select Case Cells(row, "D").value
                 Case "TnM"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = cLightBlue
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorLightBlue
                 Case "File_Loop"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.Color = RGB(250, 250, 170) 'yellow
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorYellow
             End Select
 
             Select Case Cells(row, "S").value
                 Case "FAIL"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = cRed
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorRed
                 Case "ERROR"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.ColorIndex = cRed
+                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorRed
             End Select
 
             'Create links to sheets for all "See walk results in sheet x" Cells
@@ -211,15 +218,15 @@ Sub Report_Arrangement12()
         printDebug StartTime, Timer, "For loop end, start color set for fonts"
         'Apply Format for Delay column
         Columns("Q").Font.Bold = True 'Bold 'Starting 23-5-22 this row make macro stuck for 60 sec
-        Columns("Q").Font.ColorIndex = 9 'Color = Red
-        Columns("N").Font.ColorIndex = 16 'Color = Gray
-        Columns("P").Font.ColorIndex = 16 'Color = Gray
-        Columns("R").Font.ColorIndex = 16 'Color = Gray
-        Columns("D").Font.ColorIndex = 16 'Color = Gray
-        Columns("E").Font.ColorIndex = 16 'Color = Gray
-        Columns("V").Font.ColorIndex = 16 'Color = Gray
-        Columns("W").Font.Color = RGB(79, 129, 189)        'Color = Gray
-        Columns("W").Font.Bold = True       'Bold
+        Columns("Q").Font.color = colorDarkRed
+        Columns("N").Font.color = colorDarkGrey
+        Columns("P").Font.color = colorDarkGrey
+        Columns("R").Font.color = colorDarkGrey
+        Columns("D").Font.color = colorDarkGrey
+        Columns("E").Font.color = colorDarkGrey
+        Columns("V").Font.color = colorDarkGrey
+        Columns("W").Font.color = colorCommentBlue
+        Columns("W").Font.Bold = True
 
         With Columns("A:Z").Borders(xlInsideHorizontal)
         .LineStyle = xlContinuous
@@ -598,10 +605,10 @@ Sub pass_fail_colors_cond_formating()
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .Color = RGB(198, 239, 206)
+        .color = RGB(198, 239, 206)
         .TintAndShade = 0
     End With
-    Selection.FormatConditions(1).Font.Color = RGB(0, 97, 0)
+    Selection.FormatConditions(1).Font.color = RGB(0, 97, 0)
     Selection.FormatConditions(1).StopIfTrue = False
     
     Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlEqual, _
@@ -609,10 +616,10 @@ Sub pass_fail_colors_cond_formating()
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .Color = RGB(255, 199, 206)
+        .color = RGB(255, 199, 206)
         .TintAndShade = 0
     End With
-    Selection.FormatConditions(1).Font.Color = RGB(156, 0, 6)
+    Selection.FormatConditions(1).Font.color = RGB(156, 0, 6)
     Selection.FormatConditions(1).StopIfTrue = False
     
     Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlEqual, _
@@ -620,10 +627,10 @@ Sub pass_fail_colors_cond_formating()
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .Color = RGB(217, 217, 217)
+        .color = RGB(217, 217, 217)
         .TintAndShade = 0
     End With
-    Selection.FormatConditions(1).Font.Color = RGB(166, 166, 166)
+    Selection.FormatConditions(1).Font.color = RGB(166, 166, 166)
     Selection.FormatConditions(1).StopIfTrue = False
     
     Selection.FormatConditions.Add Type:=xlCellValue, Operator:=xlEqual, _
@@ -631,10 +638,10 @@ Sub pass_fail_colors_cond_formating()
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .Color = RGB(255, 235, 156)
+        .color = RGB(255, 235, 156)
         .TintAndShade = 0
     End With
-    Selection.FormatConditions(1).Font.Color = RGB(156, 101, 0)
+    Selection.FormatConditions(1).Font.color = RGB(156, 101, 0)
     Selection.FormatConditions(1).StopIfTrue = False
     
 End Sub
@@ -651,7 +658,7 @@ Sub True_False_colors_cond_formating()
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .Color = 5287936
+        .color = 5287936
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
@@ -660,7 +667,7 @@ Sub True_False_colors_cond_formating()
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Interior
         .PatternColorIndex = xlAutomatic
-        .Color = 255
+        .color = 255
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
@@ -715,40 +722,40 @@ End Sub
 
 
 Sub cellColorYellowLight()
-    Selection.Interior.Color = RGB(255, 242, 204)
+    Selection.Interior.color = RGB(255, 242, 204)
 End Sub
 
 
 Sub cellColorYellowDark()
-    Selection.Interior.Color = RGB(255, 230, 153)
+    Selection.Interior.color = RGB(255, 230, 153)
 End Sub
 
 
 Sub cellColorGreenLight()
-    Selection.Interior.Color = RGB(226, 239, 218)
+    Selection.Interior.color = RGB(226, 239, 218)
 End Sub
 
 
 Sub cellColorGreenDark()
-    Selection.Interior.Color = RGB(198, 224, 180)
+    Selection.Interior.color = RGB(198, 224, 180)
 End Sub
 
 
 Sub cellColorBlueLight()
-    Selection.Interior.Color = RGB(221, 235, 247)
+    Selection.Interior.color = RGB(221, 235, 247)
 End Sub
 
 
 Sub cellColorBlueDark()
-    Selection.Interior.Color = RGB(189, 215, 238)
+    Selection.Interior.color = RGB(189, 215, 238)
 End Sub
 
 
 Sub cellColorRedLight()
-    Selection.Interior.Color = RGB(255, 204, 204)
+    Selection.Interior.color = RGB(255, 204, 204)
 End Sub
 
 
 Sub cellColorRedDark()
-    Selection.Interior.Color = RGB(255, 153, 153)
+    Selection.Interior.color = RGB(255, 153, 153)
 End Sub

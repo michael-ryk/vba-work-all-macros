@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion  As String = "V15.4"
-Public Const whatIsNew      As String = "Finish color aligment"
+Public Const moduleVersion  As String = "V15.5"
+Public Const whatIsNew      As String = "Add color code for Get Set operations"
 '==================
 
 
@@ -35,7 +35,7 @@ Sub Report_Arrangement12()
         Const colorLightGrey = "&Hbfbfbf"
         Const colorDarkGrey = "&H808080"
         Const colorYellow = "&Haafafa"
-        Const colorLightPurple = "&Hedc9ff"
+        Const colorLightPurple = "&Headae1"
         Const colorLightBlue = "&Hffcc99"
         Const colorBlue = "&Hd58d53"
         Const colorGreen = "&H008000"
@@ -45,6 +45,8 @@ Sub Report_Arrangement12()
         Const colorBrown = "&H008080"
         Const colorOrange = "&H0099ff"
         Const colorCommentBlue = "&Hbd814f"
+        Const colorGetBlue = "&Hfce3cf"
+        Const colorGetRed = "&Hddddff"
 
         'Create Sheet for macro logs - Must happen before timer print
         Sheets.Add(After:=Sheets("Result")).Name = "Macro Logs"
@@ -67,6 +69,8 @@ Sub Report_Arrangement12()
         Dim maxRow              As Long
         Dim ws                  As Worksheet
         Dim btn                 As Button
+        Dim nColumnData         As String
+        Dim currentRange        As Range
         
         printDebug StartTime, Timer, "Defined variables"
         
@@ -99,7 +103,7 @@ Sub Report_Arrangement12()
         Columns("H").ColumnWidth = 0.5  'Slot
         Columns("I").ColumnWidth = 0.5  'State
         Columns("J").ColumnWidth = 2    'Command Set,Get,Walk...
-        Columns("K").ColumnWidth = 25   'Topic
+        Columns("K").ColumnWidth = 16   'Topic
         Columns("L").ColumnWidth = 1    'SubTopic
         Columns("M").ColumnWidth = 1    'Operator
         Columns("N").ColumnWidth = 12   'Value
@@ -127,23 +131,27 @@ Sub Report_Arrangement12()
         printDebug StartTime, Timer, "Start For Loop and cycle through rows"
         'Cycle through all Rows which hava data in A column and apply colors
         For row = 2 To maxRow
-        
+            
+            Set currentRange = Range("A" & row & ":R" & row)
+            nColumnData = Range("N" & row).value
+            
+            ' Column K Test
             Select Case Cells(row, "K").value
                 Case "Run Suite Project"
                     Rows(row).RowHeight = heightHighRow
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorLightGrey
+                    currentRange.Interior.color = colorLightGrey
                 Case "Run Test"
                     Rows(row).RowHeight = heightHighRow
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorLightGrey
+                    currentRange.Interior.color = colorLightGrey
                 Case "Set Variables"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorYellow
+                    currentRange.Interior.color = colorYellow
                 Case "Text to report"
                     Cells(row, "O").Font.color = vbWhite
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorGreen
+                    currentRange.Interior.color = colorGreen
                     If Left(Cells(row, "O"), 1) = "#" Then
-                        Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorBlue
+                        currentRange.Interior.color = colorBlue
                     ElseIf Left(Cells(row, "O"), 3) = ":::" Then
-                        Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorLightGrey
+                        currentRange.Interior.color = colorLightGrey
                     ElseIf Left(Cells(row, "O"), 3) = "===" Then
                         Cells(row, "O").wrapText = True
                         Cells(row, "O").EntireRow.AutoFit
@@ -154,51 +162,43 @@ Sub Report_Arrangement12()
                         Cells(row, "O").wrapText = True
                         Cells(row, "O").EntireRow.AutoFit
                     Else
-                        Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorGreen
+                        currentRange.Interior.color = colorGreen
                         'Cells(row, "O").Font.Bold = True   'Starting 23-5-22 this row make macro stuck for 60 sec
                     End If
-                Case "SET"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.color = colorLightRed
-                Case "ADD"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.color = colorLightRed
-                Case "EDIT"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.color = colorLightRed
-                Case "GET"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.color = colorLightBlue
                 Case "Comparison"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorOrange
+                    currentRange.Interior.color = colorOrange
                 Case "Reference line"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorBrown
+                    currentRange.Interior.color = colorBrown
                 Case "NG_DynamicDelay"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorLightPurple
+                    currentRange.Interior.color = colorLightPurple
                 Case "Ping"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorLightPurple
+                    currentRange.Interior.color = colorLightPurple
             End Select
             
-            Select Case Cells(row, "J").value
-                Case "set"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.color = colorLightRed
-                Case "add"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.color = colorLightRed
-                Case "edit"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.color = colorLightRed
-                Case "get"
-                    Range(Cells(row, "J"), Cells(row, "K")).Interior.color = colorLightBlue
-            End Select
-
+            ' Column D test
             Select Case Cells(row, "D").value
                 Case "TnM"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorLightBlue
+                    currentRange.Interior.color = colorLightBlue
                 Case "File_Loop"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorYellow
+                    currentRange.Interior.color = colorYellow
             End Select
-
+            
+            ' Column S test - Failure red color
             Select Case Cells(row, "S").value
                 Case "FAIL"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorRed
+                    currentRange.Interior.color = colorRed
                 Case "ERROR"
-                    Range(Cells(row, "A"), Cells(row, "R")).Interior.color = colorRed
+                    currentRange.Interior.color = colorRed
             End Select
+            
+            ' Set Get colors for NG REST SNMP commands
+            If Cells(row, "E").value = "NG_Rest_SNMP" Then
+                If (InStr(nColumnData, "ADD") > 0 Or InStr(nColumnData, "EDIT") > 0 Or InStr(nColumnData, "SET") > 0) Then
+                    Range("O" & row).Interior.color = colorGetRed
+                ElseIf (InStr(nColumnData, "GET") > 0 Or InStr(nColumnData, "WALK") > 0 Or InStr(nColumnData, "FIND") > 0) Then
+                    Range("O" & row).Interior.color = colorGetBlue
+                End If
+            End If
 
             'Create links to sheets for all "See walk results in sheet x" Cells
             'Testshell

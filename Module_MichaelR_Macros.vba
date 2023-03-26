@@ -28,7 +28,10 @@ Sub Report_Arrangement12()
         Exit Sub
     End If
     
-    
+    If macroAlreadyApplied() Then
+        MsgBox "Macro already applied - Abort", vbCritical
+        Exit Sub
+    End If
 
     'Excel file is appropriate for this macro - Run
     'Start Timer to measure run time
@@ -291,6 +294,17 @@ Sub ReturnToFirstSheet()
     Sheets("Result").Select
 End Sub
 
+Function macroAlreadyApplied() As Boolean
+    Dim wks As Worksheet
+    On Error Resume Next
+    Set wks = Worksheets("Macro Logs")
+    
+    If wks Is Nothing Then
+        macroAlreadyApplied = False
+    Else
+        macroAlreadyApplied = True
+    End If
+End Function
 
 Function addFilterButton(buttonIndex, buttonName, onClickMacroName)
     '===========================

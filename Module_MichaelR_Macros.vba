@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion  As String = "V15.5"
-Public Const whatIsNew      As String = "Add color code for Get Set operations"
+Public Const moduleVersion  As String = "V15.6"
+Public Const whatIsNew      As String = "Fix get-set colors overide fail-error"
 '==================
 
 
@@ -183,6 +183,15 @@ Sub Report_Arrangement12()
                     currentRange.Interior.color = colorYellow
             End Select
             
+            ' Set Get colors for NG REST SNMP commands
+            If Cells(row, "E").value = "NG_Rest_SNMP" Then
+                If (InStr(nColumnData, "ADD") > 0 Or InStr(nColumnData, "EDIT") > 0 Or InStr(nColumnData, "SET") > 0) Then
+                    Range("O" & row).Interior.color = colorGetRed
+                ElseIf (InStr(nColumnData, "GET") > 0 Or InStr(nColumnData, "WALK") > 0) Then
+                    Range("O" & row).Interior.color = colorGetBlue
+                End If
+            End If
+            
             ' Column S test - Failure red color
             Select Case Cells(row, "S").value
                 Case "FAIL"
@@ -191,15 +200,6 @@ Sub Report_Arrangement12()
                     currentRange.Interior.color = colorRed
             End Select
             
-            ' Set Get colors for NG REST SNMP commands
-            If Cells(row, "E").value = "NG_Rest_SNMP" Then
-                If (InStr(nColumnData, "ADD") > 0 Or InStr(nColumnData, "EDIT") > 0 Or InStr(nColumnData, "SET") > 0) Then
-                    Range("O" & row).Interior.color = colorGetRed
-                ElseIf (InStr(nColumnData, "GET") > 0 Or InStr(nColumnData, "WALK") > 0 Or InStr(nColumnData, "FIND") > 0) Then
-                    Range("O" & row).Interior.color = colorGetBlue
-                End If
-            End If
-
             'Create links to sheets for all "See walk results in sheet x" Cells
             'Testshell
             If InStr(1, Cells(row, "O").value, "See Walk results") > 0 Then

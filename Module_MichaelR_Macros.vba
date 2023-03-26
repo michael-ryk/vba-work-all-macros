@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion  As String = "V15.6"
-Public Const whatIsNew      As String = "Fix get-set colors overide fail-error"
+Public Const moduleVersion  As String = "V15.7"
+Public Const whatIsNew      As String = "Refactor loop"
 '==================
 
 
@@ -23,264 +23,267 @@ Sub Report_Arrangement12()
     ' Shortcut: ctrl+r
     '===========================
 
-    If ActiveWorkbook.Sheets(1).Name = "Result" Then
-        'Excel file is appropriate for this macro - Run
-        'Start Timer to measure run time
-        Dim StartTime           As Double
-        Dim SecondsElapsed      As Double
-        StartTime = Timer
-        
-        'Constants
-        Const heightHighRow = 26
-        Const colorLightGrey = "&Hbfbfbf"
-        Const colorDarkGrey = "&H808080"
-        Const colorYellow = "&Haafafa"
-        Const colorLightPurple = "&Headae1"
-        Const colorLightBlue = "&Hffcc99"
-        Const colorBlue = "&Hd58d53"
-        Const colorGreen = "&H008000"
-        Const colorLightRed = "&H8080ff"
-        Const colorRed = "&H0000ff"
-        Const colorDarkRed = "&H000080"
-        Const colorBrown = "&H008080"
-        Const colorOrange = "&H0099ff"
-        Const colorCommentBlue = "&Hbd814f"
-        Const colorGetBlue = "&Hfce3cf"
-        Const colorGetRed = "&Hddddff"
-
-        'Create Sheet for macro logs - Must happen before timer print
-        Sheets.Add(After:=Sheets("Result")).Name = "Macro Logs"
-        ActiveWorkbook.Sheets("Result").Activate 'Go back to First sheet
-        
-        printDebug StartTime, Timer, "Timer started and added Macro logs sheet"
-        
-        'Inform user for update
-        CheckForLatestMacroVersion
-        printDebug StartTime, Timer, "Verified if macro upgrade available"
-        
-        'Indicate Macro version and what is new
-        Cells(2, "Z") = "Macro Version: " & moduleVersion
-        Cells(3, "Z") = "What is new? " & whatIsNew
-        printDebug StartTime, Timer, "Added current runing version, whats new"
-        
-        'Variables
-        Dim hyperlinkSheetName  As String
-        Dim row                 As Long
-        Dim maxRow              As Long
-        Dim ws                  As Worksheet
-        Dim btn                 As Button
-        Dim nColumnData         As String
-        Dim currentRange        As Range
-        
-        printDebug StartTime, Timer, "Defined variables"
-        
-        Application.ScreenUpdating = False
-
-        maxRow = Cells(Rows.Count, "A").End(xlUp).row   'Determine Max row
-        printDebug StartTime, Timer, "Calculated max row with content"
-        
-        'Remove unessasary rows from original sheet to reduce final file size (based on automation open case)
-        Worksheets("Result").Rows(maxRow + 5 & ":" & Worksheets("Result").Rows.Count).Delete
-        printDebug StartTime, Timer, "Removed unnecessary rows"
-        
-        'Copy Current report sheet for backup
-        Worksheets(1).Copy After:=Worksheets(1) 'Backup original Report from Testshell
-        ActiveWorkbook.Sheets("Result").Activate 'Go back to First sheet
-        printDebug StartTime, Timer, "Original sheet copied for backup purpose"
-        
-        'Rows Heigh
-        Range("A:A").RowHeight = 12
-        Range("1:1").RowHeight = 20
-
-        'Columns Width
-        Columns("A").ColumnWidth = 3    'Execute
-        Columns("B").ColumnWidth = 0.5  'Loop 2
-        Columns("C").ColumnWidth = 0.5  'Loop 1
-        Columns("D").ColumnWidth = 6    'Device
-        Columns("E").ColumnWidth = 8    'Sub Device
-        Columns("F").ColumnWidth = 12   'Address 1
-        Columns("G").ColumnWidth = 0.5  'Address 2 for IP10 Use
-        Columns("H").ColumnWidth = 0.5  'Slot
-        Columns("I").ColumnWidth = 0.5  'State
-        Columns("J").ColumnWidth = 2    'Command Set,Get,Walk...
-        Columns("K").ColumnWidth = 16   'Topic
-        Columns("L").ColumnWidth = 1    'SubTopic
-        Columns("M").ColumnWidth = 1    'Operator
-        Columns("N").ColumnWidth = 12   'Value
-        Columns("O").ColumnWidth = 75   'Measured
-        Columns("P").ColumnWidth = 6    'Protocol
-        Columns("Q").ColumnWidth = 8    'Delay
-        Columns("R").ColumnWidth = 4    'Stop on Error
-        Columns("S").ColumnWidth = 5    'Status
-        Columns("T").ColumnWidth = 4    'Error
-        Columns("U").ColumnWidth = 4    'System Log
-        Columns("V").AutoFit            'Time Stamp
-        Columns("W").ColumnWidth = 35   'Description
-        Columns("X").AutoFit            'Duration
-
-        'Columns Alignment Properties
-        Columns("D").HorizontalAlignment = xlLeft
-        Columns("E").HorizontalAlignment = xlLeft
-        Columns("H").HorizontalAlignment = xlLeft
-        Columns("K").HorizontalAlignment = xlLeft
-        Columns("Q").HorizontalAlignment = xlCenter
-        Columns("R").HorizontalAlignment = xlLeft
-        
-        printDebug StartTime, Timer, "Formatted rows and columns"
-        
-        printDebug StartTime, Timer, "Start For Loop and cycle through rows"
-        'Cycle through all Rows which hava data in A column and apply colors
-        For row = 2 To maxRow
-            
-            Set currentRange = Range("A" & row & ":R" & row)
-            nColumnData = Range("N" & row).value
-            
-            ' Column K Test
-            Select Case Cells(row, "K").value
-                Case "Run Suite Project"
-                    Rows(row).RowHeight = heightHighRow
-                    currentRange.Interior.color = colorLightGrey
-                Case "Run Test"
-                    Rows(row).RowHeight = heightHighRow
-                    currentRange.Interior.color = colorLightGrey
-                Case "Set Variables"
-                    currentRange.Interior.color = colorYellow
-                Case "Text to report"
-                    Cells(row, "O").Font.color = vbWhite
-                    currentRange.Interior.color = colorGreen
-                    If Left(Cells(row, "O"), 1) = "#" Then
-                        currentRange.Interior.color = colorBlue
-                    ElseIf Left(Cells(row, "O"), 3) = ":::" Then
-                        currentRange.Interior.color = colorLightGrey
-                    ElseIf Left(Cells(row, "O"), 3) = "===" Then
-                        Cells(row, "O").wrapText = True
-                        Cells(row, "O").EntireRow.AutoFit
-                    ElseIf Left(Cells(row, "O"), 3) = "---" Then
-                        Cells(row, "O").wrapText = True
-                        Cells(row, "O").EntireRow.AutoFit
-                    ElseIf Left(Cells(row, "O"), 3) = "***" Then
-                        Cells(row, "O").wrapText = True
-                        Cells(row, "O").EntireRow.AutoFit
-                    Else
-                        currentRange.Interior.color = colorGreen
-                        'Cells(row, "O").Font.Bold = True   'Starting 23-5-22 this row make macro stuck for 60 sec
-                    End If
-                Case "Comparison"
-                    currentRange.Interior.color = colorOrange
-                Case "Reference line"
-                    currentRange.Interior.color = colorBrown
-                Case "NG_DynamicDelay"
-                    currentRange.Interior.color = colorLightPurple
-                Case "Ping"
-                    currentRange.Interior.color = colorLightPurple
-            End Select
-            
-            ' Column D test
-            Select Case Cells(row, "D").value
-                Case "TnM"
-                    currentRange.Interior.color = colorLightBlue
-                Case "File_Loop"
-                    currentRange.Interior.color = colorYellow
-            End Select
-            
-            ' Set Get colors for NG REST SNMP commands
-            If Cells(row, "E").value = "NG_Rest_SNMP" Then
-                If (InStr(nColumnData, "ADD") > 0 Or InStr(nColumnData, "EDIT") > 0 Or InStr(nColumnData, "SET") > 0) Then
-                    Range("O" & row).Interior.color = colorGetRed
-                ElseIf (InStr(nColumnData, "GET") > 0 Or InStr(nColumnData, "WALK") > 0) Then
-                    Range("O" & row).Interior.color = colorGetBlue
-                End If
-            End If
-            
-            ' Column S test - Failure red color
-            Select Case Cells(row, "S").value
-                Case "FAIL"
-                    currentRange.Interior.color = colorRed
-                Case "ERROR"
-                    currentRange.Interior.color = colorRed
-            End Select
-            
-            'Create links to sheets for all "See walk results in sheet x" Cells
-            'Testshell
-            If InStr(1, Cells(row, "O").value, "See Walk results") > 0 Then
-                hyperlinkSheetName = Mid(Cells(row, "O"), InStr(1, Cells(row, "O"), "WalkResult", 1), 10) & "s" & Right(Cells(row, "O"), (Len(Cells(row, "O")) - (InStr(1, Cells(row, "O"), "WalkResult", 1) + 9)))
-                'Debug.Print ("<" & hyperlinkSheetName & ">")
-                ActiveCell.Hyperlinks.Add Anchor:=Cells(row, "O"), Address:="", SubAddress:="'" & hyperlinkSheetName & "'" & "!A1"
-            'CeraRun
-            ElseIf InStr(1, Cells(row, "O").value, "See the measured results") > 0 Then
-                hyperlinkSheetName = Mid(Cells(row, "O"), InStr(1, Cells(row, "O"), "'", 1) + 1, InStrRev(Cells(row, "O"), "'") - InStr(1, Cells(row, "O"), "'", 1) - 1)
-                'Debug.Print ("<" & hyperlinkSheetName & ">")
-                ActiveCell.Hyperlinks.Add Anchor:=Cells(row, "O"), Address:="", SubAddress:="'" & hyperlinkSheetName & "'" & "!A1"
-            End If
-
-        Next row
-
-        printDebug StartTime, Timer, "For loop end, start color set for fonts"
-        'Apply Format for Delay column
-        Columns("Q").Font.Bold = True 'Bold 'Starting 23-5-22 this row make macro stuck for 60 sec
-        Columns("Q").Font.color = colorDarkRed
-        Columns("N").Font.color = colorDarkGrey
-        Columns("P").Font.color = colorDarkGrey
-        Columns("R").Font.color = colorDarkGrey
-        Columns("D").Font.color = colorDarkGrey
-        Columns("E").Font.color = colorDarkGrey
-        Columns("V").Font.color = colorDarkGrey
-        Columns("W").Font.color = colorCommentBlue
-        Columns("W").Font.Bold = True
-
-        With Columns("A:Z").Borders(xlInsideHorizontal)
-        .LineStyle = xlContinuous
-        .ColorIndex = 48
-        End With
-        
-        printDebug StartTime, Timer, "Colors and fonts applied"
-
-        'Create links from all sheets to Results sheet
-        For Each ws In ActiveWorkbook.Worksheets
-            If ws.index > 2 Then
-                'Debug.Print (ws.Name)
-                With ws.Buttons.Add(1, 1, 45, 15)
-                .OnAction = "ReturnToFirstSheet"
-                .text = "Results"
-                End With
-            End If
-        Next
-        
-        ActiveWindow.ScrollColumn = 1   'Scroll to the left
-        printDebug StartTime, Timer, "Created Links to results sheets"
-        
-        'Create Filter buttons
-        addFilterButton 0, "IDU", "ReportAutoFilterIDU"
-        addFilterButton 1, "Filter", "ReportAutofilterFilterItems"
-        addFilterButton 2, "Clear", "ReportAutofilterClear"
-        addFilterButton 3, "NextFail", "GotoNextFail"
-        printDebug StartTime, Timer, "Created Filter buttons"
-                
-        'Freeze top row
-        ActiveWindow.ScrollRow = 1  'Must freeze only when first row seen in screen
-        With ActiveWindow
-            If .FreezePanes Then .FreezePanes = False
-            .SplitColumn = 0
-            .SplitRow = 1
-            .FreezePanes = True
-        End With
-        printDebug StartTime, Timer, "Top row freezed"
-        
-        ActiveWorkbook.Save
-        Application.ScreenUpdating = True
-        printDebug StartTime, Timer, "Workbook saved"
-        
-        'Stop Timer
-        printDebug StartTime, Timer, "Macro finished !!!"
-        SecondsElapsed = Round(Timer - StartTime, 2)
-        Debug.Print ("Time took to run: " & SecondsElapsed)
-        
-        'Indicate Runtime in result
-        Cells(4, "Z") = "Macro duration: " & SecondsElapsed
-        
-    Else
-        MsgBox "This file is not appropriate for Report arrangement macro - Abort run", vbCritical
+    If ActiveSheet.Name <> "Result" Then
+        MsgBox "Macro is not applicable for current sheet - Abort", vbCritical
+        Exit Sub
     End If
+    
+    
+
+    'Excel file is appropriate for this macro - Run
+    'Start Timer to measure run time
+    Dim StartTime           As Double
+    Dim SecondsElapsed      As Double
+    StartTime = Timer
+    
+    'Constants
+    Const heightHighRow = 26
+    Const colorLightGrey = "&Hbfbfbf"
+    Const colorDarkGrey = "&H808080"
+    Const colorYellow = "&Haafafa"
+    Const colorLightPurple = "&Headae1"
+    Const colorLightBlue = "&Hffcc99"
+    Const colorBlue = "&Hd58d53"
+    Const colorGreen = "&H008000"
+    Const colorLightRed = "&H8080ff"
+    Const colorRed = "&H0000ff"
+    Const colorDarkRed = "&H000080"
+    Const colorBrown = "&H008080"
+    Const colorOrange = "&H0099ff"
+    Const colorCommentBlue = "&Hbd814f"
+    Const colorGetBlue = "&Hfce3cf"
+    Const colorGetRed = "&Hddddff"
+
+    'Create Sheet for macro logs - Must happen before timer print
+    Sheets.Add(After:=Sheets("Result")).Name = "Macro Logs"
+    ActiveWorkbook.Sheets("Result").Activate 'Go back to First sheet
+    
+    printDebug StartTime, Timer, "Timer started and added Macro logs sheet"
+    
+    'Inform user for update
+    CheckForLatestMacroVersion
+    printDebug StartTime, Timer, "Verified if macro upgrade available"
+    
+    'Indicate Macro version and what is new
+    Cells(2, "Z") = "Macro Version: " & moduleVersion
+    Cells(3, "Z") = "What is new? " & whatIsNew
+    printDebug StartTime, Timer, "Added current runing version, whats new"
+    
+    'Variables
+    Dim hyperlinkSheetName  As String
+    Dim row                 As Long
+    Dim maxRow              As Long
+    Dim ws                  As Worksheet
+    Dim btn                 As Button
+    Dim nColumnData         As String
+    Dim currentRange        As Range
+    
+    printDebug StartTime, Timer, "Defined variables"
+    
+    Application.ScreenUpdating = False
+
+    maxRow = Cells(Rows.Count, "A").End(xlUp).row   'Determine Max row
+    printDebug StartTime, Timer, "Calculated max row with content"
+    
+    'Remove unessasary rows from original sheet to reduce final file size (based on automation open case)
+    Worksheets("Result").Rows(maxRow + 5 & ":" & Worksheets("Result").Rows.Count).Delete
+    printDebug StartTime, Timer, "Removed unnecessary rows"
+    
+    'Copy Current report sheet for backup
+    Worksheets(1).Copy After:=Worksheets(1) 'Backup original Report from Testshell
+    ActiveWorkbook.Sheets("Result").Activate 'Go back to First sheet
+    printDebug StartTime, Timer, "Original sheet copied for backup purpose"
+    
+    'Rows Heigh
+    Range("A:A").RowHeight = 12
+    Range("1:1").RowHeight = 20
+
+    'Columns Width
+    Columns("A").ColumnWidth = 3    'Execute
+    Columns("B").ColumnWidth = 0.5  'Loop 2
+    Columns("C").ColumnWidth = 0.5  'Loop 1
+    Columns("D").ColumnWidth = 6    'Device
+    Columns("E").ColumnWidth = 8    'Sub Device
+    Columns("F").ColumnWidth = 12   'Address 1
+    Columns("G").ColumnWidth = 0.5  'Address 2 for IP10 Use
+    Columns("H").ColumnWidth = 0.5  'Slot
+    Columns("I").ColumnWidth = 0.5  'State
+    Columns("J").ColumnWidth = 2    'Command Set,Get,Walk...
+    Columns("K").ColumnWidth = 16   'Topic
+    Columns("L").ColumnWidth = 1    'SubTopic
+    Columns("M").ColumnWidth = 1    'Operator
+    Columns("N").ColumnWidth = 12   'Value
+    Columns("O").ColumnWidth = 75   'Measured
+    Columns("P").ColumnWidth = 6    'Protocol
+    Columns("Q").ColumnWidth = 8    'Delay
+    Columns("R").ColumnWidth = 4    'Stop on Error
+    Columns("S").ColumnWidth = 5    'Status
+    Columns("T").ColumnWidth = 4    'Error
+    Columns("U").ColumnWidth = 4    'System Log
+    Columns("V").AutoFit            'Time Stamp
+    Columns("W").ColumnWidth = 35   'Description
+    Columns("X").AutoFit            'Duration
+
+    'Columns Alignment Properties
+    Columns("D").HorizontalAlignment = xlLeft
+    Columns("E").HorizontalAlignment = xlLeft
+    Columns("H").HorizontalAlignment = xlLeft
+    Columns("K").HorizontalAlignment = xlLeft
+    Columns("Q").HorizontalAlignment = xlCenter
+    Columns("R").HorizontalAlignment = xlLeft
+    
+    printDebug StartTime, Timer, "Formatted rows and columns"
+    
+    printDebug StartTime, Timer, "Start For Loop and cycle through rows"
+    'Cycle through all Rows which hava data in A column and apply colors
+    For row = 2 To maxRow
+        
+        Set currentRange = Range("A" & row & ":R" & row)
+        nColumnData = Range("N" & row).value
+        
+        ' Column K Test
+        Select Case Cells(row, "K").value
+            Case "Run Suite Project"
+                Rows(row).RowHeight = heightHighRow
+                currentRange.Interior.color = colorLightGrey
+            Case "Run Test"
+                Rows(row).RowHeight = heightHighRow
+                currentRange.Interior.color = colorLightGrey
+            Case "Set Variables"
+                currentRange.Interior.color = colorYellow
+            Case "Text to report"
+                Cells(row, "O").Font.color = vbWhite
+                currentRange.Interior.color = colorGreen
+                If Left(Cells(row, "O"), 1) = "#" Then
+                    currentRange.Interior.color = colorBlue
+                ElseIf Left(Cells(row, "O"), 3) = ":::" Then
+                    currentRange.Interior.color = colorLightGrey
+                ElseIf Left(Cells(row, "O"), 3) = "===" Then
+                    Cells(row, "O").wrapText = True
+                    Cells(row, "O").EntireRow.AutoFit
+                ElseIf Left(Cells(row, "O"), 3) = "---" Then
+                    Cells(row, "O").wrapText = True
+                    Cells(row, "O").EntireRow.AutoFit
+                ElseIf Left(Cells(row, "O"), 3) = "***" Then
+                    Cells(row, "O").wrapText = True
+                    Cells(row, "O").EntireRow.AutoFit
+                Else
+                    currentRange.Interior.color = colorGreen
+                    'Cells(row, "O").Font.Bold = True   'Starting 23-5-22 this row make macro stuck for 60 sec
+                End If
+            Case "Comparison"
+                currentRange.Interior.color = colorOrange
+            Case "Reference line"
+                currentRange.Interior.color = colorBrown
+            Case "NG_DynamicDelay"
+                currentRange.Interior.color = colorLightPurple
+            Case "Ping"
+                currentRange.Interior.color = colorLightPurple
+        End Select
+        
+        ' Column D test
+        Select Case Cells(row, "D").value
+            Case "TnM"
+                currentRange.Interior.color = colorLightBlue
+            Case "File_Loop"
+                currentRange.Interior.color = colorYellow
+        End Select
+        
+        ' Set Get colors for NG REST SNMP commands
+        If Cells(row, "E").value = "NG_Rest_SNMP" Then
+            If (InStr(nColumnData, "ADD") > 0 Or InStr(nColumnData, "EDIT") > 0 Or InStr(nColumnData, "SET") > 0) Then
+                Range("O" & row).Interior.color = colorGetRed
+            ElseIf (InStr(nColumnData, "GET") > 0 Or InStr(nColumnData, "WALK") > 0) Then
+                Range("O" & row).Interior.color = colorGetBlue
+            End If
+        End If
+        
+        ' Column S test - Failure red color
+        Select Case Cells(row, "S").value
+            Case "FAIL"
+                currentRange.Interior.color = colorRed
+            Case "ERROR"
+                currentRange.Interior.color = colorRed
+        End Select
+        
+        'Create links to sheets for all "See walk results in sheet x" Cells
+        'Testshell
+        If InStr(1, Cells(row, "O").value, "See Walk results") > 0 Then
+            hyperlinkSheetName = Mid(Cells(row, "O"), InStr(1, Cells(row, "O"), "WalkResult", 1), 10) & "s" & Right(Cells(row, "O"), (Len(Cells(row, "O")) - (InStr(1, Cells(row, "O"), "WalkResult", 1) + 9)))
+            'Debug.Print ("<" & hyperlinkSheetName & ">")
+            ActiveCell.Hyperlinks.Add Anchor:=Cells(row, "O"), Address:="", SubAddress:="'" & hyperlinkSheetName & "'" & "!A1"
+        'CeraRun
+        ElseIf InStr(1, Cells(row, "O").value, "See the measured results") > 0 Then
+            hyperlinkSheetName = Mid(Cells(row, "O"), InStr(1, Cells(row, "O"), "'", 1) + 1, InStrRev(Cells(row, "O"), "'") - InStr(1, Cells(row, "O"), "'", 1) - 1)
+            'Debug.Print ("<" & hyperlinkSheetName & ">")
+            ActiveCell.Hyperlinks.Add Anchor:=Cells(row, "O"), Address:="", SubAddress:="'" & hyperlinkSheetName & "'" & "!A1"
+        End If
+
+    Next row
+
+    printDebug StartTime, Timer, "For loop end, start color set for fonts"
+    'Apply Format for Delay column
+    Columns("Q").Font.Bold = True 'Bold 'Starting 23-5-22 this row make macro stuck for 60 sec
+    Columns("Q").Font.color = colorDarkRed
+    Columns("N").Font.color = colorDarkGrey
+    Columns("P").Font.color = colorDarkGrey
+    Columns("R").Font.color = colorDarkGrey
+    Columns("D").Font.color = colorDarkGrey
+    Columns("E").Font.color = colorDarkGrey
+    Columns("V").Font.color = colorDarkGrey
+    Columns("W").Font.color = colorCommentBlue
+    Columns("W").Font.Bold = True
+
+    With Columns("A:Z").Borders(xlInsideHorizontal)
+    .LineStyle = xlContinuous
+    .ColorIndex = 48
+    End With
+    
+    printDebug StartTime, Timer, "Colors and fonts applied"
+
+    'Create links from all sheets to Results sheet
+    For Each ws In ActiveWorkbook.Worksheets
+        If ws.index > 2 Then
+            'Debug.Print (ws.Name)
+            With ws.Buttons.Add(1, 1, 45, 15)
+            .OnAction = "ReturnToFirstSheet"
+            .text = "Results"
+            End With
+        End If
+    Next
+    
+    ActiveWindow.ScrollColumn = 1   'Scroll to the left
+    printDebug StartTime, Timer, "Created Links to results sheets"
+    
+    'Create Filter buttons
+    addFilterButton 0, "IDU", "ReportAutoFilterIDU"
+    addFilterButton 1, "Filter", "ReportAutofilterFilterItems"
+    addFilterButton 2, "Clear", "ReportAutofilterClear"
+    addFilterButton 3, "NextFail", "GotoNextFail"
+    printDebug StartTime, Timer, "Created Filter buttons"
+            
+    'Freeze top row
+    ActiveWindow.ScrollRow = 1  'Must freeze only when first row seen in screen
+    With ActiveWindow
+        If .FreezePanes Then .FreezePanes = False
+        .SplitColumn = 0
+        .SplitRow = 1
+        .FreezePanes = True
+    End With
+    printDebug StartTime, Timer, "Top row freezed"
+    
+    ActiveWorkbook.Save
+    Application.ScreenUpdating = True
+    printDebug StartTime, Timer, "Workbook saved"
+    
+    'Stop Timer
+    printDebug StartTime, Timer, "Macro finished !!!"
+    SecondsElapsed = Round(Timer - StartTime, 2)
+    Debug.Print ("Time took to run: " & SecondsElapsed)
+    
+    'Indicate Runtime in result
+    Cells(4, "Z") = "Macro duration: " & SecondsElapsed
+    
 End Sub
 
 

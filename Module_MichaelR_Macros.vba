@@ -1,6 +1,6 @@
 '==================
-Public Const moduleVersion  As String = "V15.7"
-Public Const whatIsNew      As String = "Refactor loop"
+Public Const moduleVersion  As String = "V15.8"
+Public Const whatIsNew      As String = "Add Black color for functions :::"
 '==================
 
 
@@ -56,6 +56,7 @@ Sub Report_Arrangement12()
     Const colorCommentBlue = "&Hbd814f"
     Const colorGetBlue = "&Hfce3cf"
     Const colorGetRed = "&Hddddff"
+    Const colorBlack = "&H0d0d0d"
 
     'Create Sheet for macro logs - Must happen before timer print
     Sheets.Add(After:=Sheets("Result")).Name = "Macro Logs"
@@ -160,7 +161,7 @@ Sub Report_Arrangement12()
                 If Left(Cells(row, "O"), 1) = "#" Then
                     currentRange.Interior.color = colorBlue
                 ElseIf Left(Cells(row, "O"), 3) = ":::" Then
-                    currentRange.Interior.color = colorLightGrey
+                    currentRange.Interior.color = colorBlack
                 ElseIf Left(Cells(row, "O"), 3) = "===" Then
                     Cells(row, "O").wrapText = True
                     Cells(row, "O").EntireRow.AutoFit

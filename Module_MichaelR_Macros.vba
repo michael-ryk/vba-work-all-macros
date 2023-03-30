@@ -25,6 +25,7 @@ Sub Report_Arrangement12()
     ' Shortcut: ctrl+r
     '===========================
 
+    ' Test if abort macro execution
     If ActiveSheet.Name <> "Result" Then
         MsgBox "Macro is not applicable for current sheet - Abort", vbCritical
         Exit Sub
@@ -35,11 +36,10 @@ Sub Report_Arrangement12()
         Exit Sub
     End If
 
-    'Excel file is appropriate for this macro - Run
     'Start Timer to measure run time
-    Dim StartTime           As Double
-    Dim SecondsElapsed      As Double
-    StartTime = Timer
+    Dim dStartTime           As Double
+    Dim dSecondsElapsed      As Double
+    dStartTime = Timer
     
     'Constants
     Const heightHighRow = 26
@@ -64,40 +64,39 @@ Sub Report_Arrangement12()
     Sheets.Add(After:=Sheets("Result")).Name = "Macro Logs"
     ActiveWorkbook.Sheets("Result").Activate 'Go back to First sheet
     
-    printDebug StartTime, Timer, "Timer started and added Macro logs sheet"
+    printDebug dStartTime, Timer, "Timer started and added Macro logs sheet"
     
     'Inform user for update
     CheckForLatestMacroVersion
-    printDebug StartTime, Timer, "Verified if macro upgrade available"
+    printDebug dStartTime, Timer, "Verified if macro upgrade available"
     
     'Indicate Macro version and what is new
     Cells(2, "Z") = "Macro Version: " & moduleVersion
     Cells(3, "Z") = "What is new? " & whatIsNew
-    printDebug StartTime, Timer, "Added current runing version, whats new"
+    printDebug dStartTime, Timer, "Added current runing version, whats new"
     
     'Variables
-    Dim hyperlinkSheetName  As String
-    Dim row                 As Long
-    Dim maxRow              As Long
+    Dim sHyperlinkSheetName  As String
+    Dim lRow                 As Long
+    Dim lMaxRow              As Long
     Dim ws                  As Worksheet
     Dim btn                 As Button
-    Dim nColumnData         As String
     
-    printDebug StartTime, Timer, "Defined variables"
+    printDebug dStartTime, Timer, "Defined variables"
     
     Application.ScreenUpdating = False
 
-    maxRow = Cells(Rows.Count, "A").End(xlUp).row   'Determine Max row
-    printDebug StartTime, Timer, "Calculated max row with content"
+    lMaxRow = Cells(Rows.Count, "A").End(xlUp).row   'Determine Max row
+    printDebug dStartTime, Timer, "Calculated max row with content"
     
     'Remove unessasary rows from original sheet to reduce final file size (based on automation open case)
-    Worksheets("Result").Rows(maxRow + 5 & ":" & Worksheets("Result").Rows.Count).Delete
-    printDebug StartTime, Timer, "Removed unnecessary rows"
+    Worksheets("Result").Rows(lMaxRow + 5 & ":" & Worksheets("Result").Rows.Count).Delete
+    printDebug dStartTime, Timer, "Removed unnecessary rows"
     
     'Copy Current report sheet for backup
     Worksheets(1).Copy After:=Worksheets(1) 'Backup original Report from Testshell
     ActiveWorkbook.Sheets("Result").Activate 'Go back to First sheet
-    printDebug StartTime, Timer, "Original sheet copied for backup purpose"
+    printDebug dStartTime, Timer, "Original sheet copied for backup purpose"
     
     'Rows Heigh
     Range("A:A").RowHeight = 12
@@ -137,9 +136,9 @@ Sub Report_Arrangement12()
     Columns("Q").HorizontalAlignment = xlCenter
     Columns("R").HorizontalAlignment = xlLeft
     
-    printDebug StartTime, Timer, "Formatted rows and columns"
+    printDebug dStartTime, Timer, "Formatted rows and columns"
     
-    printDebug StartTime, Timer, "Start For Loop and cycle through rows"
+    printDebug dStartTime, Timer, "Start For Loop and cycle through rows"
     
     '====================================================================
     'Cycle through all Rows which hava data in A column and apply colors
@@ -152,18 +151,19 @@ Sub Report_Arrangement12()
     Dim sTopicColK                  As String
     Dim sStatusColS                 As String
     Dim sMeasuredColO               As String
+    Dim sColNValue                  As String
     
-    For row = 2 To maxRow
+    For lRow = 2 To lMaxRow
         
-        Set rngFullRowColorApply = Range("A" & row & ":R" & row)
-        Set rngMeasuredColO = Cells(row, "O")
-        sDeviceColD = Cells(row, "D").value
-        sSubDeviceColE = Cells(row, "E").value
-        sTopicColK = Cells(row, "K").value
-        sStatusColS = Cells(row, "S").value
+        Set rngFullRowColorApply = Range("A" & lRow & ":R" & lRow)
+        Set rngMeasuredColO = Cells(lRow, "O")
+        sDeviceColD = Cells(lRow, "D").value
+        sSubDeviceColE = Cells(lRow, "E").value
+        sTopicColK = Cells(lRow, "K").value
+        sStatusColS = Cells(lRow, "S").value
         sMeasuredColO = rngMeasuredColO.value
         
-        nColumnData = Range("N" & row).value
+        sColNValue = Range("N" & lRow).value
         
         ' Get Device Column
         Select Case sStatusColS
@@ -182,10 +182,10 @@ Sub Report_Arrangement12()
                             Case "Running"
                                 Select Case sTopicColK
                                     Case "Run Suite Project"
-                                        Rows(row).RowHeight = heightHighRow
+                                        Rows(lRow).RowHeight = heightHighRow
                                         rngFullRowColorApply.Interior.Color = colorLightGrey
                                     Case "Run Test"
-                                        Rows(row).RowHeight = heightHighRow
+                                        Rows(lRow).RowHeight = heightHighRow
                                         rngFullRowColorApply.Interior.Color = colorLightGrey
                                     Case "Set Variables"
                                         rngFullRowColorApply.Interior.Color = colorYellow
@@ -229,9 +229,9 @@ Sub Report_Arrangement12()
                     Case Else
                         Select Case sSubDeviceColE
                             Case "NG_Rest_SNMP"
-                                If (InStr(nColumnData, "ADD") > 0 Or InStr(nColumnData, "EDIT") > 0 Or InStr(nColumnData, "SET") > 0) Then
+                                If (InStr(sColNValue, "ADD") > 0 Or InStr(sColNValue, "EDIT") > 0 Or InStr(sColNValue, "SET") > 0) Then
                                     rngMeasuredColO.Interior.Color = colorGetRed
-                                ElseIf (InStr(nColumnData, "GET") > 0 Or InStr(nColumnData, "WALK") > 0) Then
+                                ElseIf (InStr(sColNValue, "GET") > 0 Or InStr(sColNValue, "WALK") > 0) Then
                                     rngMeasuredColO.Interior.Color = colorGetBlue
                                 End If
                             Case "NG_SpecialCommands"
@@ -252,14 +252,14 @@ Sub Report_Arrangement12()
         
         'Create links to sheets for all "See walk results in sheet x" Cells
         If InStr(1, sMeasuredColO, "See the measured results") > 0 Then
-            hyperlinkSheetName = Mid(sMeasuredColO, InStr(1, sMeasuredColO, "'", 1) + 1, InStrRev(sMeasuredColO, "'") - InStr(1, sMeasuredColO, "'", 1) - 1)
-            'Debug.Print ("<" & hyperlinkSheetName & ">")
-            ActiveCell.Hyperlinks.Add Anchor:=Cells(row, "O"), Address:="", SubAddress:="'" & hyperlinkSheetName & "'" & "!A1"
+            sHyperlinkSheetName = Mid(sMeasuredColO, InStr(1, sMeasuredColO, "'", 1) + 1, InStrRev(sMeasuredColO, "'") - InStr(1, sMeasuredColO, "'", 1) - 1)
+            'Debug.Print ("<" & sHyperlinkSheetName & ">")
+            ActiveCell.Hyperlinks.Add Anchor:=Cells(lRow, "O"), Address:="", SubAddress:="'" & sHyperlinkSheetName & "'" & "!A1"
         End If
 
-    Next row
+    Next lRow
 
-    printDebug StartTime, Timer, "For loop end, start color set for fonts"
+    printDebug dStartTime, Timer, "For loop end, start color set for fonts"
     'Apply Format for Delay column
     Columns("Q").Font.Bold = True 'Bold 'Starting 23-5-22 this row make macro stuck for 60 sec
     Columns("Q").Font.Color = colorDarkRed
@@ -273,11 +273,11 @@ Sub Report_Arrangement12()
     Columns("W").Font.Bold = True
 
     With Columns("A:Z").Borders(xlInsideHorizontal)
-    .LineStyle = xlContinuous
-    .ColorIndex = 48
+        .LineStyle = xlContinuous
+        .ColorIndex = 48
     End With
     
-    printDebug StartTime, Timer, "Colors and fonts applied"
+    printDebug dStartTime, Timer, "Colors and fonts applied"
 
     'Create links from all sheets to Results sheet
     For Each ws In ActiveWorkbook.Worksheets
@@ -291,14 +291,14 @@ Sub Report_Arrangement12()
     Next
     
     ActiveWindow.ScrollColumn = 1   'Scroll to the left
-    printDebug StartTime, Timer, "Created Links to results sheets"
+    printDebug dStartTime, Timer, "Created Links to results sheets"
     
     'Create Filter buttons
     addFilterButton 0, "IDU", "ReportAutoFilterIDU"
     addFilterButton 1, "Filter", "ReportAutofilterFilterItems"
     addFilterButton 2, "Clear", "ReportAutofilterClear"
     addFilterButton 3, "NextFail", "GotoNextFail"
-    printDebug StartTime, Timer, "Created Filter buttons"
+    printDebug dStartTime, Timer, "Created Filter buttons"
             
     'Freeze top row
     ActiveWindow.ScrollRow = 1  'Must freeze only when first row seen in screen
@@ -308,19 +308,19 @@ Sub Report_Arrangement12()
         .SplitRow = 1
         .FreezePanes = True
     End With
-    printDebug StartTime, Timer, "Top row freezed"
+    printDebug dStartTime, Timer, "Top row freezed"
     
     ActiveWorkbook.Save
     Application.ScreenUpdating = True
-    printDebug StartTime, Timer, "Workbook saved"
+    printDebug dStartTime, Timer, "Workbook saved"
     
     'Stop Timer
-    printDebug StartTime, Timer, "Macro finished !!!"
-    SecondsElapsed = Round(Timer - StartTime, 2)
-    Debug.Print ("Time took to run: " & SecondsElapsed)
+    printDebug dStartTime, Timer, "Macro finished !!!"
+    dSecondsElapsed = Round(Timer - dStartTime, 2)
+    Debug.Print ("Time took to run: " & dSecondsElapsed)
     
     'Indicate Runtime in result
-    Cells(4, "Z") = "Macro duration: " & SecondsElapsed
+    Cells(4, "Z") = "Macro duration: " & dSecondsElapsed
     
 End Sub
 
@@ -350,11 +350,11 @@ Function addFilterButton(buttonIndex, buttonName, onClickMacroName)
     Dim filterBtn       As Button
     Set filterBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1 + buttonIndex * ButtonWidth, 1, ButtonWidth, Range("O1").Height - 1)
     With filterBtn
-    .OnAction = onClickMacroName
-    .Caption = buttonName
-    .Name = buttonName
-    .Font.Size = 14
-    .Font.Bold = True
+        .OnAction = onClickMacroName
+        .Caption = buttonName
+        .Name = buttonName
+        .Font.Size = 14
+        .Font.Bold = True
     End With
     
 End Function
@@ -572,13 +572,13 @@ Sub FileExist()
     ' Writen by Michael Rykin
     ' Checks if Test exist on its location - Indicate Exist/Missing near test
     '===========================
-    Dim i As Integer
-    Dim maxRows As Integer
-    Dim testPath As String
+    Dim i           As Integer
+    Dim iMaxRows    As Integer
+    Dim testPath    As String
 
-    maxRows = Worksheets(1).Cells(Rows.Count, "A").End(xlUp).row
+    iMaxRows = Worksheets(1).Cells(Rows.Count, "A").End(xlUp).row
 
-    For i = 2 To maxRows
+    For i = 2 To iMaxRows
         'Set path to test based on Strikt or relative access
         If Worksheets(1).Cells(i, "K").value = "Run Test" Then
             testPath = "c:\Program Files\qualisystems\TestShell\TS files\MainExcel\" & _
@@ -611,9 +611,9 @@ Sub Clear_Styles()
     '===========================
     Dim mpStyle As Style
     For Each mpStyle In ActiveWorkbook.Styles
-    If Not mpStyle.BuiltIn Then
-    mpStyle.Delete
-    End If
+        If Not mpStyle.BuiltIn Then
+            mpStyle.Delete
+        End If
     Next mpStyle
 End Sub
 
@@ -623,20 +623,21 @@ Sub BreakLinksDataValidation()
     ' Writen by Michael Rykin
     ' Print all location where corrupted links located to let user fix them
     '===========================
-    Dim row As Integer
-    Dim col As Integer
-    maxRow = Cells(Rows.Count, "A").End(xlUp).row
-    Dim value As String
-    Dim textPrint As String
+    Dim iRow             As Integer
+    Dim col             As Integer
+    Dim lMaxRow         As Long
+    Dim value           As String
+    Dim textPrint       As String
+    lMaxRow = Cells(Rows.Count, "A").End(xlUp).row
     textPrint = ""
 
-    For row = 2 To maxRow
+    For iRow = 2 To lMaxRow
         For col = 1 To 19
             On Error GoTo skip
-            value = Cells(row, col).Validation.Formula1
+            value = Cells(iRow, col).Validation.Formula1
             If InStr(value, "\") <> 0 Then
-                Debug.Print ("Address " & Cells(row, col).Address & " Value: " & value)
-                textPrint = textPrint & Cells(row, col).Address & vbCrLf
+                Debug.Print ("Address " & Cells(iRow, col).Address & " Value: " & value)
+                textPrint = textPrint & Cells(iRow, col).Address & vbCrLf
             End If
 skip:
         'Cell have no Data validation (it is by defaul "Any Value")
@@ -644,7 +645,7 @@ skip:
         Resume skip2
 skip2:
         Next col
-    Next row
+    Next iRow
     MsgBox ("Found corrupted links in data validation in following cells : " & vbCrLf & textPrint)
 End Sub
 

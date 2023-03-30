@@ -1,3 +1,5 @@
+Option Explicit
+
 '==================
 Public Const moduleVersion  As String = "V15.8"
 Public Const whatIsNew      As String = "Add Black color for functions :::"
@@ -347,6 +349,7 @@ Function addFilterButton(buttonIndex, buttonName, onClickMacroName)
     ' Create all buttons used for filtering results
     '===========================
     Const ButtonWidth = 70
+    Dim filterBtn       As Button
     Set filterBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1 + buttonIndex * ButtonWidth, 1, ButtonWidth, Range("O1").Height - 1)
     With filterBtn
     .OnAction = onClickMacroName
@@ -360,6 +363,7 @@ End Function
 
 
 Function printDebug(start, current, inputText)
+    Dim lastEmptyMacroSheetRow      As Long
     lastEmptyMacroSheetRow = Worksheets("Macro Logs").Cells(Rows.Count, "A").End(xlUp).row + 1
     Debug.Print (Round(current - start, 2) & " : " & inputText)
     Worksheets("Macro Logs").Cells(lastEmptyMacroSheetRow, "A") = Round(current - start, 2)
@@ -506,12 +510,13 @@ Function CheckIfShowUpdateNotification() As Boolean
     ' Return true if user wasn't notified today about potential upgrade
     '------------------------------------------------------------------
 
-    Dim checkTimeFilePath As String
-    Dim macroFilesFolder As String
-    Dim checkTimeFileName As String
-    Dim todayDate As Date
-    Dim fso As Object
-    Dim oFile As Object
+    Dim checkTimeFilePath               As String
+    Dim macroFilesFolder                As String
+    Dim alternativeMacroFilesFolder     As String
+    Dim checkTimeFileName               As String
+    Dim todayDate                       As Date
+    Dim fso                             As Object
+    Dim oFile                           As Object
     
     todayDate = Date
     macroFilesFolder = "C:\tmp"

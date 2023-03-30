@@ -1,8 +1,8 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V15.8"
-Public Const whatIsNew      As String = "Add Black color for functions :::"
+Public Const moduleVersion  As String = "V16"
+Public Const whatIsNew      As String = "Performance improvements"
 '==================
 
 
@@ -36,12 +36,12 @@ Sub Report_Arrangement12()
         Exit Sub
     End If
 
-    'Start Timer to measure run time
+    ' Start Timer to measure run time
     Dim dStartTime           As Double
     Dim dSecondsElapsed      As Double
     dStartTime = Timer
     
-    'Constants
+    ' Constants
     Const heightHighRow = 26
     Const colorLightGrey = "&Hbfbfbf"
     Const colorDarkGrey = "&H808080"
@@ -60,27 +60,25 @@ Sub Report_Arrangement12()
     Const colorGetRed = "&Hddddff"
     Const colorBlack = "&H0d0d0d"
 
-    'Create Sheet for macro logs - Must happen before timer print
+    ' Create Sheet for macro logs - Must happen before timer print
     Sheets.Add(After:=Sheets("Result")).Name = "Macro Logs"
     ActiveWorkbook.Sheets("Result").Activate 'Go back to First sheet
     
     printDebug dStartTime, Timer, "Timer started and added Macro logs sheet"
     
-    'Inform user for update
+    ' Inform user for update
     CheckForLatestMacroVersion
     printDebug dStartTime, Timer, "Verified if macro upgrade available"
     
-    'Indicate Macro version and what is new
+    ' Indicate Macro version and what is new
     Cells(2, "Z") = "Macro Version: " & moduleVersion
     Cells(3, "Z") = "What is new? " & whatIsNew
     printDebug dStartTime, Timer, "Added current runing version, whats new"
     
-    'Variables
+    ' Variables
     Dim sHyperlinkSheetName  As String
     Dim lRow                 As Long
     Dim lMaxRow              As Long
-    Dim ws                  As Worksheet
-    Dim btn                 As Button
     
     printDebug dStartTime, Timer, "Defined variables"
     
@@ -89,20 +87,20 @@ Sub Report_Arrangement12()
     lMaxRow = Cells(Rows.Count, "A").End(xlUp).row   'Determine Max row
     printDebug dStartTime, Timer, "Calculated max row with content"
     
-    'Remove unessasary rows from original sheet to reduce final file size (based on automation open case)
+    ' Remove unessasary rows from original sheet to reduce final file size (based on automation open case)
     Worksheets("Result").Rows(lMaxRow + 5 & ":" & Worksheets("Result").Rows.Count).Delete
     printDebug dStartTime, Timer, "Removed unnecessary rows"
     
-    'Copy Current report sheet for backup
+    ' Copy Current report sheet for backup
     Worksheets(1).Copy After:=Worksheets(1) 'Backup original Report from Testshell
     ActiveWorkbook.Sheets("Result").Activate 'Go back to First sheet
     printDebug dStartTime, Timer, "Original sheet copied for backup purpose"
     
-    'Rows Heigh
+    ' Rows Heigh
     Range("A:A").RowHeight = 12
     Range("1:1").RowHeight = 20
 
-    'Columns Width
+    ' Columns Width
     Columns("A").ColumnWidth = 3    'Execute
     Columns("B").ColumnWidth = 0.5  'Loop 2
     Columns("C").ColumnWidth = 0.5  'Loop 1
@@ -128,7 +126,7 @@ Sub Report_Arrangement12()
     Columns("W").ColumnWidth = 35   'Description
     Columns("X").AutoFit            'Duration
 
-    'Columns Alignment Properties
+    ' Columns Alignment Properties
     Columns("D").HorizontalAlignment = xlLeft
     Columns("E").HorizontalAlignment = xlLeft
     Columns("H").HorizontalAlignment = xlLeft
@@ -165,7 +163,6 @@ Sub Report_Arrangement12()
         
         sColNValue = Range("N" & lRow).value
         
-        ' Get Device Column
         Select Case sStatusColS
             Case "FAIL"
                 rngFullRowColorApply.Interior.Color = colorRed
@@ -193,8 +190,6 @@ Sub Report_Arrangement12()
                                         rngFullRowColorApply.Interior.Color = colorOrange
                                     Case "Reference line"
                                         rngFullRowColorApply.Interior.Color = colorBrown
-                                    Case Else
-                                        ' something else
                                 End Select
                             Case "Report"
                                 Select Case sTopicColK
@@ -218,13 +213,7 @@ Sub Report_Arrangement12()
                                             rngFullRowColorApply.Interior.Color = colorGreen
                                             'Cells(row, "O").Font.Bold = True   'Starting 23-5-22 this row make macro stuck for 60 sec
                                         End If
-                                    Case "Run Test"
-        
-                                    Case Else
-                                        ' something else
                                 End Select
-                            Case Else
-                                ' something else
                         End Select
                     Case Else
                         Select Case sSubDeviceColE
@@ -244,24 +233,23 @@ Sub Report_Arrangement12()
                                     Case "Ping"
                                         rngFullRowColorApply.Interior.Color = colorLightPurple
                                 End Select
-                            Case Else
-                                ' something else
                         End Select
                 End Select
         End Select
         
-        'Create links to sheets for all "See walk results in sheet x" Cells
+        ' Create links to sheets for all "See walk results in sheet x" Cells
         If InStr(1, sMeasuredColO, "See the measured results") > 0 Then
             sHyperlinkSheetName = Mid(sMeasuredColO, InStr(1, sMeasuredColO, "'", 1) + 1, InStrRev(sMeasuredColO, "'") - InStr(1, sMeasuredColO, "'", 1) - 1)
             'Debug.Print ("<" & sHyperlinkSheetName & ">")
-            ActiveCell.Hyperlinks.Add Anchor:=Cells(lRow, "O"), Address:="", SubAddress:="'" & sHyperlinkSheetName & "'" & "!A1"
+            ActiveCell.Hyperlinks.Add Anchor:=rngMeasuredColO, Address:="", SubAddress:="'" & sHyperlinkSheetName & "'" & "!A1"
         End If
 
     Next lRow
 
     printDebug dStartTime, Timer, "For loop end, start color set for fonts"
-    'Apply Format for Delay column
-    Columns("Q").Font.Bold = True 'Bold 'Starting 23-5-22 this row make macro stuck for 60 sec
+    
+    ' Apply Format for Delay column
+    Columns("Q").Font.Bold = True
     Columns("Q").Font.Color = colorDarkRed
     Columns("N").Font.Color = colorDarkGrey
     Columns("P").Font.Color = colorDarkGrey
@@ -272,6 +260,7 @@ Sub Report_Arrangement12()
     Columns("W").Font.Color = colorCommentBlue
     Columns("W").Font.Bold = True
 
+    ' Define borders
     With Columns("A:Z").Borders(xlInsideHorizontal)
         .LineStyle = xlContinuous
         .ColorIndex = 48
@@ -279,7 +268,8 @@ Sub Report_Arrangement12()
     
     printDebug dStartTime, Timer, "Colors and fonts applied"
 
-    'Create links from all sheets to Results sheet
+    ' Create links from all sheets to Results sheet
+    Dim ws                  As Worksheet
     For Each ws In ActiveWorkbook.Worksheets
         If ws.Index > 2 Then
             'Debug.Print (ws.Name)
@@ -293,15 +283,16 @@ Sub Report_Arrangement12()
     ActiveWindow.ScrollColumn = 1   'Scroll to the left
     printDebug dStartTime, Timer, "Created Links to results sheets"
     
-    'Create Filter buttons
+    ' Create Filter buttons
     addFilterButton 0, "IDU", "ReportAutoFilterIDU"
     addFilterButton 1, "Filter", "ReportAutofilterFilterItems"
     addFilterButton 2, "Clear", "ReportAutofilterClear"
     addFilterButton 3, "NextFail", "GotoNextFail"
     printDebug dStartTime, Timer, "Created Filter buttons"
             
-    'Freeze top row
-    ActiveWindow.ScrollRow = 1  'Must freeze only when first row seen in screen
+    ' Freeze top row
+    ' First scroll to the top so first row seen in sight
+    ActiveWindow.ScrollRow = 1
     With ActiveWindow
         If .FreezePanes Then .FreezePanes = False
         .SplitColumn = 0
@@ -314,12 +305,12 @@ Sub Report_Arrangement12()
     Application.ScreenUpdating = True
     printDebug dStartTime, Timer, "Workbook saved"
     
-    'Stop Timer
+    ' Stop Timer
     printDebug dStartTime, Timer, "Macro finished !!!"
     dSecondsElapsed = Round(Timer - dStartTime, 2)
     Debug.Print ("Time took to run: " & dSecondsElapsed)
     
-    'Indicate Runtime in result
+    ' Indicate Runtime in result
     Cells(4, "Z") = "Macro duration: " & dSecondsElapsed
     
 End Sub

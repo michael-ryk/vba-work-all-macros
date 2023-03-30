@@ -1,7 +1,7 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V16"
+Public Const moduleVersion  As String = "V16.1"
 Public Const whatIsNew      As String = "Performance improvements"
 '==================
 
@@ -220,7 +220,7 @@ Sub Report_Arrangement12()
                             Case "NG_Rest_SNMP"
                                 If (InStr(sColNValue, "ADD") > 0 Or InStr(sColNValue, "EDIT") > 0 Or InStr(sColNValue, "SET") > 0) Then
                                     rngMeasuredColO.Interior.Color = colorGetRed
-                                ElseIf (InStr(sColNValue, "GET") > 0 Or InStr(sColNValue, "WALK") > 0) Then
+                                ElseIf (InStr(sColNValue, "GET") > 0 Or InStr(sColNValue, "WALK") > 0 Or InStr(sColNValue, "FIND") > 0) Then
                                     rngMeasuredColO.Interior.Color = colorGetBlue
                                 End If
                             Case "NG_SpecialCommands"
@@ -267,7 +267,7 @@ Sub Report_Arrangement12()
     End With
     
     printDebug dStartTime, Timer, "Colors and fonts applied"
-
+    
     ' Create links from all sheets to Results sheet
     Dim ws                  As Worksheet
     For Each ws In ActiveWorkbook.Worksheets

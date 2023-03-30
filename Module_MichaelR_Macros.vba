@@ -146,6 +146,7 @@ Sub Report_Arrangement12()
     '====================================================================
     
     Dim rngFullRowColorApply        As Range
+    Dim rngMeasuredColO             As Range
     Dim sDeviceColD                 As String
     Dim sSubDeviceColE              As String
     Dim sTopicColK                  As String
@@ -155,11 +156,12 @@ Sub Report_Arrangement12()
     For row = 2 To maxRow
         
         Set rngFullRowColorApply = Range("A" & row & ":R" & row)
+        Set rngMeasuredColO = Cells(row, "O")
         sDeviceColD = Cells(row, "D").value
         sSubDeviceColE = Cells(row, "E").value
         sTopicColK = Cells(row, "K").value
         sStatusColS = Cells(row, "S").value
-        sMeasuredColO = Cells(row, "O").value
+        sMeasuredColO = rngMeasuredColO.value
         
         nColumnData = Range("N" & row).value
         
@@ -197,21 +199,21 @@ Sub Report_Arrangement12()
                             Case "Report"
                                 Select Case sTopicColK
                                     Case "Text to report"
-                                        Cells(row, "O").Font.Color = vbWhite
+                                        rngMeasuredColO.Font.Color = vbWhite
                                         rngFullRowColorApply.Interior.Color = colorGreen
-                                        If Left(Cells(row, "O"), 1) = "#" Then
+                                        If Left(sMeasuredColO, 1) = "#" Then
                                             rngFullRowColorApply.Interior.Color = colorBlue
-                                        ElseIf Left(Cells(row, "O"), 3) = ":::" Then
+                                        ElseIf Left(sMeasuredColO, 3) = ":::" Then
                                             rngFullRowColorApply.Interior.Color = colorBlack
-                                        ElseIf Left(Cells(row, "O"), 3) = "===" Then
-                                            Cells(row, "O").WrapText = True
-                                            Cells(row, "O").EntireRow.AutoFit
-                                        ElseIf Left(Cells(row, "O"), 3) = "---" Then
-                                            Cells(row, "O").WrapText = True
-                                            Cells(row, "O").EntireRow.AutoFit
-                                        ElseIf Left(Cells(row, "O"), 3) = "***" Then
-                                            Cells(row, "O").WrapText = True
-                                            Cells(row, "O").EntireRow.AutoFit
+                                        ElseIf Left(sMeasuredColO, 3) = "===" Then
+                                            rngMeasuredColO.WrapText = True
+                                            rngMeasuredColO.EntireRow.AutoFit
+                                        ElseIf Left(sMeasuredColO, 3) = "---" Then
+                                            rngMeasuredColO.WrapText = True
+                                            rngMeasuredColO.EntireRow.AutoFit
+                                        ElseIf Left(sMeasuredColO, 3) = "***" Then
+                                            rngMeasuredColO.WrapText = True
+                                            rngMeasuredColO.EntireRow.AutoFit
                                         Else
                                             rngFullRowColorApply.Interior.Color = colorGreen
                                             'Cells(row, "O").Font.Bold = True   'Starting 23-5-22 this row make macro stuck for 60 sec
@@ -228,32 +230,28 @@ Sub Report_Arrangement12()
                         Select Case sSubDeviceColE
                             Case "NG_Rest_SNMP"
                                 If (InStr(nColumnData, "ADD") > 0 Or InStr(nColumnData, "EDIT") > 0 Or InStr(nColumnData, "SET") > 0) Then
-                                    Range("O" & row).Interior.Color = colorGetRed
+                                    rngMeasuredColO.Interior.Color = colorGetRed
                                 ElseIf (InStr(nColumnData, "GET") > 0 Or InStr(nColumnData, "WALK") > 0) Then
-                                    Range("O" & row).Interior.Color = colorGetBlue
+                                    rngMeasuredColO.Interior.Color = colorGetBlue
                                 End If
+                            Case "NG_SpecialCommands"
+                                Select Case sTopicColK
+                                    Case "NG_DynamicDelay"
+                                        rngFullRowColorApply.Interior.Color = colorLightPurple
+                                End Select
+                            Case "Communication"
+                                Select Case sTopicColK
+                                    Case "Ping"
+                                        rngFullRowColorApply.Interior.Color = colorLightPurple
+                                End Select
                             Case Else
                                 ' something else
                         End Select
                 End Select
         End Select
         
-        ' Column K Test
-        'Select Case Cells(row, "K").value
-        '    Case "NG_DynamicDelay"
-        '        rngFullRowColorApply.Interior.Color = colorLightPurple
-        '    Case "Ping"
-        '        rngFullRowColorApply.Interior.Color = colorLightPurple
-        'End Select
-        
         'Create links to sheets for all "See walk results in sheet x" Cells
-        'Testshell
-        If InStr(1, sMeasuredColO, "See Walk results") > 0 Then
-            hyperlinkSheetName = Mid(sMeasuredColO, InStr(1, sMeasuredColO, "WalkResult", 1), 10) & "s" & Right(sMeasuredColO, (Len(sMeasuredColO) - (InStr(1, sMeasuredColO, "WalkResult", 1) + 9)))
-            'Debug.Print ("<" & hyperlinkSheetName & ">")
-            ActiveCell.Hyperlinks.Add Anchor:=sMeasuredColO, Address:="", SubAddress:="'" & hyperlinkSheetName & "'" & "!A1"
-        'CeraRun
-        ElseIf InStr(1, sMeasuredColO, "See the measured results") > 0 Then
+        If InStr(1, sMeasuredColO, "See the measured results") > 0 Then
             hyperlinkSheetName = Mid(sMeasuredColO, InStr(1, sMeasuredColO, "'", 1) + 1, InStrRev(sMeasuredColO, "'") - InStr(1, sMeasuredColO, "'", 1) - 1)
             'Debug.Print ("<" & hyperlinkSheetName & ">")
             ActiveCell.Hyperlinks.Add Anchor:=Cells(row, "O"), Address:="", SubAddress:="'" & hyperlinkSheetName & "'" & "!A1"

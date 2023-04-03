@@ -1,7 +1,7 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V16.1"
+Public Const moduleVersion  As String = "V16.2"
 Public Const whatIsNew      As String = "Performance improvements"
 '==================
 
@@ -218,7 +218,7 @@ Sub Report_Arrangement12()
                     Case Else
                         Select Case sSubDeviceColE
                             Case "NG_Rest_SNMP"
-                                If (InStr(sColNValue, "ADD") > 0 Or InStr(sColNValue, "EDIT") > 0 Or InStr(sColNValue, "SET") > 0) Then
+                                If (InStr(sColNValue, "ADD") > 0 Or InStr(sColNValue, "EDIT") > 0 Or InStr(sColNValue, "SET") > 0 Or InStr(sColNValue, "DELETE") > 0) Then
                                     rngMeasuredColO.Interior.Color = colorGetRed
                                 ElseIf (InStr(sColNValue, "GET") > 0 Or InStr(sColNValue, "WALK") > 0 Or InStr(sColNValue, "FIND") > 0) Then
                                     rngMeasuredColO.Interior.Color = colorGetBlue

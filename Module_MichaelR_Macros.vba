@@ -1,8 +1,8 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V16.2"
-Public Const whatIsNew      As String = "Performance improvements"
+Public Const moduleVersion  As String = "V16.3"
+Public Const whatIsNew      As String = "bugfix: run sutite row height regular when failed"
 '==================
 
 
@@ -166,8 +166,20 @@ Sub Report_Arrangement12()
         Select Case sStatusColS
             Case "FAIL"
                 rngFullRowColorApply.Interior.Color = colorRed
+                Select Case sTopicColK
+                    Case "Run Suite Project"
+                        Rows(lRow).RowHeight = heightHighRow
+                    Case "Run Test"
+                        Rows(lRow).RowHeight = heightHighRow
+                End Select
             Case "ERROR"
                 rngFullRowColorApply.Interior.Color = colorRed
+                Select Case sTopicColK
+                    Case "Run Suite Project"
+                        Rows(lRow).RowHeight = heightHighRow
+                    Case "Run Test"
+                        Rows(lRow).RowHeight = heightHighRow
+                End Select
             Case Else
                 Select Case sDeviceColD
                     Case "TnM"

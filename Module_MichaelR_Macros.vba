@@ -1,8 +1,8 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V16.3"
-Public Const whatIsNew      As String = "bugfix: run sutite row height regular when failed"
+Public Const moduleVersion  As String = "V16.4"
+Public Const whatIsNew      As String = "point to user folder based on user login"
 '==================
 
 
@@ -521,7 +521,7 @@ Function CheckIfShowUpdateNotification() As Boolean
     
     todayDate = Date
     macroFilesFolder = "C:\tmp"
-    alternativeMacroFilesFolder = "c:\Users\testing\Documents"
+    alternativeMacroFilesFolder = Environ("USERPROFILE") & "\Documents"
     checkTimeFileName = "reportArrangementMacroLastNotification.txt"
     Set fso = CreateObject("Scripting.FileSystemObject")
     

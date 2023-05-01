@@ -1,8 +1,8 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V16.4"
-Public Const whatIsNew      As String = "point to user folder based on user login"
+Public Const moduleVersion  As String = "V16.5"
+Public Const whatIsNew      As String = "Adapt macro to cerarun report change when additional column added"
 '==================
 
 
@@ -120,11 +120,12 @@ Sub Report_Arrangement12()
     Columns("Q").ColumnWidth = 8    'Delay
     Columns("R").ColumnWidth = 4    'Stop on Error
     Columns("S").ColumnWidth = 5    'Status
-    Columns("T").ColumnWidth = 4    'Error
-    Columns("U").ColumnWidth = 4    'System Log
-    Columns("V").AutoFit            'Time Stamp
-    Columns("W").ColumnWidth = 35   'Description
-    Columns("X").AutoFit            'Duration
+    Columns("T").ColumnWidth = 4    'Pass-Fail
+    Columns("U").ColumnWidth = 4    'Error
+    Columns("V").ColumnWidth = 4    'System Log
+    Columns("W").AutoFit            'Time Stamp
+    Columns("X").ColumnWidth = 35   'Description
+    Columns("Y").AutoFit            'Duration
 
     ' Columns Alignment Properties
     Columns("D").HorizontalAlignment = xlLeft

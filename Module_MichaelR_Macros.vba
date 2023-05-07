@@ -1,8 +1,8 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V16.5"
-Public Const whatIsNew      As String = "Adapt macro to cerarun report change when additional column added"
+Public Const moduleVersion  As String = "V16.6"
+Public Const whatIsNew      As String = "Fix tab size and rules for new report form"
 '==================
 
 
@@ -119,13 +119,13 @@ Sub Report_Arrangement12()
     Columns("P").ColumnWidth = 6    'Protocol
     Columns("Q").ColumnWidth = 8    'Delay
     Columns("R").ColumnWidth = 4    'Stop on Error
-    Columns("S").ColumnWidth = 5    'Status
-    Columns("T").ColumnWidth = 4    'Pass-Fail
+    Columns("S").ColumnWidth = 5    'Run Condition
+    Columns("T").ColumnWidth = 5    'Status
     Columns("U").ColumnWidth = 4    'Error
     Columns("V").ColumnWidth = 4    'System Log
-    Columns("W").AutoFit            'Time Stamp
-    Columns("X").ColumnWidth = 35   'Description
-    Columns("Y").AutoFit            'Duration
+    Columns("V").AutoFit            'Time Stamp
+    Columns("W").ColumnWidth = 47   'Description
+    Columns("X").ColumnWidth = 12   'Duration
 
     ' Columns Alignment Properties
     Columns("D").HorizontalAlignment = xlLeft
@@ -154,7 +154,7 @@ Sub Report_Arrangement12()
     
     For lRow = 2 To lMaxRow
         
-        Set rngFullRowColorApply = Range("A" & lRow & ":R" & lRow)
+        Set rngFullRowColorApply = Range("A" & lRow & ":S" & lRow)
         Set rngMeasuredColO = Cells(lRow, "O")
         sDeviceColD = Cells(lRow, "D").value
         sSubDeviceColE = Cells(lRow, "E").value
@@ -270,6 +270,7 @@ Sub Report_Arrangement12()
     Columns("D").Font.Color = colorDarkGrey
     Columns("E").Font.Color = colorDarkGrey
     Columns("V").Font.Color = colorDarkGrey
+    Columns("X").Font.Color = colorDarkGrey
     Columns("W").Font.Color = colorCommentBlue
     Columns("W").Font.Bold = True
 

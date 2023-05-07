@@ -1,8 +1,8 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V16.6"
-Public Const whatIsNew      As String = "Fix tab size and rules for new report form"
+Public Const moduleVersion  As String = "V16.7"
+Public Const whatIsNew      As String = "Detect columns by name"
 '==================
 
 
@@ -80,6 +80,14 @@ Sub Report_Arrangement12()
     Dim lRow                 As Long
     Dim lMaxRow              As Long
     
+    ' Declare All Columns variables
+    Dim colStatus            As Integer
+    Dim colSystemlog         As Integer
+    Dim colError             As Integer
+    Dim colTimestamp         As Integer
+    Dim colDescription       As Integer
+    Dim colDuration          As Integer
+    
     printDebug dStartTime, Timer, "Defined variables"
     
     Application.ScreenUpdating = False
@@ -120,13 +128,23 @@ Sub Report_Arrangement12()
     Columns("Q").ColumnWidth = 8    'Delay
     Columns("R").ColumnWidth = 4    'Stop on Error
     Columns("S").ColumnWidth = 5    'Run Condition
-    Columns("T").ColumnWidth = 5    'Status
-    Columns("U").ColumnWidth = 4    'Error
-    Columns("V").ColumnWidth = 4    'System Log
-    Columns("V").AutoFit            'Time Stamp
-    Columns("W").ColumnWidth = 47   'Description
-    Columns("X").ColumnWidth = 12   'Duration
-
+    
+    ' Detect Columns indexes by header name
+    colStatus = WorksheetFunction.Match("Status", Range("1:1"), 0)
+    colError = WorksheetFunction.Match("Error", Range("1:1"), 0)
+    colSystemlog = WorksheetFunction.Match("SystemLog", Range("1:1"), 0)
+    colTimestamp = WorksheetFunction.Match("TimeStamp", Range("1:1"), 0)
+    colDescription = WorksheetFunction.Match("UserDescription", Range("1:1"), 0)
+    colDuration = WorksheetFunction.Match("Duration", Range("1:1"), 0)
+    
+    ' Set Column width
+    Columns(colStatus).ColumnWidth = 5
+    Columns(colError).ColumnWidth = 4
+    Columns(colSystemlog).ColumnWidth = 4
+    Columns(colTimestamp).AutoFit
+    Columns(colDescription).ColumnWidth = 47
+    Columns(colDuration).ColumnWidth = 12
+    
     ' Columns Alignment Properties
     Columns("D").HorizontalAlignment = xlLeft
     Columns("E").HorizontalAlignment = xlLeft
@@ -154,12 +172,12 @@ Sub Report_Arrangement12()
     
     For lRow = 2 To lMaxRow
         
-        Set rngFullRowColorApply = Range("A" & lRow & ":S" & lRow)
+        Set rngFullRowColorApply = Range(Cells(lRow, 1), Cells(lRow, colStatus))
         Set rngMeasuredColO = Cells(lRow, "O")
         sDeviceColD = Cells(lRow, "D").value
         sSubDeviceColE = Cells(lRow, "E").value
         sTopicColK = Cells(lRow, "K").value
-        sStatusColS = Cells(lRow, "S").value
+        sStatusColS = Cells(lRow, colStatus).value
         sMeasuredColO = rngMeasuredColO.value
         
         sColNValue = Range("N" & lRow).value

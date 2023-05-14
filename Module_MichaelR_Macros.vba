@@ -1,8 +1,8 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V16.7"
-Public Const whatIsNew      As String = "Detect columns by name"
+Public Const moduleVersion  As String = "V17.0"
+Public Const whatIsNew      As String = "Add button for go to next error"
 '==================
 
 
@@ -320,6 +320,7 @@ Sub Report_Arrangement12()
     addFilterButton 1, "Filter", "ReportAutofilterFilterItems"
     addFilterButton 2, "Clear", "ReportAutofilterClear"
     addFilterButton 3, "NextFail", "GotoNextFail"
+    addFilterButton 4, "NextError", "GotoNextError"
     printDebug dStartTime, Timer, "Created Filter buttons"
             
     ' Freeze top row
@@ -463,6 +464,38 @@ Sub GotoNextFail()
         ActiveRow = ActiveCell.row
     Else
         MsgBox "No Failures found in this result file"
+    End If
+
+End Sub
+
+Sub GotoNextError()
+    '===========================
+    ' Writen by Michael Rykin
+    ' Used in report arrangement button go to next fail
+    '===========================
+    Dim FindString      As String
+    Dim Rng             As Range
+    Dim ActiveRow       As Long
+    Dim colStatus       As Integer
+    
+    FindString = "ERROR"
+    ActiveRow = ActiveCell.row + 1
+    colStatus = WorksheetFunction.Match("Status", Range("1:1"), 0)
+    
+    Debug.Print (ActiveRow)
+    
+    Set Rng = Columns(colStatus).Find(What:=FindString, _
+                    After:=Cells(ActiveRow, colStatus), _
+                    LookIn:=xlValues, _
+                    LookAt:=xlWhole, _
+                    SearchOrder:=xlByRows, _
+                    SearchDirection:=xlNext, _
+                    MatchCase:=True)
+    If Not Rng Is Nothing Then
+        Application.GoTo Sheets("Result").Range("A" & Rng.row - 1), True
+        ActiveRow = ActiveCell.row
+    Else
+        MsgBox "No Errors found in this result file"
     End If
 
 End Sub

@@ -440,15 +440,19 @@ Sub GotoNextFail()
     ' Writen by Michael Rykin
     ' Used in report arrangement button go to next fail
     '===========================
-    Dim FindString As String
-    Dim Rng As Range
-    Dim ActiveRow As Long
+    Dim FindString      As String
+    Dim Rng             As Range
+    Dim ActiveRow       As Long
+    Dim colStatus       As Integer
+    
     FindString = "FAIL"
     ActiveRow = ActiveCell.row + 1
+    colStatus = WorksheetFunction.Match("Status", Range("1:1"), 0)
+    
     Debug.Print (ActiveRow)
     
-    Set Rng = Range("S:S").Find(What:=FindString, _
-                    After:=Range("S" & ActiveRow), _
+    Set Rng = Columns(colStatus).Find(What:=FindString, _
+                    After:=Cells(ActiveRow, colStatus), _
                     LookIn:=xlValues, _
                     LookAt:=xlWhole, _
                     SearchOrder:=xlByRows, _

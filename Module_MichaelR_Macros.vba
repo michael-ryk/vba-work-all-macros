@@ -244,74 +244,33 @@ Sub ReportArangement()
                             rngFullRowColorApply.Interior.Color = colorGreen
                             'Cells(row, "O").Font.Bold = True   'Starting 23-5-22 this row make macro stuck for 60 sec
                         End If
-                    Case "TnM"
+                    'Case "IDU\NG_Rest_SNMP"
+                        'If (InStr(sColNValue, "ADD") > 0 Or InStr(sColNValue, "EDIT") > 0 Or InStr(sColNValue, "SET") > 0 Or InStr(sColNValue, "DELETE") > 0) Then
+                        '    rngMeasuredCol.Interior.Color = colorGetRed
+                        'ElseIf (InStr(sColNValue, "GET") > 0 Or InStr(sColNValue, "WALK") > 0 Or InStr(sColNValue, "FIND") > 0) Then
+                        '    rngMeasuredCol.Interior.Color = colorGetBlue
+                        'End If
+                    Case "NG_SpecialCommands\NG_DynamicDelay"
+                        rngFullRowColorApply.Interior.Color = colorLightPurple
+                    Case "System\Communication\Ping"
+                        rngFullRowColorApply.Interior.Color = colorLightPurple
+                    Case "TnM\N2X\Open Session General"
                         rngFullRowColorApply.Interior.Color = colorLightBlue
-                    Case "IDU\NG_Rest_SNMP"
-                        If (InStr(sColNValue, "ADD") > 0 Or InStr(sColNValue, "EDIT") > 0 Or InStr(sColNValue, "SET") > 0 Or InStr(sColNValue, "DELETE") > 0) Then
-                            rngMeasuredCol.Interior.Color = colorGetRed
-                        ElseIf (InStr(sColNValue, "GET") > 0 Or InStr(sColNValue, "WALK") > 0 Or InStr(sColNValue, "FIND") > 0) Then
-                            rngMeasuredCol.Interior.Color = colorGetBlue
-                        End If
-                    Case "Test"
-                        Select Case sSubDeviceColE
-                            Case "Running"
-                                Select Case sTopicColK
-                                    Case "Run Suite Project"
-                                        Rows(lRow).RowHeight = heightHighRow
-                                        rngFullRowColorApply.Interior.Color = colorLightGrey
-                                    Case "Run Test"
-                                        Rows(lRow).RowHeight = heightHighRow
-                                        rngFullRowColorApply.Interior.Color = colorLightGrey
-                                    Case "Set Variables"
-                                        rngFullRowColorApply.Interior.Color = colorYellow
-                                    Case "Comparison"
-                                        rngFullRowColorApply.Interior.Color = colorOrange
-                                    Case "Reference line"
-                                        rngFullRowColorApply.Interior.Color = colorBrown
-                                End Select
-                            Case "Report"
-                                Select Case sTopicColK
-                                    Case "Text to report"
-                                        rngMeasuredCol.Font.Color = vbWhite
-                                        rngFullRowColorApply.Interior.Color = colorGreen
-                                        If Left(sMeasuredCol, 1) = "#" Then
-                                            rngFullRowColorApply.Interior.Color = colorBlue
-                                        ElseIf Left(sMeasuredCol, 3) = ":::" Then
-                                            rngFullRowColorApply.Interior.Color = colorBlack
-                                        ElseIf Left(sMeasuredCol, 3) = "===" Then
-                                            rngMeasuredCol.WrapText = True
-                                            rngMeasuredCol.EntireRow.AutoFit
-                                        ElseIf Left(sMeasuredCol, 3) = "---" Then
-                                            rngMeasuredCol.WrapText = True
-                                            rngMeasuredCol.EntireRow.AutoFit
-                                        ElseIf Left(sMeasuredCol, 3) = "***" Then
-                                            rngMeasuredCol.WrapText = True
-                                            rngMeasuredCol.EntireRow.AutoFit
-                                        Else
-                                            rngFullRowColorApply.Interior.Color = colorGreen
-                                            'Cells(row, "O").Font.Bold = True   'Starting 23-5-22 this row make macro stuck for 60 sec
-                                        End If
-                                End Select
-                        End Select
-                    Case Else
-                        Select Case sSubDeviceColE
-                            Case "NG_Rest_SNMP"
-                                If (InStr(sColNValue, "ADD") > 0 Or InStr(sColNValue, "EDIT") > 0 Or InStr(sColNValue, "SET") > 0 Or InStr(sColNValue, "DELETE") > 0) Then
-                                    rngMeasuredCol.Interior.Color = colorGetRed
-                                ElseIf (InStr(sColNValue, "GET") > 0 Or InStr(sColNValue, "WALK") > 0 Or InStr(sColNValue, "FIND") > 0) Then
-                                    rngMeasuredCol.Interior.Color = colorGetBlue
-                                End If
-                            Case "NG_SpecialCommands"
-                                Select Case sTopicColK
-                                    Case "NG_DynamicDelay"
-                                        rngFullRowColorApply.Interior.Color = colorLightPurple
-                                End Select
-                            Case "Communication"
-                                Select Case sTopicColK
-                                    Case "Ping"
-                                        rngFullRowColorApply.Interior.Color = colorLightPurple
-                                End Select
-                        End Select
+                    Case "TnM\N2X\Delete all profiles"
+                        rngFullRowColorApply.Interior.Color = colorLightBlue
+                    Case "TnM\N2X\Add Stream Group Constant Size"
+                        rngFullRowColorApply.Interior.Color = colorLightBlue
+                    Case "TnM\N2X\Set Stream Group Field"
+                        rngFullRowColorApply.Interior.Color = colorLightBlue
+                    Case "Test\Running\Run Suite Project"
+                        Rows(lRow).RowHeight = heightHighRow
+                        rngFullRowColorApply.Interior.Color = colorLightGrey
+                    Case "Test\Running\Set Variables"
+                        rngFullRowColorApply.Interior.Color = colorYellow
+                    Case "Comparison"
+                        rngFullRowColorApply.Interior.Color = colorOrange
+                    Case "Reference line"
+                        rngFullRowColorApply.Interior.Color = colorBrown
                 End Select
         End Select
         
@@ -331,10 +290,8 @@ Sub ReportArangement()
     Columns("C").Font.Color = colorDarkGrey
     Columns("F").Font.Bold = True
     Columns("F").Font.Color = colorDarkRed
-    Columns("D").Font.Color = colorDarkGrey
+    Columns("G").Font.Color = colorDarkGrey
     Columns("K").Font.Color = colorDarkGrey
-    Columns("X").Font.Color = colorDarkGrey
-    
     Columns("M").Font.Color = colorCommentBlue
     Columns("L").Font.Color = colorDarkGrey
     Columns("L").Font.Bold = True
@@ -391,7 +348,7 @@ Sub ReportArangement()
     Debug.Print ("Time took to run: " & dSecondsElapsed)
     
     ' Indicate Runtime in result
-    Cells(4, "Z") = "Macro duration: " & dSecondsElapsed
+    Cells(4, "P") = "Macro duration: " & dSecondsElapsed
 
 End Sub
 

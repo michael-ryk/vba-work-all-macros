@@ -1,8 +1,8 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V18.0"
-Public Const whatIsNew      As String = "Adapt to Results format changes"
+Public Const moduleVersion  As String = "V18.1"
+Public Const whatIsNew      As String = "Add more colors for new style"
 '==================
 
 
@@ -173,7 +173,88 @@ Sub ReportArangement()
     printDebug dStartTime, Timer, "Start For Loop and cycle through rows"
     
     '====================================================================
-    'Cycle through all Rows which hava data in A column and apply colors
+    'Apply conditional formating rules for common panels to color rows based on topics
+    '====================================================================
+    
+    ' TnM = Blue
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""TnM"",$A1)>0")
+        .Interior.Color = colorLightBlue
+        .StopIfTrue = False
+    End With
+    
+    ' Communication = Purple
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""Communication"",$A1)>0")
+        .Interior.Color = colorLightPurple
+        .StopIfTrue = False
+    End With
+    
+    ' NG_DynamicDelay = Purple
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""NG_DynamicDelay"",$A1)>0")
+        .Interior.Color = colorLightPurple
+        .StopIfTrue = False
+    End With
+    
+    ' TestFlow = Purple
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""TestFlow"",$A1)>0")
+        .Interior.Color = colorYellow
+        .StopIfTrue = False
+    End With
+    
+    ' NG_REST_SNMP  Get = Blue
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""""""CommandType"""": """"GET"""""",$C1)>0")
+        .Interior.Color = colorGetBlue
+        .StopIfTrue = False
+    End With
+    
+    ' NG_REST_SNMP  WALK = Blue
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""""""CommandType"""": """"WALK"""""",$C1)>0")
+        .Interior.Color = colorGetBlue
+        .StopIfTrue = False
+    End With
+    
+    ' NG_REST_SNMP  FIND = Blue
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""""""CommandType"""": """"FIND"""""",$C1)>0")
+        .Interior.Color = colorGetBlue
+        .StopIfTrue = False
+    End With
+    
+    ' NG_REST_SNMP  Set = Red
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""""""CommandType"""": """"SET"""""",$C1)>0")
+        .Interior.Color = colorGetRed
+        .StopIfTrue = False
+    End With
+   
+    ' NG_REST_SNMP  EDIT = Red
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""""""CommandType"""": """"EDIT"""""",$C1)>0")
+        .Interior.Color = colorGetRed
+        .StopIfTrue = False
+    End With
+    
+        ' NG_REST_SNMP  ADD = Red
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""""""CommandType"""": """"ADD"""""",$C1)>0")
+        .Interior.Color = colorGetRed
+        .StopIfTrue = False
+    End With
+    
+        ' NG_REST_SNMP  DELETE = Red
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""""""CommandType"""": """"DELETE"""""",$C1)>0")
+        .Interior.Color = colorGetRed
+        .StopIfTrue = False
+    End With
+   
+    '====================================================================
+    'Cycle through all existing rows and apply additional styles
     '====================================================================
     
     Dim rngFullRowColorApply        As Range
@@ -220,10 +301,6 @@ Sub ReportArangement()
                 End Select
             Case Else
                 Select Case sModuleNameValue
-                    Case "TestFlow\Loops\Foreach"
-                        rngFullRowColorApply.Interior.Color = colorYellow
-                    Case "TestFlow\Loops\End"
-                        rngFullRowColorApply.Interior.Color = colorYellow
                     Case "Test\Report\Text to report"
                         rngMeasuredCol.Font.Color = vbWhite
                         rngFullRowColorApply.Interior.Color = colorGreen
@@ -244,32 +321,14 @@ Sub ReportArangement()
                             rngFullRowColorApply.Interior.Color = colorGreen
                             'Cells(row, "O").Font.Bold = True   'Starting 23-5-22 this row make macro stuck for 60 sec
                         End If
-                    'Case "IDU\NG_Rest_SNMP"
-                        'If (InStr(sColNValue, "ADD") > 0 Or InStr(sColNValue, "EDIT") > 0 Or InStr(sColNValue, "SET") > 0 Or InStr(sColNValue, "DELETE") > 0) Then
-                        '    rngMeasuredCol.Interior.Color = colorGetRed
-                        'ElseIf (InStr(sColNValue, "GET") > 0 Or InStr(sColNValue, "WALK") > 0 Or InStr(sColNValue, "FIND") > 0) Then
-                        '    rngMeasuredCol.Interior.Color = colorGetBlue
-                        'End If
-                    Case "NG_SpecialCommands\NG_DynamicDelay"
-                        rngFullRowColorApply.Interior.Color = colorLightPurple
-                    Case "System\Communication\Ping"
-                        rngFullRowColorApply.Interior.Color = colorLightPurple
-                    Case "TnM\N2X\Open Session General"
-                        rngFullRowColorApply.Interior.Color = colorLightBlue
-                    Case "TnM\N2X\Delete all profiles"
-                        rngFullRowColorApply.Interior.Color = colorLightBlue
-                    Case "TnM\N2X\Add Stream Group Constant Size"
-                        rngFullRowColorApply.Interior.Color = colorLightBlue
-                    Case "TnM\N2X\Set Stream Group Field"
-                        rngFullRowColorApply.Interior.Color = colorLightBlue
                     Case "Test\Running\Run Suite Project"
                         Rows(lRow).RowHeight = heightHighRow
                         rngFullRowColorApply.Interior.Color = colorLightGrey
                     Case "Test\Running\Set Variables"
                         rngFullRowColorApply.Interior.Color = colorYellow
-                    Case "Comparison"
+                    Case "Test\Running\Comparison"
                         rngFullRowColorApply.Interior.Color = colorOrange
-                    Case "Reference line"
+                    Case "Test\Running\Reference line"
                         rngFullRowColorApply.Interior.Color = colorBrown
                 End Select
         End Select
@@ -282,7 +341,7 @@ Sub ReportArangement()
         End If
 
     Next lRow
-
+        
     printDebug dStartTime, Timer, "For loop end, start color set for fonts"
     
     ' Apply Format for Delay column
@@ -307,7 +366,7 @@ Sub ReportArangement()
     ' Create links from all sheets to Results sheet
     Dim ws                  As Worksheet
     For Each ws In ActiveWorkbook.Worksheets
-        If ws.Index > 2 Then
+        If ws.index > 2 Then
             'Debug.Print (ws.Name)
             With ws.Buttons.Add(1, 1, 45, 15)
             .OnAction = "ReturnToFirstSheet"
@@ -627,7 +686,7 @@ Sub ReportArangementOldFormat()
     ' Create links from all sheets to Results sheet
     Dim ws                  As Worksheet
     For Each ws In ActiveWorkbook.Worksheets
-        If ws.Index > 2 Then
+        If ws.index > 2 Then
             'Debug.Print (ws.Name)
             With ws.Buttons.Add(1, 1, 45, 15)
             .OnAction = "ReturnToFirstSheet"

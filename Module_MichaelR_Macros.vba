@@ -1,8 +1,8 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V18.1"
-Public Const whatIsNew      As String = "Add more colors for new style"
+Public Const moduleVersion  As String = "V18.2"
+Public Const whatIsNew      As String = "Fix Fail color not coloring cond formatted rows"
 '==================
 
 
@@ -176,6 +176,18 @@ Sub ReportArangement()
     'Apply conditional formating rules for common panels to color rows based on topics
     '====================================================================
     
+    ' Error = Black whole line
+    With Range("A:I").FormatConditions.Add(Type:=xlExpression, Formula1:="=$I1=""ERROR""")
+        .Interior.Color = colorDarkGrey
+        .StopIfTrue = False
+    End With
+    
+    ' Fail = Red whole line
+    With Range("A:I").FormatConditions.Add(Type:=xlExpression, Formula1:="=$I1=""FAIL""")
+        .Interior.Color = colorRed
+        .StopIfTrue = False
+    End With
+    
     ' TnM = Blue
     With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
         "=SEARCH(""TnM"",$A1)>0")
@@ -239,14 +251,14 @@ Sub ReportArangement()
         .StopIfTrue = False
     End With
     
-        ' NG_REST_SNMP  ADD = Red
+    ' NG_REST_SNMP  ADD = Red
     With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
         "=SEARCH(""""""CommandType"""": """"ADD"""""",$C1)>0")
         .Interior.Color = colorGetRed
         .StopIfTrue = False
     End With
     
-        ' NG_REST_SNMP  DELETE = Red
+    ' NG_REST_SNMP  DELETE = Red
     With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
         "=SEARCH(""""""CommandType"""": """"DELETE"""""",$C1)>0")
         .Interior.Color = colorGetRed
@@ -282,57 +294,41 @@ Sub ReportArangement()
         sColNValue = Range("N" & lRow).value
         sModuleNameValue = Range("A" & lRow).value
         
-        Select Case sStatusCol
-            Case "FAIL"
-                rngFullRowColorApply.Interior.Color = colorRed
-                Select Case sTopicColK
-                    Case "Run Suite Project"
-                        Rows(lRow).RowHeight = heightHighRow
-                    Case "Run Test"
-                        Rows(lRow).RowHeight = heightHighRow
-                End Select
-            Case "ERROR"
-                rngFullRowColorApply.Interior.Color = colorDarkGrey
-                Select Case sTopicColK
-                    Case "Run Suite Project"
-                        Rows(lRow).RowHeight = heightHighRow
-                    Case "Run Test"
-                        Rows(lRow).RowHeight = heightHighRow
-                End Select
-            Case Else
-                Select Case sModuleNameValue
-                    Case "Test\Report\Text to report"
-                        rngMeasuredCol.Font.Color = vbWhite
-                        rngFullRowColorApply.Interior.Color = colorGreen
-                        If Left(sMeasuredCol, 1) = "#" Then
-                            rngFullRowColorApply.Interior.Color = colorBlue
-                        ElseIf Left(sMeasuredCol, 3) = ":::" Then
-                            rngFullRowColorApply.Interior.Color = colorBlack
-                        ElseIf Left(sMeasuredCol, 3) = "===" Then
-                            rngMeasuredCol.WrapText = True
-                            rngMeasuredCol.EntireRow.AutoFit
-                        ElseIf Left(sMeasuredCol, 3) = "---" Then
-                            rngMeasuredCol.WrapText = True
-                            rngMeasuredCol.EntireRow.AutoFit
-                        ElseIf Left(sMeasuredCol, 3) = "***" Then
-                            rngMeasuredCol.WrapText = True
-                            rngMeasuredCol.EntireRow.AutoFit
-                        Else
-                            rngFullRowColorApply.Interior.Color = colorGreen
-                            'Cells(row, "O").Font.Bold = True   'Starting 23-5-22 this row make macro stuck for 60 sec
-                        End If
-                    Case "Test\Running\Run Suite Project"
-                        Rows(lRow).RowHeight = heightHighRow
-                        rngFullRowColorApply.Interior.Color = colorLightGrey
-                    Case "Test\Running\Set Variables"
-                        rngFullRowColorApply.Interior.Color = colorYellow
-                    Case "Test\Running\Comparison"
-                        rngFullRowColorApply.Interior.Color = colorOrange
-                    Case "Test\Running\Reference line"
-                        rngFullRowColorApply.Interior.Color = colorBrown
-                End Select
+        Select Case sModuleNameValue
+            Case "Test\Report\Text to report"
+                rngMeasuredCol.Font.Color = vbWhite
+                rngFullRowColorApply.Interior.Color = colorGreen
+                If Left(sMeasuredCol, 1) = "#" Then
+                    rngFullRowColorApply.Interior.Color = colorBlue
+                ElseIf Left(sMeasuredCol, 3) = ":::" Then
+                    rngFullRowColorApply.Interior.Color = colorBlack
+                ElseIf Left(sMeasuredCol, 3) = "===" Then
+                    rngMeasuredCol.WrapText = True
+                    rngMeasuredCol.EntireRow.AutoFit
+                ElseIf Left(sMeasuredCol, 3) = "---" Then
+                    rngMeasuredCol.WrapText = True
+                    rngMeasuredCol.EntireRow.AutoFit
+                ElseIf Left(sMeasuredCol, 3) = "***" Then
+                    rngMeasuredCol.WrapText = True
+                    rngMeasuredCol.EntireRow.AutoFit
+                Else
+                    rngFullRowColorApply.Interior.Color = colorGreen
+                    'Cells(row, "O").Font.Bold = True   'Starting 23-5-22 this row make macro stuck for 60 sec
+                End If
+            Case "Test\Running\Run Suite Project"
+                Rows(lRow).RowHeight = heightHighRow
+                rngFullRowColorApply.Interior.Color = colorLightGrey
+            Case "Test\Running\Run Test"
+                Rows(lRow).RowHeight = heightHighRow
+                rngFullRowColorApply.Interior.Color = colorLightGrey
+            Case "Test\Running\Set Variables"
+                rngFullRowColorApply.Interior.Color = colorYellow
+            Case "Test\Running\Comparison"
+                rngFullRowColorApply.Interior.Color = colorOrange
+            Case "Test\Running\Reference line"
+                rngFullRowColorApply.Interior.Color = colorBrown
         End Select
-        
+
         ' Create links to sheets for all "See walk results in sheet x" Cells
         If InStr(1, sMeasuredCol, "See the measured results") > 0 Then
             sHyperlinkSheetName = Mid(sMeasuredCol, InStr(1, sMeasuredCol, "'", 1) + 1, InStrRev(sMeasuredCol, "'") - InStr(1, sMeasuredCol, "'", 1) - 1)

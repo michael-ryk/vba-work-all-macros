@@ -1,8 +1,8 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V18.2"
-Public Const whatIsNew      As String = "Fix Fail color not coloring cond formatted rows"
+Public Const moduleVersion  As String = "V18.3"
+Public Const whatIsNew      As String = "Add more alternate row format tables for 2,3,4 cases"
 '==================
 
 
@@ -1252,4 +1252,400 @@ End Sub
 
 Sub cellColorRedDark()
     Selection.Interior.Color = RGB(255, 153, 153)
+End Sub
+
+Sub AddTableFormatsForMoreSimilarRows()
+'
+' Add special alternate row coloring formats when 2,3,4 rows are same group
+'
+
+'
+ActiveWorkbook.TableStyles("TableStyleLight18").Duplicate ("TableStyleLight18 2" _
+        )
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2")
+        .ShowAsAvailablePivotTableStyle = False
+        .ShowAsAvailableTableStyle = True
+        .ShowAsAvailableSlicerStyle = False
+        .ShowAsAvailableTimelineStyle = False
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlWholeTable).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlWholeTable).Font
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeTop)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeBottom)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeLeft)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeRight)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlWholeTable).Borders(xlInsideVertical)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlWholeTable).Borders(xlInsideHorizontal)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlHeaderRow).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlHeaderRow).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlHeaderRow).Borders(xlEdgeBottom)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlMedium
+        .LineStyle = xlNone
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements(xlTotalRow _
+        ).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlTotalRow).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlTotalRow).Borders(xlEdgeTop)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThick
+        .LineStyle = 9
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlFirstColumn).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlFirstColumn).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlLastColumn).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlLastColumn).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlRowStripe1).Clear
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlRowStripe1).StripeSize = 4
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlRowStripe1).Interior
+        .Pattern = xlSolid
+        .PatternThemeColor = xlThemeColorAccent3
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0.799981688894314
+        .PatternTintAndShade = 0.799981688894314
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlRowStripe2).StripeSize = 4
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlColumnStripe1).Clear
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlColumnStripe1).StripeSize = 4
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlColumnStripe1).Interior
+        .Pattern = xlSolid
+        .PatternThemeColor = xlThemeColorAccent3
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0.799981688894314
+        .PatternTintAndShade = 0.799981688894314
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18").Duplicate ("TableStyleLight18 3" _
+        )
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3")
+        .ShowAsAvailablePivotTableStyle = False
+        .ShowAsAvailableTableStyle = True
+        .ShowAsAvailableSlicerStyle = False
+        .ShowAsAvailableTimelineStyle = False
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlWholeTable).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlWholeTable).Font
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeTop)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeBottom)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeLeft)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeRight)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlWholeTable).Borders(xlInsideVertical)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlWholeTable).Borders(xlInsideHorizontal)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlHeaderRow).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlHeaderRow).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlHeaderRow).Borders(xlEdgeBottom)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlMedium
+        .LineStyle = xlNone
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements(xlTotalRow _
+        ).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlTotalRow).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlTotalRow).Borders(xlEdgeTop)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThick
+        .LineStyle = 9
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlFirstColumn).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlFirstColumn).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlLastColumn).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlLastColumn).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlRowStripe1).Clear
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlRowStripe1).StripeSize = 3
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlRowStripe1).Interior
+        .Pattern = xlSolid
+        .PatternThemeColor = xlThemeColorAccent3
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0.799981688894314
+        .PatternTintAndShade = 0.799981688894314
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlRowStripe2).StripeSize = 3
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlColumnStripe1).Clear
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlColumnStripe1).StripeSize = 3
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlColumnStripe1).Interior
+        .Pattern = xlSolid
+        .PatternThemeColor = xlThemeColorAccent3
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0.799981688894314
+        .PatternTintAndShade = 0.799981688894314
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18").Duplicate ("TableStyleLight18 4" _
+        )
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4")
+        .ShowAsAvailablePivotTableStyle = False
+        .ShowAsAvailableTableStyle = True
+        .ShowAsAvailableSlicerStyle = False
+        .ShowAsAvailableTimelineStyle = False
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlWholeTable).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlWholeTable).Font
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeTop)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeBottom)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeLeft)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeRight)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlWholeTable).Borders(xlInsideVertical)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlWholeTable).Borders(xlInsideHorizontal)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlHeaderRow).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlHeaderRow).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlHeaderRow).Borders(xlEdgeBottom)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlMedium
+        .LineStyle = xlNone
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements(xlTotalRow _
+        ).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlTotalRow).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlTotalRow).Borders(xlEdgeTop)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThick
+        .LineStyle = 9
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlFirstColumn).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlFirstColumn).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlLastColumn).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlLastColumn).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlRowStripe1).Clear
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlRowStripe1).StripeSize = 2
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlRowStripe1).Interior
+        .Pattern = xlSolid
+        .PatternThemeColor = xlThemeColorAccent3
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0.799981688894314
+        .PatternTintAndShade = 0.799981688894314
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlRowStripe2).StripeSize = 2
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlColumnStripe1).Clear
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlColumnStripe1).StripeSize = 2
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlColumnStripe1).Interior
+        .Pattern = xlSolid
+        .PatternThemeColor = xlThemeColorAccent3
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0.799981688894314
+        .PatternTintAndShade = 0.799981688894314
+    End With
+    
 End Sub

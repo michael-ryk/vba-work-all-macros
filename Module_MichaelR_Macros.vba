@@ -1,8 +1,8 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V18.3"
-Public Const whatIsNew      As String = "Add more alternate row format tables for 2,3,4 cases"
+Public Const moduleVersion  As String = "V18.4"
+Public Const whatIsNew      As String = "Create new Skeleton sheet based on selected value"
 '==================
 
 
@@ -1648,4 +1648,32 @@ ActiveWorkbook.TableStyles("TableStyleLight18").Duplicate ("TableStyleLight18 2"
         .PatternTintAndShade = 0.799981688894314
     End With
     
+End Sub
+
+Sub CreateNewSkeletonSheet()
+
+Dim sheetName As String
+
+sheetName = ActiveCell.value
+Debug.Print (sheetName)
+
+Sheets.Add(After:=Sheets(Sheets.Count)).Name = sheetName
+
+'Create table heading
+With Sheets(sheetName).Range("A1")
+    .value = "[" & sheetName & "]"
+    .Font.Size = 18
+    .Font.Color = RGB(68, 114, 196)
+    .Font.Bold = True
+End With
+
+'Create link to main sheet
+Sheets(sheetName).Range("C1").value = "Link"
+
+'Create table in new sheet
+Sheets(sheetName).Range("A2").value = "Filter"
+Dim objTable As ListObject
+Set objTable = Sheets(sheetName).ListObjects.Add(xlSrcRange, Sheets(sheetName).Range("A2:E6"), , xlYes, , "TableStyleLight11")
+objTable.Name = sheetName
+
 End Sub

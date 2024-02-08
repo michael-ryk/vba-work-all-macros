@@ -1,8 +1,8 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V18.4"
-Public Const whatIsNew      As String = "Create new Skeleton sheet based on selected value"
+Public Const moduleVersion  As String = "V18.5"
+Public Const whatIsNew      As String = "Replace IDU filter with filter all with ips"
 '==================
 
 
@@ -375,7 +375,7 @@ Sub ReportArangement()
     printDebug dStartTime, Timer, "Created Links to results sheets"
     
     ' Create Filter buttons
-    addFilterButton 0, "IDU", "ReportAutoFilterIDU"
+    addFilterButton 0, "IPs", "ReportAutoFilterIDU"
     addFilterButton 1, "Filter", "ReportAutofilterFilterItems"
     addFilterButton 2, "Clear", "ReportAutofilterClear"
     addFilterButton 3, "NextFail", "GotoNextFail"
@@ -778,7 +778,7 @@ Sub ReportAutofilterIDU()
     '===========================
 
     If ActiveSheet.AutoFilterMode = True Then
-        Range("$A:$X").AutoFilter Field:=4, Criteria1:=Array("IDU", "System", "Communication"), Operator:=xlFilterValues
+        Range("$A:$X").AutoFilter Field:=2, Criteria1:="<>", Operator:=xlFilterValues
     Else
         MsgBox "Auto Filter is turned off - TBD: implement autofilter set if it missing"
     End If

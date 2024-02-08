@@ -793,10 +793,7 @@ Sub ReportAutofilterFilterItems()
     '===========================
 
     If ActiveSheet.AutoFilterMode = True Then
-        With Range("$A:$X")
-            .AutoFilter Field:=4, Criteria1:=Array("IDU", "Test", "TnM", "System", "Communication", "="), Operator:=xlFilterValues
-            .AutoFilter Field:=11, Criteria1:=Array("Text to report", "Run Suite Project", "NG_DynamicDelay", "Free text command", "="), Operator:=xlFilterValues
-        End With
+        Range("$A:$X").AutoFilter Field:=1, Criteria1:=Array("=*" & "IDU" & "*"), Operator:=xlAnd
     Else
         MsgBox "Auto Filter is turned off - TBD: implement autofilter set if it missing"
     End If

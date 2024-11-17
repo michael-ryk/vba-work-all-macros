@@ -1,8 +1,8 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V18.5"
-Public Const whatIsNew      As String = "Replace IDU filter with filter all with ips"
+Public Const moduleVersion  As String = "V18.6"
+Public Const whatIsNew      As String = "Add Macro for converting numbers stored as text to number format for future calculations"
 '==================
 
 
@@ -1649,28 +1649,38 @@ End Sub
 
 Sub CreateNewSkeletonSheet()
 
-Dim sheetName As String
+    Dim sheetName As String
+    
+    sheetName = ActiveCell.value
+    Debug.Print (sheetName)
+    
+    Sheets.Add(After:=Sheets(Sheets.Count)).Name = sheetName
+    
+    'Create table heading
+    With Sheets(sheetName).Range("A1")
+        .value = "[" & sheetName & "]"
+        .Font.Size = 18
+        .Font.Color = RGB(68, 114, 196)
+        .Font.Bold = True
+    End With
+    
+    'Create link to main sheet
+    Sheets(sheetName).Range("C1").value = "Link"
+    
+    'Create table in new sheet
+    Sheets(sheetName).Range("A2").value = "Filter"
+    Dim objTable As ListObject
+    Set objTable = Sheets(sheetName).ListObjects.Add(xlSrcRange, Sheets(sheetName).Range("A2:E6"), , xlYes, , "TableStyleLight11")
+    objTable.Name = sheetName
 
-sheetName = ActiveCell.value
-Debug.Print (sheetName)
+End Sub
 
-Sheets.Add(After:=Sheets(Sheets.Count)).Name = sheetName
+Sub TextToNumber()
+'Convert numbers stored as text to numbers in selection
 
-'Create table heading
-With Sheets(sheetName).Range("A1")
-    .value = "[" & sheetName & "]"
-    .Font.Size = 18
-    .Font.Color = RGB(68, 114, 196)
-    .Font.Bold = True
-End With
-
-'Create link to main sheet
-Sheets(sheetName).Range("C1").value = "Link"
-
-'Create table in new sheet
-Sheets(sheetName).Range("A2").value = "Filter"
-Dim objTable As ListObject
-Set objTable = Sheets(sheetName).ListObjects.Add(xlSrcRange, Sheets(sheetName).Range("A2:E6"), , xlYes, , "TableStyleLight11")
-objTable.Name = sheetName
+    With Selection
+        .NumberFormat = "General"
+        .value = .value
+    End With
 
 End Sub

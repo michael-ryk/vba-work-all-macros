@@ -1,8 +1,8 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V18.6"
-Public Const whatIsNew      As String = "Add Macro for converting numbers stored as text to number format for future calculations"
+Public Const moduleVersion  As String = "V18.7"
+Public Const whatIsNew      As String = "Add Create Table from selection macro"
 '==================
 
 
@@ -1682,5 +1682,13 @@ Sub TextToNumber()
         .NumberFormat = "General"
         .value = .value
     End With
+
+End Sub
+
+Sub CreateTableFromSelection()
+    Dim objListObject As ListObject
+    Set objListObject = ActiveSheet.ListObjects.Add(SourceType:=xlSrcRange, Source:=Selection.CurrentRegion, XlListObjectHasHeaders:=xlYes)
+    objListObject.TableStyle = "TableStyleLight11"
+    objListObject.Range.Columns.AutoFit
 
 End Sub

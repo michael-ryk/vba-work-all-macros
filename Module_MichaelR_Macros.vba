@@ -1,8 +1,8 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V17.0"
-Public Const whatIsNew      As String = "Add button for go to next error"
+Public Const moduleVersion  As String = "V19.0"
+Public Const whatIsNew      As String = "I am leaving (MichaelR) so this is last stable version - see features in confluence"
 '==================
 
 
@@ -23,20 +23,399 @@ Sub Report_Arrangement12()
     ' Writen by Michael Rykin
     ' Automation Report Arrangement Macro
     ' Shortcut: ctrl+r
+    '
+    ' Procedure checks version of excel report and trigger relevant macros arrangement version
     '===========================
 
-    ' Test if abort macro execution
+    ' Abort if Sheet is not "Results"
     If ActiveSheet.Name <> "Result" Then
         MsgBox "Macro is not applicable for current sheet - Abort", vbCritical
         Exit Sub
     End If
     
+    ' Abort if macro already applied
     If macroAlreadyApplied() Then
         MsgBox "Macro already applied - Abort", vbCritical
         Exit Sub
     End If
+    
+    ' Determine version of excel result and run corresponding macros
+    
+    Dim sColumnWContent     As String
+    sColumnWContent = Worksheets("Result").Range("W1").value
+    
+    If sColumnWContent = "" Then
+        Debug.Print ("Column empty - New version detected - Run new macro")
+        ReportArangement
+    Else
+        Debug.Print ("Column Not empty - Old version detected - Run old macro")
+        ReportArangementOldFormat
+    End If
+    
+End Sub
 
-    ' Start Timer to measure run time
+Sub ReportArangement()
+    '===========================
+    ' Writen by Michael Rykin
+    '
+    ' Arrange report macro works for excel results formatted by ceraRun versions 2.4.7.18 and higher
+    ' Contained columns A-N
+    '===========================
+
+' Start Timer to measure run time
+    Dim dStartTime           As Double
+    Dim dSecondsElapsed      As Double
+    dStartTime = Timer
+    
+    ' Constants
+    Const heightHighRow = 26
+    Const colorLightGrey = "&Hbfbfbf"
+    Const colorDarkGrey = "&H808080"
+    Const colorYellow = "&Haafafa"
+    Const colorLightPurple = "&Headae1"
+    Const colorLightBlue = "&Hffcc99"
+    Const colorBlue = "&Hd58d53"
+    Const colorGreen = "&H008000"
+    Const colorLightRed = "&H8080ff"
+    Const colorRed = "&H0000ff"
+    Const colorDarkRed = "&H000080"
+    Const colorBrown = "&H008080"
+    Const colorOrange = "&H0099ff"
+    Const colorCommentBlue = "&Hbd814f"
+    Const colorGetBlue = "&Hfce3cf"
+    Const colorGetRed = "&Hddddff"
+    Const colorBlack = "&H0d0d0d"
+
+    ' Create Sheet for macro logs - Must happen before timer print
+    Sheets.Add(After:=Sheets("Result")).Name = "Macro Logs"
+    ActiveWorkbook.Sheets("Result").Activate 'Go back to First sheet
+    
+    printDebug dStartTime, Timer, "Timer started and added Macro logs sheet"
+    
+    ' Inform user for update
+    CheckForLatestMacroVersion
+    printDebug dStartTime, Timer, "Verified if macro upgrade available"
+    
+    ' Indicate Macro version and what is new
+    Cells(2, "P") = "Macro Version: " & moduleVersion
+    Cells(3, "P") = "What is new? " & whatIsNew
+    printDebug dStartTime, Timer, "Added current runing version, whats new"
+    
+    ' Variables
+    Dim sHyperlinkSheetName  As String
+    Dim lRow                 As Long
+    Dim lMaxRow              As Long
+    
+    ' Declare All Columns variables
+    Dim colStatus            As Integer
+    Dim colSystemlog         As Integer
+    Dim colError             As Integer
+    Dim colTimestamp         As Integer
+    Dim colDescription       As Integer
+    Dim colDuration          As Integer
+    
+    printDebug dStartTime, Timer, "Defined variables"
+    
+    Application.ScreenUpdating = False
+
+    lMaxRow = Cells(Rows.Count, "A").End(xlUp).row   'Determine Max row
+    printDebug dStartTime, Timer, "Calculated max row with content"
+    
+    ' Remove unessasary rows from original sheet to reduce final file size (based on automation open case)
+    Worksheets("Result").Rows(lMaxRow + 5 & ":" & Worksheets("Result").Rows.Count).Delete
+    printDebug dStartTime, Timer, "Removed unnecessary rows"
+    
+    ' Copy Current report sheet for backup
+    Worksheets(1).Copy After:=Worksheets(1) 'Backup original Report from Testshell
+    ActiveWorkbook.Sheets("Result").Activate 'Go back to First sheet
+    printDebug dStartTime, Timer, "Original sheet copied for backup purpose"
+    
+    ' Rows Heigh
+    Range("A:A").RowHeight = 12
+    Range("1:1").RowHeight = 20
+
+    ' Columns Width
+    Columns("A").AutoFit            'Module Name
+    Columns("B").AutoFit            'Address
+    Columns("C").ColumnWidth = 25   'Address
+    Columns("D").ColumnWidth = 66   'Measured
+    Columns("E").ColumnWidth = 6    'Protocol
+    Columns("F").ColumnWidth = 8    'Delay
+    Columns("G").ColumnWidth = 16   'Decision
+    Columns("H").ColumnWidth = 4    'Run Condition
+    
+    ' Detect Columns indexes by header name
+    colStatus = WorksheetFunction.Match("Status", Range("1:1"), 0)
+    colError = WorksheetFunction.Match("Error", Range("1:1"), 0)
+    colSystemlog = WorksheetFunction.Match("SystemLog", Range("1:1"), 0)
+    colTimestamp = WorksheetFunction.Match("TimeStamp", Range("1:1"), 0)
+    colDescription = WorksheetFunction.Match("UserDescription", Range("1:1"), 0)
+    colDuration = WorksheetFunction.Match("Duration", Range("1:1"), 0)
+    
+    ' Set Column width
+    Columns(colStatus).ColumnWidth = 5
+    Columns(colError).ColumnWidth = 4
+    Columns(colSystemlog).ColumnWidth = 4
+    Columns(colTimestamp).AutoFit
+    Columns(colDescription).ColumnWidth = 47
+    Columns(colDuration).ColumnWidth = 12
+    
+    ' Columns Alignment Properties
+    'Columns("D").HorizontalAlignment = xlLeft
+    'Columns("E").HorizontalAlignment = xlLeft
+    'Columns("H").HorizontalAlignment = xlLeft
+    'Columns("K").HorizontalAlignment = xlLeft
+    'Columns("Q").HorizontalAlignment = xlCenter
+    'Columns("R").HorizontalAlignment = xlLeft
+    
+    printDebug dStartTime, Timer, "Formatted rows and columns"
+    
+    printDebug dStartTime, Timer, "Start For Loop and cycle through rows"
+    
+    '====================================================================
+    'Apply conditional formating rules for common panels to color rows based on topics
+    '====================================================================
+    
+    ' Error = Black whole line
+    With Range("A:I").FormatConditions.Add(Type:=xlExpression, Formula1:="=$I1=""ERROR""")
+        .Interior.Color = colorDarkGrey
+        .StopIfTrue = False
+    End With
+    
+    ' Fail = Red whole line
+    With Range("A:I").FormatConditions.Add(Type:=xlExpression, Formula1:="=$I1=""FAIL""")
+        .Interior.Color = colorRed
+        .StopIfTrue = False
+    End With
+    
+    ' TnM = Blue
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""TnM"",$A1)>0")
+        .Interior.Color = colorLightBlue
+        .StopIfTrue = False
+    End With
+    
+    ' Communication = Purple
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""Communication"",$A1)>0")
+        .Interior.Color = colorLightPurple
+        .StopIfTrue = False
+    End With
+    
+    ' NG_DynamicDelay = Purple
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""NG_DynamicDelay"",$A1)>0")
+        .Interior.Color = colorLightPurple
+        .StopIfTrue = False
+    End With
+    
+    ' TestFlow = Purple
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""TestFlow"",$A1)>0")
+        .Interior.Color = colorYellow
+        .StopIfTrue = False
+    End With
+    
+    ' NG_REST_SNMP  Get = Blue
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""""""CommandType"""": """"GET"""""",$C1)>0")
+        .Interior.Color = colorGetBlue
+        .StopIfTrue = False
+    End With
+    
+    ' NG_REST_SNMP  WALK = Blue
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""""""CommandType"""": """"WALK"""""",$C1)>0")
+        .Interior.Color = colorGetBlue
+        .StopIfTrue = False
+    End With
+    
+    ' NG_REST_SNMP  FIND = Blue
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""""""CommandType"""": """"FIND"""""",$C1)>0")
+        .Interior.Color = colorGetBlue
+        .StopIfTrue = False
+    End With
+    
+    ' NG_REST_SNMP  Set = Red
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""""""CommandType"""": """"SET"""""",$C1)>0")
+        .Interior.Color = colorGetRed
+        .StopIfTrue = False
+    End With
+   
+    ' NG_REST_SNMP  EDIT = Red
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""""""CommandType"""": """"EDIT"""""",$C1)>0")
+        .Interior.Color = colorGetRed
+        .StopIfTrue = False
+    End With
+    
+    ' NG_REST_SNMP  ADD = Red
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""""""CommandType"""": """"ADD"""""",$C1)>0")
+        .Interior.Color = colorGetRed
+        .StopIfTrue = False
+    End With
+    
+    ' NG_REST_SNMP  DELETE = Red
+    With Range("A:H").FormatConditions.Add(Type:=xlExpression, Formula1:= _
+        "=SEARCH(""""""CommandType"""": """"DELETE"""""",$C1)>0")
+        .Interior.Color = colorGetRed
+        .StopIfTrue = False
+    End With
+   
+    '====================================================================
+    'Cycle through all existing rows and apply additional styles
+    '====================================================================
+    
+    Dim rngFullRowColorApply        As Range
+    Dim rngMeasuredCol              As Range
+    Dim sDeviceColD                 As String   'Removed
+    Dim sSubDeviceColE              As String   'Removed
+    Dim sTopicColK                  As String   'Removed
+    Dim sStatusCol                  As String
+    Dim sMeasuredCol                As String
+    Dim sColNValue                  As String
+    Dim sModuleNameValue            As String
+    
+    For lRow = 2 To lMaxRow
+        
+        Set rngFullRowColorApply = Range(Cells(lRow, 1), Cells(lRow, colStatus))
+        Set rngMeasuredCol = Cells(lRow, "D")
+        
+        sDeviceColD = Cells(lRow, "D").value        'Removed
+        sSubDeviceColE = Cells(lRow, "E").value     'Removed
+        sTopicColK = Cells(lRow, "K").value         'Removed
+        
+        sStatusCol = Cells(lRow, colStatus).value
+        sMeasuredCol = rngMeasuredCol.value
+        
+        sColNValue = Range("N" & lRow).value
+        sModuleNameValue = Range("A" & lRow).value
+        
+        Select Case sModuleNameValue
+            Case "Test\Report\Text to report"
+                rngMeasuredCol.Font.Color = vbWhite
+                rngFullRowColorApply.Interior.Color = colorGreen
+                If Left(sMeasuredCol, 1) = "#" Then
+                    rngFullRowColorApply.Interior.Color = colorBlue
+                ElseIf Left(sMeasuredCol, 3) = ":::" Then
+                    rngFullRowColorApply.Interior.Color = colorBlack
+                ElseIf Left(sMeasuredCol, 3) = "===" Then
+                    rngMeasuredCol.WrapText = True
+                    rngMeasuredCol.EntireRow.AutoFit
+                ElseIf Left(sMeasuredCol, 3) = "---" Then
+                    rngMeasuredCol.WrapText = True
+                    rngMeasuredCol.EntireRow.AutoFit
+                ElseIf Left(sMeasuredCol, 3) = "***" Then
+                    rngMeasuredCol.WrapText = True
+                    rngMeasuredCol.EntireRow.AutoFit
+                Else
+                    rngFullRowColorApply.Interior.Color = colorGreen
+                    'Cells(row, "O").Font.Bold = True   'Starting 23-5-22 this row make macro stuck for 60 sec
+                End If
+            Case "Test\Running\Run Suite Project"
+                Rows(lRow).RowHeight = heightHighRow
+                rngFullRowColorApply.Interior.Color = colorLightGrey
+            Case "Test\Running\Run Test"
+                Rows(lRow).RowHeight = heightHighRow
+                rngFullRowColorApply.Interior.Color = colorLightGrey
+            Case "Test\Running\Set Variables"
+                rngFullRowColorApply.Interior.Color = colorYellow
+            Case "Test\Running\Comparison"
+                rngFullRowColorApply.Interior.Color = colorOrange
+            Case "Test\Running\Reference line"
+                rngFullRowColorApply.Interior.Color = colorBrown
+        End Select
+
+        ' Create links to sheets for all "See walk results in sheet x" Cells
+        If InStr(1, sMeasuredCol, "See the measured results") > 0 Then
+            sHyperlinkSheetName = Mid(sMeasuredCol, InStr(1, sMeasuredCol, "'", 1) + 1, InStrRev(sMeasuredCol, "'") - InStr(1, sMeasuredCol, "'", 1) - 1)
+            'Debug.Print ("<" & sHyperlinkSheetName & ">")
+            ActiveCell.Hyperlinks.Add Anchor:=rngMeasuredCol, Address:="", SubAddress:="'" & sHyperlinkSheetName & "'" & "!A1"
+        End If
+
+    Next lRow
+        
+    printDebug dStartTime, Timer, "For loop end, start color set for fonts"
+    
+    ' Apply Format for Delay column
+    Columns("A").Font.Color = colorDarkGrey
+    Columns("C").Font.Color = colorDarkGrey
+    Columns("F").Font.Bold = True
+    Columns("F").Font.Color = colorDarkRed
+    Columns("G").Font.Color = colorDarkGrey
+    Columns("K").Font.Color = colorDarkGrey
+    Columns("M").Font.Color = colorCommentBlue
+    Columns("L").Font.Color = colorDarkGrey
+    Columns("L").Font.Bold = True
+
+    ' Define borders
+    With Columns("A:Z").Borders(xlInsideHorizontal)
+        .LineStyle = xlContinuous
+        .ColorIndex = 48
+    End With
+    
+    printDebug dStartTime, Timer, "Colors and fonts applied"
+    
+    ' Create links from all sheets to Results sheet
+    Dim ws                  As Worksheet
+    For Each ws In ActiveWorkbook.Worksheets
+        If ws.index > 2 Then
+            'Debug.Print (ws.Name)
+            With ws.Buttons.Add(1, 1, 45, 15)
+            .OnAction = "ReturnToFirstSheet"
+            .text = "Results"
+            End With
+        End If
+    Next
+    
+    ActiveWindow.ScrollColumn = 1   'Scroll to the left
+    printDebug dStartTime, Timer, "Created Links to results sheets"
+    
+    ' Create Filter buttons
+    addFilterButton 0, "IPs", "ReportAutoFilterIDU"
+    addFilterButton 1, "Filter", "ReportAutofilterFilterItems"
+    addFilterButton 2, "Clear", "ReportAutofilterClear"
+    addFilterButton 3, "NextFail", "GotoNextFail"
+    addFilterButton 4, "NextError", "GotoNextError"
+    printDebug dStartTime, Timer, "Created Filter buttons"
+            
+    ' Freeze top row
+    ' First scroll to the top so first row seen in sight
+    ActiveWindow.ScrollRow = 1
+    With ActiveWindow
+        If .FreezePanes Then .FreezePanes = False
+        .SplitColumn = 0
+        .SplitRow = 1
+        .FreezePanes = True
+    End With
+    printDebug dStartTime, Timer, "Top row freezed"
+    
+    ActiveWorkbook.Save
+    Application.ScreenUpdating = True
+    printDebug dStartTime, Timer, "Workbook saved"
+    
+    ' Stop Timer
+    printDebug dStartTime, Timer, "Macro finished !!!"
+    dSecondsElapsed = Round(Timer - dStartTime, 2)
+    Debug.Print ("Time took to run: " & dSecondsElapsed)
+    
+    ' Indicate Runtime in result
+    Cells(4, "P") = "Macro duration: " & dSecondsElapsed
+
+End Sub
+
+Sub ReportArangementOldFormat()
+    '===========================
+    ' Writen by Michael Rykin
+    '
+    ' Arrange report macro works for excel results formatted by ceraRun versions 2.4.7.17 and lower
+    ' Contained columns A-Y
+    '===========================
+
+' Start Timer to measure run time
     Dim dStartTime           As Double
     Dim dSecondsElapsed      As Double
     dStartTime = Timer
@@ -303,7 +682,7 @@ Sub Report_Arrangement12()
     ' Create links from all sheets to Results sheet
     Dim ws                  As Worksheet
     For Each ws In ActiveWorkbook.Worksheets
-        If ws.Index > 2 Then
+        If ws.index > 2 Then
             'Debug.Print (ws.Name)
             With ws.Buttons.Add(1, 1, 45, 15)
             .OnAction = "ReturnToFirstSheet"
@@ -345,9 +724,8 @@ Sub Report_Arrangement12()
     
     ' Indicate Runtime in result
     Cells(4, "Z") = "Macro duration: " & dSecondsElapsed
-    
-End Sub
 
+End Sub
 
 Sub ReturnToFirstSheet()
     Sheets("Result").Select
@@ -372,7 +750,7 @@ Function addFilterButton(buttonIndex, buttonName, onClickMacroName)
     '===========================
     Const ButtonWidth = 70
     Dim filterBtn       As Button
-    Set filterBtn = ActiveSheet.Buttons.Add(Range("O1").Left + 1 + buttonIndex * ButtonWidth, 1, ButtonWidth, Range("O1").Height - 1)
+    Set filterBtn = ActiveSheet.Buttons.Add(Range("D1").Left + 1 + buttonIndex * ButtonWidth, 1, ButtonWidth, Range("O1").Height - 1)
     With filterBtn
         .OnAction = onClickMacroName
         .Caption = buttonName
@@ -400,7 +778,7 @@ Sub ReportAutofilterIDU()
     '===========================
 
     If ActiveSheet.AutoFilterMode = True Then
-        Range("$A:$X").AutoFilter Field:=4, Criteria1:=Array("IDU", "System", "Communication"), Operator:=xlFilterValues
+        Range("$A:$X").AutoFilter Field:=2, Criteria1:="<>", Operator:=xlFilterValues
     Else
         MsgBox "Auto Filter is turned off - TBD: implement autofilter set if it missing"
     End If
@@ -415,10 +793,7 @@ Sub ReportAutofilterFilterItems()
     '===========================
 
     If ActiveSheet.AutoFilterMode = True Then
-        With Range("$A:$X")
-            .AutoFilter Field:=4, Criteria1:=Array("IDU", "Test", "TnM", "System", "Communication", "="), Operator:=xlFilterValues
-            .AutoFilter Field:=11, Criteria1:=Array("Text to report", "Run Suite Project", "NG_DynamicDelay", "Free text command", "="), Operator:=xlFilterValues
-        End With
+        Range("$A:$X").AutoFilter Field:=1, Criteria1:=Array("=*" & "IDU" & "*"), Operator:=xlAnd
     Else
         MsgBox "Auto Filter is turned off - TBD: implement autofilter set if it missing"
     End If
@@ -874,4 +1249,446 @@ End Sub
 
 Sub cellColorRedDark()
     Selection.Interior.Color = RGB(255, 153, 153)
+End Sub
+
+Sub AddTableFormatsForMoreSimilarRows()
+'
+' Add special alternate row coloring formats when 2,3,4 rows are same group
+'
+
+'
+ActiveWorkbook.TableStyles("TableStyleLight18").Duplicate ("TableStyleLight18 2" _
+        )
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2")
+        .ShowAsAvailablePivotTableStyle = False
+        .ShowAsAvailableTableStyle = True
+        .ShowAsAvailableSlicerStyle = False
+        .ShowAsAvailableTimelineStyle = False
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlWholeTable).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlWholeTable).Font
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeTop)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeBottom)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeLeft)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeRight)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlWholeTable).Borders(xlInsideVertical)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlWholeTable).Borders(xlInsideHorizontal)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlHeaderRow).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlHeaderRow).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlHeaderRow).Borders(xlEdgeBottom)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlMedium
+        .LineStyle = xlNone
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements(xlTotalRow _
+        ).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlTotalRow).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlTotalRow).Borders(xlEdgeTop)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThick
+        .LineStyle = 9
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlFirstColumn).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlFirstColumn).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlLastColumn).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlLastColumn).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlRowStripe1).Clear
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlRowStripe1).StripeSize = 4
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlRowStripe1).Interior
+        .Pattern = xlSolid
+        .PatternThemeColor = xlThemeColorAccent3
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0.799981688894314
+        .PatternTintAndShade = 0.799981688894314
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlRowStripe2).StripeSize = 4
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlColumnStripe1).Clear
+    ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlColumnStripe1).StripeSize = 4
+    With ActiveWorkbook.TableStyles("TableStyleLight18 2").TableStyleElements( _
+        xlColumnStripe1).Interior
+        .Pattern = xlSolid
+        .PatternThemeColor = xlThemeColorAccent3
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0.799981688894314
+        .PatternTintAndShade = 0.799981688894314
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18").Duplicate ("TableStyleLight18 3" _
+        )
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3")
+        .ShowAsAvailablePivotTableStyle = False
+        .ShowAsAvailableTableStyle = True
+        .ShowAsAvailableSlicerStyle = False
+        .ShowAsAvailableTimelineStyle = False
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlWholeTable).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlWholeTable).Font
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeTop)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeBottom)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeLeft)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeRight)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlWholeTable).Borders(xlInsideVertical)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlWholeTable).Borders(xlInsideHorizontal)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlHeaderRow).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlHeaderRow).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlHeaderRow).Borders(xlEdgeBottom)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlMedium
+        .LineStyle = xlNone
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements(xlTotalRow _
+        ).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlTotalRow).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlTotalRow).Borders(xlEdgeTop)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThick
+        .LineStyle = 9
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlFirstColumn).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlFirstColumn).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlLastColumn).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlLastColumn).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlRowStripe1).Clear
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlRowStripe1).StripeSize = 3
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlRowStripe1).Interior
+        .Pattern = xlSolid
+        .PatternThemeColor = xlThemeColorAccent3
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0.799981688894314
+        .PatternTintAndShade = 0.799981688894314
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlRowStripe2).StripeSize = 3
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlColumnStripe1).Clear
+    ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlColumnStripe1).StripeSize = 3
+    With ActiveWorkbook.TableStyles("TableStyleLight18 3").TableStyleElements( _
+        xlColumnStripe1).Interior
+        .Pattern = xlSolid
+        .PatternThemeColor = xlThemeColorAccent3
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0.799981688894314
+        .PatternTintAndShade = 0.799981688894314
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18").Duplicate ("TableStyleLight18 4" _
+        )
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4")
+        .ShowAsAvailablePivotTableStyle = False
+        .ShowAsAvailableTableStyle = True
+        .ShowAsAvailableSlicerStyle = False
+        .ShowAsAvailableTimelineStyle = False
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlWholeTable).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlWholeTable).Font
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeTop)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeBottom)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeLeft)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlWholeTable).Borders(xlEdgeRight)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlWholeTable).Borders(xlInsideVertical)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlWholeTable).Borders(xlInsideHorizontal)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThin
+        .LineStyle = xlNone
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlHeaderRow).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlHeaderRow).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlHeaderRow).Borders(xlEdgeBottom)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlMedium
+        .LineStyle = xlNone
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements(xlTotalRow _
+        ).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlTotalRow).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlTotalRow).Borders(xlEdgeTop)
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0
+        .Weight = xlThick
+        .LineStyle = 9
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlFirstColumn).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlFirstColumn).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlLastColumn).Clear
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlLastColumn).Font
+        .FontStyle = "Bold"
+        .TintAndShade = 0
+        .ThemeColor = xlThemeColorLight1
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlRowStripe1).Clear
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlRowStripe1).StripeSize = 2
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlRowStripe1).Interior
+        .Pattern = xlSolid
+        .PatternThemeColor = xlThemeColorAccent3
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0.799981688894314
+        .PatternTintAndShade = 0.799981688894314
+    End With
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlRowStripe2).StripeSize = 2
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlColumnStripe1).Clear
+    ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlColumnStripe1).StripeSize = 2
+    With ActiveWorkbook.TableStyles("TableStyleLight18 4").TableStyleElements( _
+        xlColumnStripe1).Interior
+        .Pattern = xlSolid
+        .PatternThemeColor = xlThemeColorAccent3
+        .ThemeColor = xlThemeColorAccent3
+        .TintAndShade = 0.799981688894314
+        .PatternTintAndShade = 0.799981688894314
+    End With
+    
+End Sub
+
+Sub CreateNewSkeletonSheet()
+
+    Dim sheetName As String
+    
+    sheetName = ActiveCell.value
+    Debug.Print (sheetName)
+    
+    Sheets.Add(After:=Sheets(Sheets.Count)).Name = sheetName
+    
+    'Create table heading
+    With Sheets(sheetName).Range("A1")
+        .value = "[" & sheetName & "]"
+        .Font.Size = 18
+        .Font.Color = RGB(68, 114, 196)
+        .Font.Bold = True
+    End With
+    
+    'Create link to main sheet
+    Sheets(sheetName).Range("C1").value = "Link"
+    
+    'Create table in new sheet
+    Sheets(sheetName).Range("A2").value = "Filter"
+    Dim objTable As ListObject
+    Set objTable = Sheets(sheetName).ListObjects.Add(xlSrcRange, Sheets(sheetName).Range("A2:E6"), , xlYes, , "TableStyleLight11")
+    objTable.Name = sheetName
+
+End Sub
+
+Sub TextToNumber()
+'Convert numbers stored as text to numbers in selection
+
+    With Selection
+        .NumberFormat = "General"
+        .value = .value
+    End With
+
+End Sub
+
+Sub CreateTableFromSelection()
+    Dim objListObject As ListObject
+    Set objListObject = ActiveSheet.ListObjects.Add(SourceType:=xlSrcRange, Source:=Selection.CurrentRegion, XlListObjectHasHeaders:=xlYes)
+    objListObject.TableStyle = "TableStyleLight11"
+    objListObject.Range.Columns.AutoFit
+
 End Sub

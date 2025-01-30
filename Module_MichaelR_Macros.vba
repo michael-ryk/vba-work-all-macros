@@ -1,8 +1,8 @@
 Option Explicit
 
 '==================
-Public Const moduleVersion  As String = "V18.7"
-Public Const whatIsNew      As String = "Add Create Table from selection macro"
+Public Const moduleVersion  As String = "V19.0"
+Public Const whatIsNew      As String = "I am leaving (MichaelR) so this is last stable version - see features in confluence"
 '==================
 
 
